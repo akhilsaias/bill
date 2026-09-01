@@ -4,15 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>OTTLoop Bill Service - Enterprise Invoicing Suite</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     
-    /* Responsive Viewport & Scroll optimizations */
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -41,11 +38,9 @@
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased h-screen overflow-hidden text-sm flex flex-col">
 
-  <!-- ==================== 1. STRICT GATEWAY: LOGIN & SIGNUP SCREEN (FULLY RESPONSIVE) ==================== -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl shadow-xl p-6 sm:p-8 space-y-5 my-auto">
       
-      <!-- Brand Logo -->
       <div class="text-center">
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           O
@@ -54,7 +49,6 @@
         <p class="text-xs text-slate-500 mt-0.5" id="authHeaderSubtitle">Enter valid credentials to access the system</p>
       </div>
 
-      <!-- Auth Tabs -->
       <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
         <button onclick="switchAuthMode('login')" id="tabBtnAuthLogin" class="flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition">
           Sign In
@@ -64,13 +58,11 @@
         </button>
       </div>
 
-      <!-- Alert Box -->
       <div id="authAlertBox" class="hidden text-xs font-semibold p-3 rounded-xl flex items-center gap-2">
         <i id="authAlertIcon" class="ph ph-warning-circle text-base flex-shrink-0"></i>
         <span id="authAlertText">Notification message</span>
       </div>
 
-      <!-- LOGIN FORM -->
       <div id="formLoginContainer" class="space-y-4 text-xs">
         <div>
           <label class="font-bold text-slate-700 block mb-1.5">Username</label>
@@ -104,7 +96,6 @@
         </button>
       </div>
 
-      <!-- SIGN UP FORM -->
       <div id="formSignupContainer" class="hidden space-y-3 text-xs">
         <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[11px] leading-relaxed">
           <i class="ph ph-info font-bold"></i> Accounts require <b>Super Admin Plan Approval</b> before login.
@@ -166,7 +157,7 @@
             type="password" 
             id="signupPassword" 
             placeholder="Create password" 
-            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupGst')"
           />
         </div>
@@ -177,7 +168,7 @@
             type="text" 
             id="signupGst" 
             placeholder="36AAAAA0000A1Z5" 
-            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'btnSignupSubmit')"
           />
         </div>
@@ -190,13 +181,10 @@
     </div>
   </div>
 
-  <!-- ==================== 2. PROTECTED APPLICATION PORTAL ==================== -->
   <div id="mainAppContainer" class="hidden flex-col h-full w-full">
     
-    <!-- Top Header Bar (Responsive) -->
     <header class="no-print h-14 lg:h-12 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-3 sm:px-5 text-xs shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Mobile Sidebar Toggle Hamburger -->
         <button onclick="toggleMobileSidebar()" class="lg:hidden p-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition" aria-label="Toggle Sidebar">
           <i class="ph ph-list text-xl"></i>
         </button>
@@ -220,10 +208,8 @@
 
     <div class="flex-1 flex overflow-hidden relative">
       
-      <!-- Backdrop for mobile sidebar -->
       <div id="mobileSidebarBackdrop" onclick="toggleMobileSidebar()" class="hidden fixed inset-0 bg-slate-900/50 z-30 lg:hidden backdrop-blur-xs"></div>
 
-      <!-- Responsive Sidebar (Drawer on mobile/tablet, Fixed on desktop) -->
       <aside id="appSidebar" class="no-print fixed lg:static inset-y-0 left-0 z-40 w-64 sm:w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         <div class="overflow-y-auto custom-scrollbar">
           <div class="h-14 lg:h-16 px-5 flex items-center justify-between border-b border-slate-100">
@@ -236,13 +222,11 @@
                 <p class="text-[10px] font-mono text-indigo-600 truncate" id="sidebarSubText">bill.ottloop.com</p>
               </div>
             </div>
-            <!-- Close icon on mobile -->
             <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-slate-700 p-1">
               <i class="ph ph-x text-lg"></i>
             </button>
           </div>
 
-          <!-- Merchant Validity Plan Status Box in Sidebar -->
           <div id="userValiditySidebarCard" class="hidden m-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plan Validity</span>
@@ -272,10 +256,8 @@
         </div>
       </aside>
 
-      <!-- Main Dynamic Content Scroll Area -->
       <main class="flex-1 bg-slate-50 overflow-y-auto custom-scrollbar p-3 sm:p-6 md:p-8 w-full">
         
-        <!-- ==================== VIEW 1: SUPER ADMIN PANEL ==================== -->
         <section id="adminView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -336,10 +318,8 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 2: MERCHANT / USER PANEL ==================== -->
         <section id="userView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
 
-          <!-- RENEWAL REQUIRED BANNER -->
           <div id="renewalRequiredBanner" class="hidden bg-red-50 border-2 border-red-300 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-red-900 space-y-3">
             <div class="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
               <div class="flex items-start gap-3">
@@ -357,7 +337,6 @@
             </div>
           </div>
 
-          <!-- DASHBOARD METRICS -->
           <div id="userSectionDashboard" class="space-y-5 sm:space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -409,7 +388,6 @@
             </div>
           </div>
 
-          <!-- INVOICES TAB -->
           <div id="userSectionInvoices" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -446,7 +424,6 @@
             </div>
           </div>
 
-          <!-- CUSTOMERS TAB -->
           <div id="userSectionCustomers" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -478,7 +455,6 @@
             </div>
           </div>
 
-          <!-- PRODUCTS TAB -->
           <div id="userSectionProducts" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -510,7 +486,6 @@
             </div>
           </div>
 
-          <!-- REPORTS TAB -->
           <div id="userSectionReports" class="hidden space-y-5 sm:space-y-6">
             <div>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Business & Tax Reports</h2>
@@ -541,7 +516,6 @@
             </div>
           </div>
 
-          <!-- SETTINGS TAB -->
           <div id="userSectionSettings" class="hidden space-y-5 sm:space-y-6">
             <div>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Business Settings & Invoice Preferences</h2>
@@ -639,7 +613,6 @@
           </div>
         </section>
 
-        <!-- VIEW 3: INVOICE GENERATOR -->
         <section id="invoiceEditorView" class="hidden max-w-4xl mx-auto space-y-5 sm:space-y-6">
           <div class="no-print flex items-center justify-between bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <button onclick="closeInvoiceEditor()" class="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 font-bold text-xs transition">
@@ -655,7 +628,6 @@
             </div>
           </div>
 
-          <!-- Printable Canvas -->
           <div class="print-area bg-white text-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 shadow-xl border border-slate-200 space-y-6">
             <div class="flex flex-col md:flex-row justify-between items-start gap-4 sm:gap-6 border-b border-slate-200 pb-5 sm:pb-6">
               <div class="space-y-1">
@@ -698,7 +670,6 @@
               </div>
             </div>
 
-            <!-- Customer Details -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-xs border-b border-slate-200 pb-5 sm:pb-6">
               <div class="space-y-1">
                 <p class="font-bold uppercase tracking-wider text-slate-400">Billed To (Customer Details)</p>
@@ -716,7 +687,6 @@
               </div>
             </div>
 
-            <!-- Items Table (Responsive Horizontal Scroll) -->
             <div>
               <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left text-xs min-w-[500px]">
@@ -740,7 +710,6 @@
               </button>
             </div>
 
-            <!-- Summary -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-4 border-t border-slate-200 text-xs">
               <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
                 <p class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Payment Information</p>
@@ -783,7 +752,6 @@
               </div>
             </div>
 
-            <!-- Notes & Signatures -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-slate-200 text-xs">
               <div class="space-y-3">
                 <div>
@@ -820,439 +788,6 @@
     </div>
   </div>
 
-  <!-- ==================== 3. FLOATING WHATSAPP & CHATBOT WIDGETS ==================== -->
-  
-  <!-- WhatsApp Direct Floating Button -->
-  <a href="https://api.whatsapp.com/send?phone=917382680200&text=Hello%20OTTLoop%20Support,%20I%20need%20assistance%20with%20my%20Billing%20Portal." target="_blank" class="no-print fixed bottom-4 sm:bottom-6 right-16 sm:right-20 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105" title="Chat on WhatsApp / Call: 7382680200">
-    <i class="ph ph-whatsapp-logo text-2xl"></i>
-  </a>
-
-  <!-- Chatbot Floating Launcher -->
-  <button onclick="toggleChatbot()" class="no-print fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-40 bg-indigo-600 hover:bg-indigo-700 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105" title="AI Billing Support Assistant">
-    <i class="ph ph-chat-centered-dots text-2xl" id="chatbotToggleIcon"></i>
-  </button>
-
-  <!-- Interactive AI Assistant Chatbot Box (Responsive Popup) -->
-  <div id="aiChatbotWidget" class="hidden no-print fixed bottom-16 sm:bottom-20 right-3 sm:right-6 z-50 w-[92vw] sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-xs max-h-[80vh]">
-    <!-- Header -->
-    <div class="bg-indigo-600 p-3.5 sm:p-4 text-white flex items-center justify-between flex-shrink-0">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-black">
-          <i class="ph ph-robot text-lg"></i>
-        </div>
-        <div>
-          <h4 class="font-bold text-sm leading-tight">OTTLoop Billing Assistant</h4>
-          <p class="text-[10px] text-indigo-200">Helpline: +91 7382680200</p>
-        </div>
-      </div>
-      <button onclick="toggleChatbot()" class="text-white/80 hover:text-white"><i class="ph ph-x text-lg"></i></button>
-    </div>
-
-    <!-- Chat Messages Feed -->
-    <div id="chatbotMessages" class="flex-1 p-3 sm:p-4 space-y-3 overflow-y-auto max-h-64 sm:max-h-72 bg-slate-50 custom-scrollbar">
-      <div class="flex items-start gap-2">
-        <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">AI</div>
-        <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-[11px] leading-relaxed">
-          Hello! 👋 Welcome to OTTLoop Bill Service. How can I help you today? You can ask about:
-          <div class="mt-2 flex flex-wrap gap-1">
-            <button onclick="sendQuickPrompt('What are the subscription plans?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Pricing Plans</button>
-            <button onclick="sendQuickPrompt('How to create an invoice?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Create Invoice</button>
-            <button onclick="sendQuickPrompt('How to renew my plan?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Renewal Help</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Input Bar -->
-    <div class="p-2.5 sm:p-3 bg-white border-t border-slate-200 flex items-center gap-2 flex-shrink-0">
-      <input type="text" id="chatbotInput" placeholder="Ask doubt (e.g. GST, plans, print)..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="handleChatbotEnter(event)" />
-      <button onclick="handleChatbotSend()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl transition">
-        <i class="ph ph-paper-plane-right font-bold text-sm"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- ==================== 4. 1-DAY PRIOR EXPIRY ALERT & WHATSAPP RENEWAL MODAL ==================== -->
-  <div id="renewalPlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-7 space-y-4 sm:space-y-5 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-start border-b border-slate-100 pb-3">
-        <div>
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-300">SUBSCRIPTION RENEWAL</span>
-          <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Select Your Subscription Plan</h3>
-          <p class="text-[11px] text-slate-500">Choose a package below to renew instantly via WhatsApp (+91 7382680200)</p>
-        </div>
-        <button onclick="closeRenewalModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-lg"></i></button>
-      </div>
-
-      <!-- Pricing Plans Radio Matrix -->
-      <div class="space-y-2 max-h-[55vh] overflow-y-auto custom-scrollbar p-0.5">
-        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <input type="radio" name="renewalPlanOption" value="Free Trial (7 Days - ₹19)" class="text-indigo-600 focus:ring-indigo-500" />
-            <div>
-              <p class="font-black text-slate-900">🆓 Free Trial</p>
-              <p class="text-[10px] text-slate-500">7 Days Instant Trial Access</p>
-            </div>
-          </div>
-          <span class="font-black text-sm text-indigo-600">₹19</span>
-        </label>
-
-        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <input type="radio" name="renewalPlanOption" value="Monthly Plan (1 Month - ₹99)" checked class="text-indigo-600 focus:ring-indigo-500" />
-            <div>
-              <p class="font-black text-slate-900">📅 Monthly Subscription</p>
-              <p class="text-[10px] text-slate-500">1 Month (30 Days Validity)</p>
-            </div>
-          </div>
-          <span class="font-black text-sm text-indigo-600">₹99</span>
-        </label>
-
-        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <input type="radio" name="renewalPlanOption" value="Quarterly Plan (3 Months - ₹249)" class="text-indigo-600 focus:ring-indigo-500" />
-            <div>
-              <p class="font-black text-slate-900">📦 Quarterly Pack</p>
-              <p class="text-[10px] text-slate-500">3 Months (90 Days Validity)</p>
-            </div>
-          </div>
-          <span class="font-black text-sm text-indigo-600">₹249</span>
-        </label>
-
-        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <input type="radio" name="renewalPlanOption" value="Half-Yearly Plan (6 Months - ₹449)" class="text-indigo-600 focus:ring-indigo-500" />
-            <div>
-              <p class="font-black text-slate-900">🚀 Half-Yearly Package</p>
-              <p class="text-[10px] text-slate-500">6 Months (180 Days Validity)</p>
-            </div>
-          </div>
-          <span class="font-black text-sm text-indigo-600">₹449</span>
-        </label>
-
-        <label class="flex items-center justify-between p-3 border-2 border-indigo-500 rounded-2xl cursor-pointer bg-indigo-50/40 transition">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <input type="radio" name="renewalPlanOption" value="Yearly Enterprise (1 Year - ₹799)" class="text-indigo-600 focus:ring-indigo-500" />
-            <div>
-              <p class="font-black text-slate-900 flex items-center gap-1">👑 Yearly Best Value <span class="bg-indigo-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">BEST</span></p>
-              <p class="text-[10px] text-slate-500">1 Full Year (365 Days Unrestricted)</p>
-            </div>
-          </div>
-          <span class="font-black text-sm text-indigo-600">₹799</span>
-        </label>
-      </div>
-
-      <!-- Action Button -->
-      <button onclick="submitRenewalToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
-        <i class="ph ph-whatsapp-logo text-lg"></i> Proceed & Renew on WhatsApp (+91 7382680200)
-      </button>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL: ADMIN USER AUDIT / REVIEW WITH DATE FILTER ==================== -->
-  <div id="userReviewModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-4xl rounded-3xl p-5 sm:p-8 space-y-5 sm:space-y-6 text-xs shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar my-auto">
-      
-      <!-- Modal Header -->
-      <div class="flex justify-between items-start border-b border-slate-100 pb-3 sm:pb-4">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">MERCHANT AUDIT</span>
-            <span id="revPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>
-          </div>
-          <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1" id="revBusinessName">Business Name</h3>
-          <p class="text-xs text-slate-500 font-mono" id="revUsernameEmail">user@ottloop.com</p>
-        </div>
-        <button onclick="closeUserReviewModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">
-          <i class="ph ph-x"></i>
-        </button>
-      </div>
-
-      <!-- Business Details Overview Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Category</span>
-          <span class="font-bold text-slate-800" id="revCategory">Broadband / OTT</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Phone / Mobile</span>
-          <span class="font-mono text-slate-800 font-bold" id="revPhone">+91 --</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">GSTIN / Tax ID</span>
-          <span class="font-mono text-indigo-700 font-bold uppercase" id="revGst">--</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Registered Address</span>
-          <span class="text-slate-600 truncate block" id="revAddress">--</span>
-        </div>
-      </div>
-
-      <!-- Performance KPI Tiles -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Total Lifetime Sales</p>
-          <p class="text-base sm:text-lg font-black text-indigo-600 mt-0.5" id="revTotalSales">₹0.00</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Current Month</p>
-          <p class="text-base sm:text-lg font-black text-emerald-600 mt-0.5" id="revMonthlySales">₹0.00</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Total Invoices</p>
-          <p class="text-base sm:text-lg font-black text-slate-800 mt-0.5" id="revTotalInvoices">0</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-purple-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Plan Validity Left</p>
-          <p class="text-base sm:text-lg font-black text-purple-600 mt-0.5" id="revDaysLeft">0 Days</p>
-        </div>
-      </div>
-
-      <!-- Custom Date Filter Section for Admin -->
-      <div class="bg-indigo-50/50 p-3.5 sm:p-4 rounded-2xl border border-indigo-100 space-y-3">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div>
-            <h4 class="font-bold text-indigo-950 text-xs uppercase tracking-wider">Custom Date Range Analytics</h4>
-            <p class="text-[11px] text-indigo-700">Filter and audit invoice counts & revenue generated during specific dates</p>
-          </div>
-          
-          <div class="flex flex-wrap items-center gap-2">
-            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1 flex-1 sm:flex-initial">
-              <span class="text-[10px] font-bold text-slate-500">From:</span>
-              <input type="date" id="revFilterFrom" class="text-xs bg-transparent focus:outline-none font-medium w-full sm:w-auto" />
-            </div>
-            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1 flex-1 sm:flex-initial">
-              <span class="text-[10px] font-bold text-slate-500">To:</span>
-              <input type="date" id="revFilterTo" class="text-xs bg-transparent focus:outline-none font-medium w-full sm:w-auto" />
-            </div>
-            <button onclick="applyReviewDateFilter()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm">
-              Apply Filter
-            </button>
-            <button onclick="resetReviewDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl transition">
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <!-- Filter Result Summary Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white px-3.5 sm:px-4 py-2.5 rounded-xl border border-indigo-100 text-xs gap-1 sm:gap-0">
-          <span class="text-slate-600">Range: <b id="revFilteredRangeLabel" class="text-indigo-950">All Time</b></span>
-          <div class="flex gap-4">
-            <span>Invoices: <b id="revFilteredInvoicesCount" class="text-slate-900 font-mono">0</b></span>
-            <span>Revenue: <b id="revFilteredTotalAmount" class="text-emerald-600 font-mono font-bold">₹0.00</b></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Invoices Breakdown Table for Selected Range -->
-      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div class="p-3 bg-slate-50 border-b border-slate-100 font-bold text-slate-700 text-[11px] uppercase tracking-wider">
-          Invoice Transaction History
-        </div>
-        <div class="overflow-x-auto max-h-56 custom-scrollbar">
-          <table class="w-full text-left text-xs min-w-[500px]">
-            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 sticky top-0">
-              <tr>
-                <th class="py-2 px-3">Invoice #</th>
-                <th class="py-2 px-3">Date</th>
-                <th class="py-2 px-3">Customer</th>
-                <th class="py-2 px-3">Status</th>
-                <th class="py-2 px-3 text-right">Grand Total</th>
-              </tr>
-            </thead>
-            <tbody id="revInvoicesTbody" class="divide-y divide-slate-100 font-medium">
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- OTHER MODALS -->
-  <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Create & Assign Plan Validity</h3>
-        <button onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccCategory')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccUsername')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Username</label>
-          <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPhone')" />
-            <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@ottloop.com</span>
-          </div>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="newAccPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPassword')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Login Password</label>
-          <input type="text" id="newAccPassword" value="user123" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="newAccGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPlanPreset')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Select Subscription Plan Validity</label>
-          <select id="newAccPlanPreset" onchange="onPlanPresetChange('newAccPlanPreset', 'newAccValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Custom / Allocated Days</label>
-          <input type="number" id="newAccValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewAccount')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
-        <button onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Create & Authorize Plan</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="approvePlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div>
-          <h3 class="font-bold text-sm text-slate-900">Authorize Plan & Set Validity</h3>
-          <p class="text-[11px] text-slate-500 truncate max-w-xs" id="approveModalTargetUser">User: --</p>
-        </div>
-        <button onclick="closeApprovePlanModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <input type="hidden" id="approveTargetUserId" />
-
-      <div class="space-y-3">
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Select Approval Plan</label>
-          <select id="approvePlanPreset" onchange="onPlanPresetChange('approvePlanPreset', 'approveValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Days to Assign / Add</label>
-          <input type="number" id="approveValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeApprovePlanModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
-        <button onclick="confirmApprovePlan()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5">
-          <i class="ph ph-check-bold"></i> Confirm & Activate Plan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
-        <button onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
-          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewCompany')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
-          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewEmail')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
-          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewPhone')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewAddress')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
-          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewCustomer')"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
-        <button onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Save Customer</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service</h3>
-        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
-          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewTax')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
-          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewHsn')">
-            <option value="0">0% Non-Taxable</option>
-            <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18" selected>18% GST</option>
-            <option value="28">28% GST</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
-          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewStock')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
-          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewProduct')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
-        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Save Item</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
@@ -2631,6 +2166,7 @@
       const daysLeft = getRemainingDays(user.validUntil);
       if (daysLeft <= 0 || user.status !== 'ACTIVE') {
         alert('❌ Plan Expired! Renewal required.');
+        openRenewalModal();
         return;
       }
 
