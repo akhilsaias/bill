@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTTLoop Bill Service - Enterprise Invoicing Suite</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; padding: 0 !important; color: black !important; }
+      .print-area { 
+        box-shadow: none !important; 
+        border: none !important; 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        padding: 0 !important; 
+        margin: 0 !important; 
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased h-screen overflow-hidden text-sm relative">
+
+  <!-- ==================== 1. STRICT GATEWAY: LOGIN & SIGNUP SCREEN ==================== -->
+  <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl shadow-xl p-8 space-y-6">
+      
+      <!-- Brand Logo -->
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
+          O
+        </div>
+        <h2 class="text-xl font-extrabold text-slate-900 mt-3 tracking-tight" id="authHeaderTitle">OTTLoop Bill Portal</h2>
+        <p class="text-xs text-slate-500 mt-0.5" id="authHeaderSubtitle">Enter valid credentials to access the system</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+        <button onclick="switchAuthMode('login')" id="tabBtnAuthLogin" class="flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition">
+          Sign In
+        </button>
+        <button onclick="switchAuthMode('signup')" id="tabBtnAuthSignup" class="flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition">
+          Create Account (Sign Up)
+        </button>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="authAlertBox" class="hidden text-xs font-semibold p-3 rounded-xl flex items-center gap-2">
+        <i id="authAlertIcon" class="ph ph-warning-circle text-base flex-shrink-0"></i>
+        <span id="authAlertText">Notification message</span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="formLoginContainer" class="space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1.5">Username</label>
+          <div class="flex items-center">
+            <input 
+              type="text" 
+              id="loginUsername" 
+              placeholder="username" 
+              class="flex-1 bg-slate-50 border border-slate-300 rounded-l-xl px-3.5 py-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs transition" 
+              onkeydown="handleEnterNavigation(event, 'loginPassword')"
+            />
+            <span class="bg-slate-100 text-slate-600 px-3.5 py-2.5 rounded-r-xl font-mono text-xs border border-l-0 border-slate-300 font-bold select-none">
+              @ottloop.com
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1.5">Password</label>
+          <input 
+            type="password" 
+            id="loginPassword" 
+            placeholder="••••••••" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs transition" 
+            onkeydown="handleEnterNavigation(event, 'btnLoginSubmit')"
+          />
+        </div>
+
+        <button onclick="handleLoginSubmit()" id="btnLoginSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs">
+          Sign In to Dashboard
+        </button>
+      </div>
+
+      <!-- SIGN UP FORM -->
+      <div id="formSignupContainer" class="hidden space-y-3 text-xs">
+        <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[11px] leading-relaxed">
+          <i class="ph ph-info font-bold"></i> Accounts require <b>Super Admin Plan Approval</b> before login.
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Business / Company Name</label>
+          <input 
+            type="text" 
+            id="signupServiceName" 
+            placeholder="e.g. Apex Digital Networks" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            onkeydown="handleEnterNavigation(event, 'signupCategory')"
+          />
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
+          <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium" onkeydown="handleEnterNavigation(event, 'signupUsername')">
+            <option value="OTT & Digital Streaming" selected>OTT & Digital Streaming</option>
+            <option value="ISP & Broadband Services">ISP & Broadband Services</option>
+            <option value="IT Services & Web Dev">IT Services & Web Dev</option>
+            <option value="Retail & Store Billing">Retail & Store Billing</option>
+            <option value="Consulting & Agency">Consulting & Agency</option>
+            <option value="Other">Other Category</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Choose Username</label>
+          <div class="flex items-center">
+            <input 
+              type="text" 
+              id="signupUsername" 
+              placeholder="apexmedia" 
+              class="flex-1 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+              onkeydown="handleEnterNavigation(event, 'signupPhone')"
+            />
+            <span class="bg-slate-100 text-slate-600 px-2.5 py-2 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300">
+              @ottloop.com
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+          <input 
+            type="text" 
+            id="signupPhone" 
+            placeholder="+91 9876543210" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            onkeydown="handleEnterNavigation(event, 'signupPassword')"
+          />
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Set Account Password</label>
+          <input 
+            type="password" 
+            id="signupPassword" 
+            placeholder="Create password" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            onkeydown="handleEnterNavigation(event, 'signupGst')"
+          />
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">GSTIN (Optional)</label>
+          <input 
+            type="text" 
+            id="signupGst" 
+            placeholder="36AAAAA0000A1Z5" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            onkeydown="handleEnterNavigation(event, 'btnSignupSubmit')"
+          />
+        </div>
+
+        <button onclick="handleSignupSubmit()" id="btnSignupSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs">
+          Submit for Admin Approval
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== 2. PROTECTED APPLICATION PORTAL ==================== -->
+  <div id="mainAppContainer" class="hidden flex-col h-full w-full">
+    
+    <!-- Top Header Bar -->
+    <header class="no-print h-11 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-5 text-xs shadow-sm flex-shrink-0">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-bold text-slate-700">OTTLoop Invoicing System:</span>
+        <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold">SUPER_ADMIN</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div id="roleSwitcherButtons" class="hidden items-center gap-2">
+          <span class="text-slate-500 font-medium">Portal View:</span>
+          <button onclick="switchRole('admin')" id="btnRoleAdmin" class="px-3 py-1 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition">Admin Panel</button>
+          <button onclick="switchRole('user')" id="btnRoleUser" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition">User Panel</button>
+        </div>
+        <button onclick="logoutToLoginScreen()" class="ml-3 text-slate-500 hover:text-red-600 font-bold transition flex items-center gap-1">
+          <i class="ph ph-sign-out text-base"></i> Log Out
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+      <!-- Shared Sidebar -->
+      <aside class="no-print w-64 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0">
+        <div>
+          <div class="h-16 px-5 flex items-center gap-3 border-b border-slate-100">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center font-black text-base shadow-sm" id="sidebarLogoContainer">
+              O
+            </div>
+            <div class="overflow-hidden">
+              <h1 class="text-sm font-extrabold text-slate-900 tracking-tight truncate" id="sidebarOrgName">OTTLoop Master</h1>
+              <p class="text-[10px] font-mono text-indigo-600 truncate" id="sidebarSubText">bill.ottloop.com</p>
+            </div>
+          </div>
+
+          <!-- Merchant Validity Plan Status Box in Sidebar -->
+          <div id="userValiditySidebarCard" class="hidden m-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plan Validity</span>
+              <span id="userPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>
+            </div>
+            <p class="text-xs font-black text-slate-800" id="userPlanDaysLeftText">30 Days Left</p>
+            <p class="text-[10px] text-slate-500" id="userPlanExpiryDateText">Expiry: --</p>
+            <button onclick="openRenewalModal()" class="w-full mt-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 rounded-xl text-[11px] shadow-sm transition flex items-center justify-center gap-1">
+              <i class="ph ph-arrows-clockwise font-bold"></i> Renew Plan
+            </button>
+          </div>
+
+          <nav class="mt-2 px-3 space-y-1" id="sidebarNavigation">
+          </nav>
+        </div>
+
+        <div class="p-3 border-t border-slate-100 bg-slate-50">
+          <div class="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 shadow-sm">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center flex-shrink-0" id="userBadgeAvatar">
+              SA
+            </div>
+            <div class="text-xs leading-tight truncate">
+              <p class="font-bold text-slate-900 truncate" id="sessionUserName">Super Admin</p>
+              <p class="text-[10px] text-slate-500 truncate font-mono" id="sessionUserEmail">--</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Dynamic Screen -->
+      <main class="flex-1 bg-slate-50 overflow-y-auto p-6 md:p-8">
+        
+        <!-- ==================== VIEW 1: SUPER ADMIN PANEL ==================== -->
+        <section id="adminView" class="hidden space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-black text-slate-900">Client Accounts & Validity Tracking</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Track remaining days, review merchant business performance, approve registrations, and assign validity plans</p>
+            </div>
+            <button onclick="openCreateUserModal()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition">
+              <i class="ph ph-user-plus text-base"></i> Create Client Account
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Pending Approvals</p>
+              <p class="text-2xl font-black text-amber-600 mt-1" id="statPendingApprovals">0</p>
+              <span class="text-[10px] text-slate-400">Needs plan approval</span>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 border-l-4 border-l-emerald-500 shadow-sm">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Active Accounts</p>
+              <p class="text-2xl font-black text-emerald-600 mt-1" id="statActiveUsers">0</p>
+              <span class="text-[10px] text-slate-400">Valid & billing active</span>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 border-l-4 border-l-red-500 shadow-sm">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Expired Plans</p>
+              <p class="text-2xl font-black text-red-600 mt-1" id="statSuspendedUsers">0</p>
+              <span class="text-[10px] text-slate-400">Billing locked / expired</span>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Registered</p>
+              <p class="text-2xl font-black text-slate-900 mt-1" id="statTotalUsers">0</p>
+              <span class="text-[10px] text-slate-400">All merchant records</span>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Tenant Directory & Detailed Validity Status</h3>
+              <span class="text-[11px] text-slate-500 font-mono">Master Database</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+                  <tr>
+                    <th class="py-3.5 px-4">Business / Service</th>
+                    <th class="py-3.5 px-4">Category</th>
+                    <th class="py-3.5 px-4">Username & Phone</th>
+                    <th class="py-3.5 px-4">Plan Type</th>
+                    <th class="py-3.5 px-4">Expiry Date</th>
+                    <th class="py-3.5 px-4">Days Left (Live)</th>
+                    <th class="py-3.5 px-4">Account Status</th>
+                    <th class="py-3.5 px-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminUsersTableBody" class="divide-y divide-slate-100 font-medium">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 2: MERCHANT / USER PANEL ==================== -->
+        <section id="userView" class="hidden space-y-6">
+
+          <!-- RENEWAL REQUIRED BANNER -->
+          <div id="renewalRequiredBanner" class="hidden bg-red-50 border-2 border-red-300 rounded-3xl p-6 text-red-900 space-y-3">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3">
+                <i class="ph ph-warning-octagon text-3xl text-red-600 flex-shrink-0"></i>
+                <div class="flex-1">
+                  <h3 class="text-base font-extrabold text-red-900">Subscription Validity Expired! (Renewal Required)</h3>
+                  <p class="text-xs text-red-700 mt-1">
+                    Your billing and invoice generation privileges have been locked. Please choose your renewal plan to reactivate immediately.
+                  </p>
+                </div>
+              </div>
+              <button onclick="openRenewalModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-md transition flex items-center gap-1.5 flex-shrink-0">
+                <i class="ph ph-arrows-clockwise font-bold"></i> Renew Plan Now
+              </button>
+            </div>
+          </div>
+
+          <div id="userSectionDashboard" class="space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-black text-slate-900" id="userDashTitle">Business Dashboard</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Real-time financial performance and overview</p>
+              </div>
+              <button onclick="openInvoiceEditor()" id="btnUserDashCreateInv" class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition">
+                <i class="ph ph-plus-bold"></i> Create Invoice
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Invoices</p>
+                <p class="text-2xl font-black text-slate-900 mt-1" id="dashTotalInvoices">0</p>
+                <span class="text-[10px] text-slate-400">All generated</span>
+              </div>
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 border-l-4 border-l-emerald-500 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Paid Invoices</p>
+                <p class="text-2xl font-black text-emerald-600 mt-1" id="dashPaidInvoices">0</p>
+                <span class="text-[10px] text-emerald-600 font-semibold" id="dashPaidAmount">₹0.00</span>
+              </div>
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 border-l-4 border-l-amber-500 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Pending</p>
+                <p class="text-2xl font-black text-amber-600 mt-1" id="dashPendingInvoices">0</p>
+                <span class="text-[10px] text-amber-600 font-semibold" id="dashPendingAmount">₹0.00</span>
+              </div>
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 border-l-4 border-l-red-500 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Overdue</p>
+                <p class="text-2xl font-black text-red-600 mt-1" id="dashOverdueInvoices">0</p>
+                <span class="text-[10px] text-red-600 font-semibold" id="dashOverdueAmount">₹0.00</span>
+              </div>
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 border-l-4 border-l-indigo-500 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Revenue</p>
+                <p class="text-2xl font-black text-indigo-600 mt-1" id="dashTotalRevenue">₹0.00</p>
+                <span class="text-[10px] text-indigo-500 font-semibold">Gross value</span>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm">
+              <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Quick Shortcuts</h3>
+              <div class="flex flex-wrap gap-2 text-xs">
+                <button onclick="switchUserSection('invoices')" class="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition">View Invoices</button>
+                <button onclick="switchUserSection('customers')" class="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition">Customers Directory</button>
+                <button onclick="switchUserSection('products')" class="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition">Item Catalog</button>
+                <button onclick="switchUserSection('reports')" class="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition">GST & Sales Reports</button>
+                <button onclick="switchUserSection('settings')" class="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition">Business Profile Settings</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- INVOICES TAB -->
+          <div id="userSectionInvoices" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-black text-slate-900">Invoices & Billing History</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Manage, print, duplicate, share and track client payments</p>
+              </div>
+              <button onclick="openInvoiceEditor()" id="btnUserInvoicesCreateInv" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100">
+                + New Invoice
+              </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">All Invoices</span>
+                <span class="text-xs text-slate-500" id="userInvoicesCount">0 Records</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+                    <tr>
+                      <th class="py-3 px-4">Invoice #</th>
+                      <th class="py-3 px-4">Date</th>
+                      <th class="py-3 px-4">Due Date</th>
+                      <th class="py-3 px-4">Customer</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4 text-right">Amount</th>
+                      <th class="py-3 px-4 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userInvoicesTableBody" class="divide-y divide-slate-100 font-medium">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- CUSTOMERS TAB -->
+          <div id="userSectionCustomers" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-black text-slate-900">Customers Directory</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Manage client profiles, addresses, tax IDs, and outstanding balances</p>
+              </div>
+              <button onclick="openAddCustomerModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100">
+                + Add Customer
+              </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+                    <tr>
+                      <th class="py-3 px-4">Customer / Company</th>
+                      <th class="py-3 px-4">Email & Phone</th>
+                      <th class="py-3 px-4">Billing Address</th>
+                      <th class="py-3 px-4">GSTIN</th>
+                      <th class="py-3 px-4 text-right">Outstanding Due</th>
+                      <th class="py-3 px-4 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userCustomersTableBody" class="divide-y divide-slate-100 font-medium">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCTS TAB -->
+          <div id="userSectionProducts" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-black text-slate-900">Products & Services Catalog</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Predefine items, HSN/SAC codes, tax slabs, and pricing</p>
+              </div>
+              <button onclick="openAddProductModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100">
+                + Add Product / Service
+              </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+                    <tr>
+                      <th class="py-3 px-4">Item Name / Service</th>
+                      <th class="py-3 px-4">HSN / SAC</th>
+                      <th class="py-3 px-4">Tax / GST Slab</th>
+                      <th class="py-3 px-4 text-right">Unit Price</th>
+                      <th class="py-3 px-4 text-center">Stock</th>
+                      <th class="py-3 px-4 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userProductsTableBody" class="divide-y divide-slate-100 font-medium">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- REPORTS TAB -->
+          <div id="userSectionReports" class="hidden space-y-6">
+            <div>
+              <h2 class="text-xl font-black text-slate-900">Business & Tax Reports</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Consolidated summary of sales, CGST, SGST, IGST, and pending collections</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Tax Collected (GST)</p>
+                <p class="text-2xl font-black text-indigo-600" id="reportTaxCollected">₹0.00</p>
+                <div class="text-[11px] text-slate-500 space-y-0.5 pt-2 border-t border-slate-100">
+                  <p class="flex justify-between"><span>CGST (50%):</span> <b id="reportCgst" class="text-slate-700">₹0.00</b></p>
+                  <p class="flex justify-between"><span>SGST (50%):</span> <b id="reportSgst" class="text-slate-700">₹0.00</b></p>
+                </div>
+              </div>
+
+              <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Realized Sales (Paid)</p>
+                <p class="text-2xl font-black text-emerald-600" id="reportRealizedSales">₹0.00</p>
+                <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Fully settled and reconciled</p>
+              </div>
+
+              <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Outstanding Receivables</p>
+                <p class="text-2xl font-black text-amber-600" id="reportOutstanding">₹0.00</p>
+                <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Pending & Overdue invoices</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SETTINGS TAB -->
+          <div id="userSectionSettings" class="hidden space-y-6">
+            <div>
+              <h2 class="text-xl font-black text-slate-900">Business Settings & Invoice Preferences</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Customize your business brand, bank accounts, UPI, and tax defaults</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 max-w-4xl">
+              <div>
+                <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-3">1. Seller / Business Profile</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Business / Company Name</label>
+                    <input type="text" id="setBusinessName" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setCategory')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Business Category</label>
+                    <input type="text" id="setCategory" placeholder="e.g. Broadband, OTT, Retail" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setGstin')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
+                    <input type="text" id="setGstin" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setEmail')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Official Email Address</label>
+                    <input type="email" id="setEmail" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setPhone')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+                    <input type="text" id="setPhone" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setWebsite')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Website URL (Optional)</label>
+                    <input type="text" id="setWebsite" placeholder="https://..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setLogoUrl')" />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="font-bold text-slate-700 block mb-1">Registered Business Address</label>
+                    <textarea id="setAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-16 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setUpiId')"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-100">
+                <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-3">2. Bank & UPI Payment Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">UPI ID (VPA)</label>
+                    <input type="text" id="setUpiId" placeholder="business@upi" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setBankName')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Bank Name</label>
+                    <input type="text" id="setBankName" placeholder="HDFC Bank" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setBankAccount')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Bank Account Number</label>
+                    <input type="text" id="setBankAccount" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setBankIfsc')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Bank IFSC Code</label>
+                    <input type="text" id="setBankIfsc" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setInvPrefix')" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-100">
+                <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-3">3. Invoice Defaults & Terms</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Default Invoice Prefix</label>
+                    <input type="text" id="setInvPrefix" value="INV" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono uppercase focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setCurrency')" />
+                  </div>
+                  <div>
+                    <label class="font-bold text-slate-700 block mb-1">Currency Symbol</label>
+                    <select id="setCurrency" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setTerms')">
+                      <option value="₹">INR (₹)</option>
+                      <option value="$">USD ($)</option>
+                      <option value="€">EUR (€)</option>
+                      <option value="AED">AED (د.إ)</option>
+                    </select>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="font-bold text-slate-700 block mb-1">Default Terms & Conditions</label>
+                    <textarea id="setTerms" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-16 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'setNotes')"></textarea>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="font-bold text-slate-700 block mb-1">Default Notes</label>
+                    <textarea id="setNotes" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onkeydown="handleEnterNavigation(event, 'btnSaveAllSettings')"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="saveAllUserSettings()" id="btnSaveAllSettings" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition">
+                Save All Business Settings
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: INVOICE GENERATOR -->
+        <section id="invoiceEditorView" class="hidden max-w-4xl mx-auto space-y-6">
+          <div class="no-print flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <button onclick="closeInvoiceEditor()" class="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 font-bold text-xs transition">
+              <i class="ph ph-arrow-left text-base"></i> Back to Dashboard
+            </button>
+            <div class="flex items-center gap-2">
+              <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 transition">
+                <i class="ph ph-printer"></i> Print / PDF
+              </button>
+              <button onclick="saveAndFinalizeInvoice()" id="btnSaveInvoice" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow-sm transition">
+                Save Invoice
+              </button>
+            </div>
+          </div>
+
+          <!-- Printable Canvas -->
+          <div class="print-area bg-white text-slate-900 rounded-3xl p-8 md:p-12 shadow-xl border border-slate-200 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-6 border-b border-slate-200 pb-6">
+              <div class="space-y-1">
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight" id="invRenderBusinessName">Business Name</h2>
+                <p class="text-xs text-slate-500 max-w-sm" id="invRenderAddress">Registered Address</p>
+                <div class="text-xs text-slate-600 space-y-0.5 pt-1">
+                  <p>Email: <span id="invRenderEmail" class="font-medium">contact@business.com</span></p>
+                  <p>Phone: <span id="invRenderPhone" class="font-medium">+91 0000000000</span></p>
+                  <p class="font-bold text-indigo-700">GSTIN: <span id="invRenderGstin" class="font-mono uppercase">--</span></p>
+                  <p id="invRenderWebsiteRow" class="text-indigo-600 font-medium hidden">Website: <span id="invRenderWebsite"></span></p>
+                </div>
+              </div>
+
+              <div class="text-right space-y-1.5">
+                <h1 class="text-3xl font-black uppercase tracking-tight text-slate-900">Tax Invoice</h1>
+                <div class="flex items-center justify-end gap-2 text-xs">
+                  <span class="font-bold text-slate-500">Invoice #:</span>
+                  <input type="text" id="invEditNumber" value="INV-001" class="font-bold border-b border-dashed border-slate-400 focus:outline-none text-right w-28" onkeydown="handleEnterNavigation(event, 'invEditDate')" />
+                </div>
+                <div class="flex items-center justify-end gap-2 text-xs">
+                  <span class="font-bold text-slate-500">Date:</span>
+                  <input type="date" id="invEditDate" class="border-b border-dashed border-slate-400 focus:outline-none text-right" onkeydown="handleEnterNavigation(event, 'invEditDueDate')" />
+                </div>
+                <div class="flex items-center justify-end gap-2 text-xs">
+                  <span class="font-bold text-slate-500">Due Date:</span>
+                  <input type="date" id="invEditDueDate" class="border-b border-dashed border-slate-400 focus:outline-none text-right" onkeydown="handleEnterNavigation(event, 'invEditStatus')" />
+                </div>
+                <div class="flex items-center justify-end gap-2 text-xs">
+                  <span class="font-bold text-slate-500">Status:</span>
+                  <select id="invEditStatus" class="border-b border-dashed border-slate-400 focus:outline-none text-right font-bold text-xs bg-transparent" onkeydown="handleEnterNavigation(event, 'invEditPaymentTerms')">
+                    <option value="PAID">PAID</option>
+                    <option value="PENDING" selected>PENDING</option>
+                    <option value="OVERDUE">OVERDUE</option>
+                  </select>
+                </div>
+                <div class="flex items-center justify-end gap-2 text-xs">
+                  <span class="font-bold text-slate-500">Terms:</span>
+                  <input type="text" id="invEditPaymentTerms" value="Due on Receipt" class="border-b border-dashed border-slate-400 focus:outline-none text-right w-28" onkeydown="handleEnterNavigation(event, 'invCustName')" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs border-b border-slate-200 pb-6">
+              <div class="space-y-1">
+                <p class="font-bold uppercase tracking-wider text-slate-400">Billed To (Customer Details)</p>
+                <input type="text" id="invCustName" placeholder="Customer / Contact Name" value="Client Enterprise Ltd" class="w-full font-bold text-sm text-slate-900 border-b border-slate-300 focus:outline-none py-0.5" onkeydown="handleEnterNavigation(event, 'invCustCompany')" />
+                <input type="text" id="invCustCompany" placeholder="Company Name (Optional)" value="Enterprise Networks Inc" class="w-full text-slate-700 border-b border-slate-300 focus:outline-none py-0.5" onkeydown="handleEnterNavigation(event, 'invCustEmail')" />
+                <input type="text" id="invCustEmail" placeholder="Email Address" value="accounts@client.com" class="w-full text-slate-600 border-b border-slate-300 focus:outline-none py-0.5" onkeydown="handleEnterNavigation(event, 'invCustPhone')" />
+                <input type="text" id="invCustPhone" placeholder="Phone Number" value="+91 9876543210" class="w-full text-slate-600 border-b border-slate-300 focus:outline-none py-0.5" onkeydown="handleEnterNavigation(event, 'invCustGstin')" />
+                <input type="text" id="invCustGstin" placeholder="Customer GSTIN (if applicable)" value="36ABCDE1234F1Z5" class="w-full text-indigo-700 font-mono uppercase border-b border-slate-300 focus:outline-none py-0.5" onkeydown="handleEnterNavigation(event, 'invCustBillingAddress')" />
+                <textarea id="invCustBillingAddress" placeholder="Billing Address" class="w-full text-slate-600 border border-slate-200 rounded p-1.5 resize-none h-12 mt-1" onkeydown="handleEnterNavigation(event, 'invCustShippingAddress')">100 Tech Park, Phase 1, Hyderabad 500081</textarea>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-bold uppercase tracking-wider text-slate-400">Shipping Address (Optional)</p>
+                <textarea id="invCustShippingAddress" placeholder="Same as billing address or specify delivery address" class="w-full text-slate-600 border border-slate-200 rounded p-1.5 resize-none h-24">Same as billing address</textarea>
+              </div>
+            </div>
+
+            <!-- Items Table -->
+            <div>
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-700 font-bold border-y border-slate-200 uppercase tracking-wider">
+                  <tr>
+                    <th class="py-2.5 px-3">Item / Description</th>
+                    <th class="py-2.5 px-2 w-14 text-right">Qty</th>
+                    <th class="py-2.5 px-2 w-20 text-right">Price</th>
+                    <th class="py-2.5 px-2 w-16 text-right">Disc</th>
+                    <th class="py-2.5 px-2 w-16 text-right">Tax (%)</th>
+                    <th class="py-2.5 px-3 w-28 text-right">Total</th>
+                    <th class="py-2.5 w-8 text-center no-print"></th>
+                  </tr>
+                </thead>
+                <tbody id="invoiceLineItemsTbody" class="divide-y divide-slate-200">
+                </tbody>
+              </table>
+              <button onclick="addInvoiceRow()" class="no-print mt-2 text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                + Add Product / Service Row
+              </button>
+            </div>
+
+            <!-- Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200 text-xs">
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                <p class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Payment Information</p>
+                <p>Payment Method: <span id="invRenderPaymentMethod" class="font-bold text-slate-800">Bank Transfer / UPI</span></p>
+                <p>UPI ID: <span id="invRenderUpiId" class="font-mono font-bold text-indigo-700">--</span></p>
+                <p>Bank: <span id="invRenderBankName" class="font-medium">--</span></p>
+                <p>Account No: <span id="invRenderAccountNo" class="font-mono font-medium">--</span></p>
+                <p>IFSC: <span id="invRenderIfsc" class="font-mono uppercase font-medium">--</span></p>
+              </div>
+
+              <div class="space-y-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="flex justify-between text-slate-600">
+                  <span>Subtotal:</span>
+                  <span id="invCalcSubtotal" class="font-bold text-slate-900">₹0.00</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Total Discount:</span>
+                  <span id="invCalcDiscount" class="font-medium text-red-500">-₹0.00</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Taxable Amount:</span>
+                  <span id="invCalcTaxable" class="font-bold text-slate-900">₹0.00</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>CGST:</span>
+                  <span id="invCalcCgst" class="font-medium text-slate-800">₹0.00</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>SGST / IGST:</span>
+                  <span id="invCalcSgst" class="font-medium text-slate-800">₹0.00</span>
+                </div>
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>Shipping / Other Charges:</span>
+                  <input type="number" id="invCalcShipping" value="0" min="0" oninput="renderInvoiceRows()" class="w-20 text-right border border-slate-300 rounded px-1 py-0.5" onkeydown="handleEnterNavigation(event, 'btnSaveInvoice')" />
+                </div>
+                <div class="border-t border-slate-300 pt-2 flex justify-between text-sm font-black text-slate-900">
+                  <span>Grand Total:</span>
+                  <span id="invCalcGrandTotal" class="text-indigo-600 font-black text-base">₹0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes & Signatures -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200 text-xs">
+              <div class="space-y-3">
+                <div>
+                  <p class="font-bold uppercase tracking-wider text-slate-400">Notes & Instructions</p>
+                  <p id="invRenderNotes" class="text-slate-600 whitespace-pre-line mt-1">Thank you for your business.</p>
+                </div>
+                <div>
+                  <p class="font-bold uppercase tracking-wider text-slate-400">Terms & Conditions</p>
+                  <p id="invRenderTerms" class="text-slate-600 whitespace-pre-line mt-1">Warranty valid as per SLA.</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-between items-end space-y-8 pt-4">
+                <div class="w-48 text-center">
+                  <div class="border-b border-slate-400 h-12 flex items-end justify-center text-[10px] text-slate-400 italic">
+                    Digital / Customer Signature
+                  </div>
+                  <p class="text-[10px] font-bold text-slate-500 uppercase mt-1">Customer Signature</p>
+                </div>
+
+                <div class="w-48 text-center">
+                  <div class="border-b border-slate-400 h-12 flex items-end justify-center font-bold text-slate-800 text-xs">
+                    Authorized Signatory
+                  </div>
+                  <p class="text-[10px] font-bold text-slate-500 uppercase mt-1">Authorized Signature</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== 3. FLOATING WHATSAPP & CHATBOT WIDGETS ==================== -->
+  
+  <!-- WhatsApp Direct Floating Button -->
+  <a href="https://api.whatsapp.com/send?phone=917382680200&text=Hello%20OTTLoop%20Support,%20I%20need%20assistance%20with%20my%20Billing%20Portal." target="_blank" class="no-print fixed bottom-6 right-20 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105" title="Chat on WhatsApp / Call: 7382680200">
+    <i class="ph ph-whatsapp-logo text-2xl"></i>
+  </a>
+
+  <!-- Chatbot Floating Launcher -->
+  <button onclick="toggleChatbot()" class="no-print fixed bottom-6 right-6 z-40 bg-indigo-600 hover:bg-indigo-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105" title="AI Billing Support Assistant">
+    <i class="ph ph-chat-centered-dots text-2xl" id="chatbotToggleIcon"></i>
+  </button>
+
+  <!-- Interactive AI Assistant Chatbot Box -->
+  <div id="aiChatbotWidget" class="hidden no-print fixed bottom-20 right-6 z-50 w-80 sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-xs">
+    <!-- Header -->
+    <div class="bg-indigo-600 p-4 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-black">
+          <i class="ph ph-robot text-lg"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm leading-tight">OTTLoop Billing Assistant</h4>
+          <p class="text-[10px] text-indigo-200">Helpline: +91 7382680200</p>
+        </div>
+      </div>
+      <button onclick="toggleChatbot()" class="text-white/80 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+    </div>
+
+    <!-- Chat Messages Feed -->
+    <div id="chatbotMessages" class="flex-1 p-4 space-y-3 overflow-y-auto max-h-72 bg-slate-50">
+      <div class="flex items-start gap-2">
+        <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">AI</div>
+        <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-[11px] leading-relaxed">
+          Hello! 👋 Welcome to OTTLoop Bill Service. How can I help you today? You can ask about:
+          <div class="mt-2 flex flex-wrap gap-1">
+            <button onclick="sendQuickPrompt('What are the subscription plans?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Pricing Plans</button>
+            <button onclick="sendQuickPrompt('How to create an invoice?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Create Invoice</button>
+            <button onclick="sendQuickPrompt('How to renew my plan?')" class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 p-1 rounded font-medium text-[10px]">Renewal Help</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+      <input type="text" id="chatbotInput" placeholder="Ask doubt (e.g. GST, plans, print)..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="handleChatbotEnter(event)" />
+      <button onclick="handleChatbotSend()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl transition">
+        <i class="ph ph-paper-plane-right font-bold text-sm"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 4. 1-DAY PRIOR EXPIRY ALERT & WHATSAPP RENEWAL MODAL ==================== -->
+  <div id="renewalPlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-6 md:p-8 space-y-5 text-xs shadow-2xl">
+      <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+        <div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-300">SUBSCRIPTION RENEWAL</span>
+          <h3 class="text-base font-black text-slate-900 mt-1">Select Your Subscription Plan</h3>
+          <p class="text-[11px] text-slate-500">Choose a package below to renew instantly via WhatsApp (+91 7382680200)</p>
+        </div>
+        <button onclick="closeRenewalModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-lg"></i></button>
+      </div>
+
+      <!-- Pricing Plans Radio Matrix -->
+      <div class="space-y-2">
+        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="renewalPlanOption" value="Free Trial (7 Days - ₹19)" class="text-indigo-600 focus:ring-indigo-500" />
+            <div>
+              <p class="font-black text-slate-900">🆓 Free Trial</p>
+              <p class="text-[10px] text-slate-500">7 Days Instant Trial Access</p>
+            </div>
+          </div>
+          <span class="font-black text-sm text-indigo-600">₹19</span>
+        </label>
+
+        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="renewalPlanOption" value="Monthly Plan (1 Month - ₹99)" checked class="text-indigo-600 focus:ring-indigo-500" />
+            <div>
+              <p class="font-black text-slate-900">📅 Monthly Subscription</p>
+              <p class="text-[10px] text-slate-500">1 Month (30 Days Validity)</p>
+            </div>
+          </div>
+          <span class="font-black text-sm text-indigo-600">₹99</span>
+        </label>
+
+        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="renewalPlanOption" value="Quarterly Plan (3 Months - ₹249)" class="text-indigo-600 focus:ring-indigo-500" />
+            <div>
+              <p class="font-black text-slate-900">📦 Quarterly Pack</p>
+              <p class="text-[10px] text-slate-500">3 Months (90 Days Validity)</p>
+            </div>
+          </div>
+          <span class="font-black text-sm text-indigo-600">₹249</span>
+        </label>
+
+        <label class="flex items-center justify-between p-3 border border-slate-200 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="renewalPlanOption" value="Half-Yearly Plan (6 Months - ₹449)" class="text-indigo-600 focus:ring-indigo-500" />
+            <div>
+              <p class="font-black text-slate-900">🚀 Half-Yearly Package</p>
+              <p class="text-[10px] text-slate-500">6 Months (180 Days Validity)</p>
+            </div>
+          </div>
+          <span class="font-black text-sm text-indigo-600">₹449</span>
+        </label>
+
+        <label class="flex items-center justify-between p-3 border-2 border-indigo-500 rounded-2xl cursor-pointer bg-indigo-50/40 transition">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="renewalPlanOption" value="Yearly Enterprise (1 Year - ₹799)" class="text-indigo-600 focus:ring-indigo-500" />
+            <div>
+              <p class="font-black text-slate-900 flex items-center gap-1">👑 Yearly Best Value <span class="bg-indigo-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">BEST</span></p>
+              <p class="text-[10px] text-slate-500">1 Full Year (365 Days Unrestricted)</p>
+            </div>
+          </div>
+          <span class="font-black text-sm text-indigo-600">₹799</span>
+        </label>
+      </div>
+
+      <!-- Action Button (Routes straight to WhatsApp with details) -->
+      <button onclick="submitRenewalToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+        <i class="ph ph-whatsapp-logo text-lg"></i> Proceed & Renew on WhatsApp (+91 7382680200)
+      </button>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm text-slate-900">Create & Assign Plan Validity</h3>
+        <button onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
+          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccCategory')" />
+        </div>
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
+          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccUsername')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Username</label>
+          <div class="flex items-center">
+            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPhone')" />
+            <span class="bg-slate-100 text-slate-600 px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300">@ottloop.com</span>
+          </div>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+          <input type="text" id="newAccPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPassword')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Login Password</label>
+          <input type="text" id="newAccPassword" value="user123" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccGst')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
+          <input type="text" id="newAccGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPlanPreset')" />
+        </div>
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Select Subscription Plan Validity</label>
+          <select id="newAccPlanPreset" onchange="onPlanPresetChange('newAccPlanPreset', 'newAccValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
+            <option value="30">📅 Monthly (1 Month - ₹99)</option>
+            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
+            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
+            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
+            <option value="custom">Modify Custom Days...</option>
+          </select>
+        </div>
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Custom / Allocated Days</label>
+          <input type="number" id="newAccValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewAccount')" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
+        <button onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Create & Authorize Plan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="approvePlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-sm text-slate-900">Authorize Plan & Set Validity</h3>
+          <p class="text-[11px] text-slate-500" id="approveModalTargetUser">User: --</p>
+        </div>
+        <button onclick="closeApprovePlanModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <input type="hidden" id="approveTargetUserId" />
+
+      <div class="space-y-3">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Select Approval Plan</label>
+          <select id="approvePlanPreset" onchange="onPlanPresetChange('approvePlanPreset', 'approveValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
+            <option value="30">📅 Monthly (1 Month - ₹99)</option>
+            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
+            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
+            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
+            <option value="custom">Modify Custom Days...</option>
+          </select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Days to Assign / Add</label>
+          <input type="number" id="approveValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeApprovePlanModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
+        <button onclick="confirmApprovePlan()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5">
+          <i class="ph ph-check-bold"></i> Confirm & Activate Plan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
+        <button onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
+          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewCompany')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
+          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewGst')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
+          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewEmail')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
+          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewPhone')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewAddress')" />
+        </div>
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
+          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewCustomer')"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
+        <button onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm text-slate-900">Add Product / Service</h3>
+        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
+          <input type="text" id="prodNewName" placeholder="e.g. Website Design" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
+          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewTax')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
+          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewHsn')">
+            <option value="0">0% Non-Taxable</option>
+            <option value="5">5% GST</option>
+            <option value="12">12% GST</option>
+            <option value="18" selected>18% GST</option>
+            <option value="28">28% GST</option>
+          </select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
+          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewStock')" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
+          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewProduct')" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Cancel</button>
+        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Save Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
+  <script>
+    const SUPER_ADMIN_USER = 'billottloopstore';
+    const SUPER_ADMIN_PASS = '1604130028As..@@';
+    const WHATSAPP_HELPLINE = '917382680200';
+
+    let currentRole = null;
+    let loggedInUserId = null;
+    let currentReviewUserId = null;
+
+    let tenantUsers = [
+      {
+        id: 'usr_1',
+        username: 'skyline',
+        email: 'skyline@ottloop.com',
+        password: 'user123',
+        serviceName: 'Skyline Fiber & OTT Networks',
+        category: 'ISP & Broadband Services',
+        logoUrl: '',
+        gstNumber: '36AABCS1429B1ZX',
+        phone: '+91 9848022338',
+        website: 'https://skylinebroadband.in',
+        address: 'Plot 42, Hitech City Main Rd, Madhapur, Hyderabad, Telangana 500081',
+        currency: '₹',
+        paymentMethod: 'Bank Wire / UPI',
+        upiId: 'skyline@ybl',
+        bankName: 'HDFC Bank Ltd',
+        accountNumber: '50200012345678',
+        ifsc: 'HDFC0001234',
+        invoicePrefix: 'SKY',
+        terms: '1. Payment due within 14 days.\n2. Late payments incur a 1.5% monthly fee.',
+        notes: 'Thank you for choosing Skyline Fiber Networks.',
+        planPreset: '365',
+        status: 'ACTIVE',
+        validUntil: '2027-08-30',
+        customers: [
+          { id: 'c_1', name: 'Global Infotech Inc', company: 'Global Infotech', email: 'accounts@global.com', phone: '+91 9988776655', gstin: '36XYZ1234567', address: 'Tech Park, Gachibowli, Hyderabad' }
+        ],
+        products: [
+          { id: 'p_1', name: 'Website Design & Dev', hsn: '998314', price: 10000, taxRate: 18, stock: 'N/A' },
+          { id: 'p_2', name: '4K Ultra OTT 12-App Bundle', hsn: '9984', price: 499, taxRate: 18, stock: 'Unlimited' }
+        ],
+        invoices: []
+      }
+    ];
+
+    let activeInvoiceLines = [];
+
+    function getRemainingDays(dateStr) {
+      if (!dateStr) return -999;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(dateStr);
+      target.setHours(0, 0, 0, 0);
+      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    }
+
+    function onPlanPresetChange(selectId, inputId) {
+      const val = document.getElementById(selectId).value;
+      if (val !== 'custom') {
+        document.getElementById(inputId).value = val;
+      }
+    }
+
+    function handleEnterNavigation(event, nextElementId) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const nextEl = document.getElementById(nextElementId);
+        if (nextEl) {
+          if (nextEl.tagName === 'BUTTON') {
+            nextEl.click();
+          } else {
+            nextEl.focus();
+            if (nextEl.select) nextEl.select();
+          }
+        }
+      }
+    }
+
+    function init() {
+      const savedDB = localStorage.getItem('ottloop_enterprise_db');
+      if (savedDB) {
+        try { tenantUsers = JSON.parse(savedDB); } catch (e) {}
+      }
+
+      lockApp();
+    }
+
+    function lockApp() {
+      document.getElementById('authScreen').classList.remove('hidden');
+      document.getElementById('mainAppContainer').classList.add('hidden');
+      document.getElementById('mainAppContainer').classList.remove('flex');
+    }
+
+    function unlockApp(role) {
+      document.getElementById('authScreen').classList.add('hidden');
+      document.getElementById('mainAppContainer').classList.remove('hidden');
+      document.getElementById('mainAppContainer').classList.add('flex');
+      switchRole(role);
+    }
+
+    function saveDB() {
+      localStorage.setItem('ottloop_enterprise_db', JSON.stringify(tenantUsers));
+    }
+
+    // -------------------------------------------------------------
+    // AUTH MODAL LOGIC
+    // -------------------------------------------------------------
+    function switchAuthMode(mode) {
+      hideAuthAlert();
+      const loginForm = document.getElementById('formLoginContainer');
+      const signupForm = document.getElementById('formSignupContainer');
+      const tabLogin = document.getElementById('tabBtnAuthLogin');
+      const tabSignup = document.getElementById('tabBtnAuthSignup');
+      const title = document.getElementById('authHeaderTitle');
+      const subtitle = document.getElementById('authHeaderSubtitle');
+
+      if (mode === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        tabLogin.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition';
+        tabSignup.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition';
+        title.innerText = 'OTTLoop Bill Portal';
+        subtitle.innerText = 'Sign in to your @ottloop.com account';
+        setTimeout(() => document.getElementById('loginUsername').focus(), 100);
+      } else {
+        signupForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        tabSignup.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition';
+        tabLogin.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition';
+        title.innerText = 'Create Business Account';
+        subtitle.innerText = 'Get access with your @ottloop.com username';
+        setTimeout(() => document.getElementById('signupServiceName').focus(), 100);
+      }
+    }
+
+    function showAuthAlert(msg, isSuccess = false) {
+      const box = document.getElementById('authAlertBox');
+      const txt = document.getElementById('authAlertText');
+      const icon = document.getElementById('authAlertIcon');
+
+      txt.innerText = msg;
+      if (isSuccess) {
+        box.className = 'text-xs font-semibold p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-center gap-2';
+        icon.className = 'ph ph-check-circle text-base flex-shrink-0 text-emerald-600';
+      } else {
+        box.className = 'text-xs font-semibold p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl flex items-center gap-2';
+        icon.className = 'ph ph-warning-circle text-base flex-shrink-0 text-red-600';
+      }
+      box.classList.remove('hidden');
+    }
+
+    function hideAuthAlert() {
+      document.getElementById('authAlertBox').classList.add('hidden');
+    }
+
+    function handleLoginSubmit() {
+      hideAuthAlert();
+      const rawUser = document.getElementById('loginUsername').value.trim().toLowerCase().replace(/@ottloop\.com$/i, '');
+      const pass = document.getElementById('loginPassword').value.trim();
+
+      if (!rawUser || !pass) {
+        showAuthAlert('Please enter both your username and password.');
+        return;
+      }
+
+      if (rawUser === SUPER_ADMIN_USER.toLowerCase() && pass === SUPER_ADMIN_PASS) {
+        unlockApp('admin');
+        return;
+      }
+
+      const fullEmail = `${rawUser}@ottloop.com`;
+      const matchUser = tenantUsers.find(u => (u.username.toLowerCase() === rawUser || u.email.toLowerCase() === fullEmail) && u.password === pass);
+
+      if (matchUser) {
+        if (matchUser.status === 'PENDING') {
+          showAuthAlert('⏳ Account registration is awaiting Super Admin plan approval.');
+          return;
+        }
+        loggedInUserId = matchUser.id;
+        unlockApp('user');
+        return;
+      }
+
+      showAuthAlert('❌ Invalid username or password! Please try again.');
+    }
+
+    function handleSignupSubmit() {
+      hideAuthAlert();
+      const sName = document.getElementById('signupServiceName').value.trim();
+      const sCategory = document.getElementById('signupCategory').value;
+      let rawUser = document.getElementById('signupUsername').value.trim().toLowerCase().replace(/@ottloop\.com$/i, '');
+      const sPhone = document.getElementById('signupPhone').value.trim();
+      const sPass = document.getElementById('signupPassword').value.trim();
+      const sGst = document.getElementById('signupGst').value.trim();
+
+      if (!sName || !rawUser || !sPass) {
+        showAuthAlert('Please complete all required fields (Company Name, Username & Password).');
+        return;
+      }
+
+      const cleanEmail = `${rawUser}@ottloop.com`;
+      const userExists = tenantUsers.some(u => u.username === rawUser || u.email === cleanEmail);
+      if (userExists) {
+        showAuthAlert(`The username "${rawUser}" is already taken. Please choose another.`);
+        return;
+      }
+
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        username: rawUser,
+        email: cleanEmail,
+        password: sPass,
+        serviceName: sName,
+        category: sCategory,
+        logoUrl: '',
+        gstNumber: sGst || 'UNREGISTERED',
+        phone: sPhone || '+91 9800000000',
+        website: '',
+        address: 'Registered Business Address',
+        currency: '₹',
+        paymentMethod: 'Bank Wire / UPI',
+        upiId: '',
+        bankName: '',
+        accountNumber: '',
+        ifsc: '',
+        invoicePrefix: rawUser.slice(0, 3).toUpperCase(),
+        terms: 'Payment due on receipt.',
+        notes: 'Thank you for your business.',
+        planPreset: '30',
+        status: 'PENDING',
+        validUntil: '',
+        customers: [],
+        products: [
+          { id: 'p_1', name: 'Standard Service Pack 1', hsn: '9984', price: 1000, taxRate: 18, stock: 'Unlimited' }
+        ],
+        invoices: []
+      };
+
+      tenantUsers.unshift(newUser);
+      saveDB();
+
+      showAuthAlert('✅ Request submitted! Super Admin will assign your validity plan shortly.', true);
+      setTimeout(() => {
+        document.getElementById('signupServiceName').value = '';
+        document.getElementById('signupUsername').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupPhone').value = '';
+        document.getElementById('signupGst').value = '';
+        switchAuthMode('login');
+      }, 2500);
+    }
+
+    function logoutToLoginScreen() {
+      document.getElementById('loginUsername').value = '';
+      document.getElementById('loginPassword').value = '';
+      hideAuthAlert();
+      switchAuthMode('login');
+      lockApp();
+    }
+
+    // -------------------------------------------------------------
+    // ROLE DISPATCHER & 1-DAY PRIOR EXPIRY POPUP TRIGGER
+    // -------------------------------------------------------------
+    function switchRole(role) {
+      const adminSec = document.getElementById('adminView');
+      const userSec = document.getElementById('userView');
+      const invSec = document.getElementById('invoiceEditorView');
+      const navContainer = document.getElementById('sidebarNavigation');
+      const roleBadge = document.getElementById('currentRoleDisplay');
+      const switcherContainer = document.getElementById('roleSwitcherButtons');
+      const btnAdmin = document.getElementById('btnRoleAdmin');
+      const btnUser = document.getElementById('btnRoleUser');
+      const userPlanCard = document.getElementById('userValiditySidebarCard');
+
+      invSec.classList.add('hidden');
+
+      if (role === 'admin') {
+        currentRole = 'SUPER_ADMIN';
+        loggedInUserId = 'admin';
+
+        roleBadge.innerText = 'SUPER_ADMIN';
+        roleBadge.className = 'bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold';
+        switcherContainer.classList.remove('hidden');
+        switcherContainer.classList.add('flex');
+        btnAdmin.className = 'px-3 py-1 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition';
+        btnUser.className = 'px-3 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition';
+
+        adminSec.classList.remove('hidden');
+        userSec.classList.add('hidden');
+        userPlanCard.classList.add('hidden');
+
+        document.getElementById('sidebarOrgName').innerText = 'OTTLoop Master';
+        document.getElementById('sidebarSubText').innerText = 'Super Admin Control';
+        document.getElementById('sessionUserName').innerText = 'Super Admin';
+        document.getElementById('sessionUserEmail').innerText = `${SUPER_ADMIN_USER}@ottloop.com`;
+        document.getElementById('userBadgeAvatar').innerText = 'SA';
+
+        navContainer.innerHTML = `
+          <button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100">
+            <i class="ph ph-users-three text-lg"></i> Client Accounts & Approvals
+          </button>
+        `;
+
+        renderAdminUsersTable();
+      } else {
+        currentRole = 'CLIENT_USER';
+        const activeUser = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+        
+        roleBadge.innerText = `BUSINESS (${activeUser.serviceName.slice(0, 15)}...)`;
+        roleBadge.className = 'bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono font-semibold';
+        switcherContainer.classList.add('hidden');
+
+        adminSec.classList.add('hidden');
+        userSec.classList.remove('hidden');
+        userPlanCard.classList.remove('hidden');
+
+        document.getElementById('sidebarOrgName').innerText = activeUser.serviceName;
+        document.getElementById('sidebarSubText').innerText = `GST: ${activeUser.gstNumber || 'UNREGISTERED'}`;
+        document.getElementById('sessionUserName').innerText = activeUser.serviceName;
+        document.getElementById('sessionUserEmail').innerText = activeUser.email;
+        document.getElementById('userBadgeAvatar').innerText = activeUser.serviceName.slice(0, 2).toUpperCase();
+
+        const daysLeft = getRemainingDays(activeUser.validUntil);
+        const isExpired = (daysLeft <= 0 || activeUser.status !== 'ACTIVE');
+
+        const planBadge = document.getElementById('userPlanBadge');
+        const daysLeftText = document.getElementById('userPlanDaysLeftText');
+        const expiryDateText = document.getElementById('userPlanExpiryDateText');
+        const renewalBanner = document.getElementById('renewalRequiredBanner');
+
+        const btnDashCreateInv = document.getElementById('btnUserDashCreateInv');
+        const btnInvoicesCreateInv = document.getElementById('btnUserInvoicesCreateInv');
+
+        if (isExpired) {
+          planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-700 border border-red-300';
+          planBadge.innerText = 'EXPIRED (RENEWAL REQUIRED)';
+          daysLeftText.innerText = '0 Days Left';
+          daysLeftText.className = 'text-xs font-black text-red-600';
+          expiryDateText.innerText = `Expired on: ${activeUser.validUntil || 'N/A'}`;
+          renewalBanner.classList.remove('hidden');
+
+          if (btnDashCreateInv) {
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition';
+            btnDashCreateInv.innerHTML = `<i class="ph ph-lock-key"></i> Renewal Required to Create Invoice`;
+          }
+          if (btnInvoicesCreateInv) {
+            btnInvoicesCreateInv.className = 'bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow';
+            btnInvoicesCreateInv.innerHTML = `<i class="ph ph-lock-key"></i> Renewal Required`;
+          }
+
+          // Trigger Renewal Modal Automatically on Expiry
+          setTimeout(() => openRenewalModal(), 600);
+        } else {
+          planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200';
+          planBadge.innerText = 'ACTIVE PLAN';
+          daysLeftText.innerText = `${daysLeft} Days Remaining`;
+          daysLeftText.className = 'text-xs font-black text-slate-800';
+          expiryDateText.innerText = `Valid till: ${activeUser.validUntil}`;
+          renewalBanner.classList.add('hidden');
+
+          if (btnDashCreateInv) {
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition';
+            btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
+          }
+          if (btnInvoicesCreateInv) {
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100';
+            btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
+          }
+
+          // ⚠️ 1-DAY PRIOR EXPIRY POPUP TRIGGER (Automatic Alert for 1 day left)
+          if (daysLeft === 1) {
+            setTimeout(() => {
+              alert('⚠️ Notice: Your OTTLoop Billing Subscription expires tomorrow! Please choose your renewal plan to prevent service interruption.');
+              openRenewalModal();
+            }, 800);
+          }
+        }
+
+        navContainer.innerHTML = `
+          <button onclick="switchUserSection('dashboard')" id="navUserDash" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm">
+            <i class="ph ph-squares-four text-lg"></i> Dashboard
+          </button>
+          <button onclick="switchUserSection('invoices')" id="navUserInvoices" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium">
+            <i class="ph ph-receipt text-lg"></i> Invoices
+          </button>
+          <button onclick="switchUserSection('customers')" id="navUserCustomers" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium">
+            <i class="ph ph-users text-lg"></i> Customers
+          </button>
+          <button onclick="switchUserSection('products')" id="navUserProducts" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium">
+            <i class="ph ph-package text-lg"></i> Products / Services
+          </button>
+          <button onclick="switchUserSection('reports')" id="navUserReports" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium">
+            <i class="ph ph-chart-pie-slice text-lg"></i> Reports & GST
+          </button>
+          <button onclick="switchUserSection('settings')" id="navUserSettings" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium">
+            <i class="ph ph-sliders text-lg"></i> Business Settings
+          </button>
+        `;
+
+        switchUserSection('dashboard');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // RENEWAL MODAL & WHATSAPP ROUTING (+91 7382680200)
+    // -------------------------------------------------------------
+    function openRenewalModal() {
+      document.getElementById('renewalPlanModal').classList.remove('hidden');
+    }
+
+    function closeRenewalModal() {
+      document.getElementById('renewalPlanModal').classList.add('hidden');
+    }
+
+    function submitRenewalToWhatsApp() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const selectedPlan = document.querySelector('input[name="renewalPlanOption"]:checked')?.value || 'Monthly Plan (1 Month - ₹99)';
+
+      const messageText = `Hello Admin (OTTLoop Billing),%0A%0AI would like to renew my merchant subscription plan.%0A%0A🏢 *Business Name:* ${encodeURIComponent(user.serviceName)}%0A👤 *Username:* ${encodeURIComponent(user.username)}@ottloop.com%0A📞 *Contact Phone:* ${encodeURIComponent(user.phone || '--')}%0A📦 *Selected Plan:* ${encodeURIComponent(selectedPlan)}%0A%0APlease share the payment confirmation and activate my validity.`;
+
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${messageText}`;
+      window.open(whatsappUrl, '_blank');
+      closeRenewalModal();
+    }
+
+    // -------------------------------------------------------------
+    // AI BILLING ASSISTANT CHATBOT LOGIC
+    // -------------------------------------------------------------
+    function toggleChatbot() {
+      const widget = document.getElementById('aiChatbotWidget');
+      const icon = document.getElementById('chatbotToggleIcon');
+      if (widget.classList.contains('hidden')) {
+        widget.classList.remove('hidden');
+        icon.className = 'ph ph-x text-2xl';
+        setTimeout(() => document.getElementById('chatbotInput').focus(), 100);
+      } else {
+        widget.classList.add('hidden');
+        icon.className = 'ph ph-chat-centered-dots text-2xl';
+      }
+    }
+
+    function handleChatbotEnter(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleChatbotSend();
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chatbotInput').value = promptText;
+      handleChatbotSend();
+    }
+
+    function handleChatbotSend() {
+      const input = document.getElementById('chatbotInput');
+      const query = input.value.trim();
+      if (!query) return;
+
+      appendChatMessage(query, 'user');
+      input.value = '';
+
+      // AI Logic & Knowledge Base Processing
+      setTimeout(() => {
+        const response = generateAIResponse(query);
+        appendChatMessage(response, 'bot');
+      }, 450);
+    }
+
+    function appendChatMessage(text, sender) {
+      const container = document.getElementById('chatbotMessages');
+      const msgDiv = document.createElement('div');
+      
+      if (sender === 'user') {
+        msgDiv.className = 'flex items-start justify-end gap-2';
+        msgDiv.innerHTML = `
+          <div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none text-[11px] max-w-[80%] shadow-sm">
+            ${text}
+          </div>
+        `;
+      } else {
+        msgDiv.className = 'flex items-start gap-2';
+        msgDiv.innerHTML = `
+          <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">AI</div>
+          <div class="bg-white p-2.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-[11px] max-w-[85%] leading-relaxed">
+            ${text}
+          </div>
+        `;
+      }
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function generateAIResponse(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes('plan') || q.includes('price') || q.includes('pricing') || q.includes('cost')) {
+        return `Here are our official subscription packages:<br><br>
+        • 🆓 <b>Free Trial:</b> 7 Days – ₹19<br>
+        • 📅 <b>Monthly:</b> 1 Month – ₹99<br>
+        • 📦 <b>Quarterly:</b> 3 Months – ₹249<br>
+        • 🚀 <b>Half-Yearly:</b> 6 Months – ₹449<br>
+        • 👑 <b>Yearly:</b> 1 Year – ₹799<br><br>
+        <button onclick="openRenewalModal()" class="text-indigo-600 font-bold underline">Click here to Select & Renew on WhatsApp</button>`;
+      }
+
+      if (q.includes('renew') || q.includes('expired') || q.includes('validity') || q.includes('extend')) {
+        return `To renew your plan, click on <b>"Renew Plan"</b> in your sidebar or open the renewal window below. You can send your chosen plan directly to admin WhatsApp at <b>+91 7382680200</b>.<br><br>
+        <button onclick="openRenewalModal()" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold text-[10px]">Open Renewal Plans</button>`;
+      }
+
+      if (q.includes('invoice') || q.includes('bill') || q.includes('create')) {
+        return `To generate an invoice, click on the <b>"+ Create Invoice"</b> button on your dashboard. Enter customer details, select or add your items, discount, GST%, and click <b>"Print / PDF"</b> to save!`;
+      }
+
+      if (q.includes('gst') || q.includes('tax') || q.includes('cgst') || q.includes('sgst')) {
+        return `Our invoicing engine automatically splits GST into <b>CGST (50%)</b> and <b>SGST (50%)</b> based on your product tax slab (0%, 5%, 12%, 18%, 28%). You can also track total GST in the <b>Reports & GST</b> section.`;
+      }
+
+      if (q.includes('contact') || q.includes('call') || q.includes('support') || q.includes('whatsapp') || q.includes('number')) {
+        return `You can reach our Admin & Support team directly via WhatsApp or Call at <b>+91 7382680200</b>. Or click the green WhatsApp icon on the bottom right.`;
+      }
+
+      return `I understand you have a question regarding <b>"${query}"</b>. You can create invoices, manage customers, or renew your subscription through the portal. For personalized assistance, you can also WhatsApp our team at <b>+91 7382680200</b>!`;
+    }
+
+    // -------------------------------------------------------------
+    // SUPER ADMIN FUNCTIONS
+    // -------------------------------------------------------------
+    function renderAdminUsersTable() {
+      const tbody = document.getElementById('adminUsersTableBody');
+      tbody.innerHTML = '';
+
+      let pendingCount = 0;
+      let activeCount = 0;
+      let suspendedCount = 0;
+
+      tenantUsers.forEach(u => {
+        const daysLeft = getRemainingDays(u.validUntil);
+        const isExpired = (daysLeft <= 0 || u.status !== 'ACTIVE');
+
+        if (u.status === 'PENDING') pendingCount++;
+        else if (u.status === 'ACTIVE' && !isExpired) activeCount++;
+        else suspendedCount++;
+
+        let badgeHtml = '';
+        let planLabel = u.planPreset === '7' ? 'Free Trial (7d)' : u.planPreset === '30' ? '1 Month (₹99)' : u.planPreset === '90' ? '3 Months (₹249)' : u.planPreset === '180' ? '6 Months (₹449)' : u.planPreset === '365' ? '12 Months (₹799)' : 'Custom Days';
+
+        let daysLeftBadge = '';
+        if (u.status === 'PENDING') {
+          daysLeftBadge = `<span class="text-slate-400 font-mono italic">Not Set</span>`;
+          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-300 animate-pulse">PENDING APPROVAL</span>`;
+        } else if (isExpired) {
+          daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-red-100 text-red-700 border border-red-300">0 Days (Expired)</span>`;
+          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">EXPIRED</span>`;
+        } else {
+          daysLeftBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
+          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3.5 px-4 font-bold text-slate-900">${u.serviceName}</td>
+          <td class="py-3.5 px-4 text-slate-600 font-medium">${u.category || 'OTT & Broadband'}</td>
+          <td class="py-3.5 px-4 text-slate-600 font-mono">${u.email}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
+          <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">${planLabel}</span></td>
+          <td class="py-3.5 px-4 text-slate-600 font-mono">${u.validUntil || 'Not Assigned'}</td>
+          <td class="py-3.5 px-4">${daysLeftBadge}</td>
+          <td class="py-3.5 px-4">${badgeHtml}</td>
+          <td class="py-3.5 px-4 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              ${u.status === 'ACTIVE' ? `
+                <button onclick="impersonateUser('${u.id}')" title="Login as this User" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-[11px] shadow-sm transition">
+                  Login
+                </button>
+              ` : ''}
+              <button onclick="openApprovePlanModal('${u.id}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs shadow-sm transition flex items-center gap-1">
+                <i class="ph ph-calendar-plus"></i> Plan
+              </button>
+              <button onclick="deleteTenantAccount('${u.id}')" class="text-slate-400 hover:text-red-600 p-1">
+                <i class="ph ph-trash text-base"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('statPendingApprovals').innerText = pendingCount;
+      document.getElementById('statActiveUsers').innerText = activeCount;
+      document.getElementById('statSuspendedUsers').innerText = suspendedCount;
+      document.getElementById('statTotalUsers').innerText = tenantUsers.length;
+    }
+
+    function openApprovePlanModal(userId) {
+      const user = tenantUsers.find(u => u.id === userId);
+      if (!user) return;
+
+      document.getElementById('approveTargetUserId').value = user.id;
+      document.getElementById('approveModalTargetUser').innerText = `Merchant: ${user.serviceName} (${user.email})`;
+      document.getElementById('approvePlanPreset').value = user.planPreset || '365';
+      document.getElementById('approveValidityDays').value = user.planPreset && user.planPreset !== 'custom' ? user.planPreset : '365';
+
+      document.getElementById('approvePlanModal').classList.remove('hidden');
+    }
+
+    function closeApprovePlanModal() {
+      document.getElementById('approvePlanModal').classList.add('hidden');
+    }
+
+    function confirmApprovePlan() {
+      const userId = document.getElementById('approveTargetUserId').value;
+      const user = tenantUsers.find(u => u.id === userId);
+      if (!user) return;
+
+      const preset = document.getElementById('approvePlanPreset').value;
+      const days = parseInt(document.getElementById('approveValidityDays').value) || 30;
+
+      const expDate = new Date();
+      expDate.setDate(expDate.getDate() + days);
+
+      user.planPreset = preset;
+      user.validUntil = expDate.toISOString().split('T')[0];
+      user.status = 'ACTIVE';
+
+      saveDB();
+      closeApprovePlanModal();
+      renderAdminUsersTable();
+      alert(`Plan approved & activated for "${user.serviceName}" with ${days} days validity!`);
+    }
+
+    function openCreateUserModal() {
+      document.getElementById('createUserModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('newAccServiceName').focus(), 100);
+    }
+    function closeCreateUserModal() {
+      document.getElementById('createUserModal').classList.add('hidden');
+    }
+
+    function submitNewUserAccount() {
+      const name = document.getElementById('newAccServiceName').value.trim();
+      const cat = document.getElementById('newAccCategory').value.trim();
+      let rawUser = document.getElementById('newAccUsername').value.trim().toLowerCase().replace(/@ottloop\.com$/i, '');
+      const phone = document.getElementById('newAccPhone').value.trim();
+      const pass = document.getElementById('newAccPassword').value.trim();
+      const gst = document.getElementById('newAccGst').value.trim();
+      const planPreset = document.getElementById('newAccPlanPreset').value;
+      const validityDays = parseInt(document.getElementById('newAccValidityDays').value) || 365;
+
+      if (!name || !rawUser) {
+        alert('Please provide Company Name and Username.');
+        return;
+      }
+
+      const cleanEmail = `${rawUser}@ottloop.com`;
+      const expDate = new Date();
+      expDate.setDate(expDate.getDate() + validityDays);
+
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        username: rawUser,
+        email: cleanEmail,
+        password: pass || 'user123',
+        serviceName: name,
+        category: cat || 'OTT & Broadband Services',
+        logoUrl: '',
+        gstNumber: gst || 'UNREGISTERED',
+        currency: '₹',
+        address: 'Default Registered Office Address',
+        phone: phone || '+91 9800000000',
+        website: '',
+        upiId: '',
+        bankName: '',
+        accountNumber: '',
+        ifsc: '',
+        invoicePrefix: rawUser.slice(0, 3).toUpperCase(),
+        terms: 'Payment due on receipt.',
+        notes: 'Thank you for your business.',
+        planPreset: planPreset,
+        status: 'ACTIVE',
+        validUntil: expDate.toISOString().split('T')[0],
+        customers: [],
+        products: [
+          { id: 'p_1', name: 'Standard Service Pack 1', hsn: '9984', price: 999, taxRate: 18, stock: 'Unlimited' }
+        ],
+        invoices: []
+      };
+
+      tenantUsers.unshift(newUser);
+      saveDB();
+      closeCreateUserModal();
+      renderAdminUsersTable();
+      alert(`Account ${cleanEmail} created with ${validityDays} days validity!`);
+    }
+
+    function impersonateUser(userId) {
+      loggedInUserId = userId;
+      switchRole('user');
+    }
+
+    function deleteTenantAccount(userId) {
+      if (confirm('Are you sure you want to remove this account?')) {
+        tenantUsers = tenantUsers.filter(u => u.id !== userId);
+        saveDB();
+        renderAdminUsersTable();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // USER BUSINESS SECTIONS & STRICT BILL GENERATION LOCK
+    // -------------------------------------------------------------
+    function switchUserSection(sectionId) {
+      const sections = ['Dashboard', 'Invoices', 'Customers', 'Products', 'Reports', 'Settings'];
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+
+      sections.forEach(s => {
+        const secEl = document.getElementById(`userSection${s}`);
+        const navEl = document.getElementById(`navUser${s}`);
+        if (secEl) secEl.classList.add('hidden');
+        if (navEl) {
+          navEl.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium';
+        }
+      });
+
+      const activeCapital = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+      const activeSec = document.getElementById(`userSection${activeCapital}`);
+      const activeNav = document.getElementById(`navUser${activeCapital}`);
+
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm';
+      }
+
+      if (sectionId === 'dashboard') loadDashboardMetrics(user);
+      if (sectionId === 'invoices') renderUserInvoices(user);
+      if (sectionId === 'customers') renderUserCustomers(user);
+      if (sectionId === 'products') renderUserProducts(user);
+      if (sectionId === 'reports') renderUserReports(user);
+      if (sectionId === 'settings') populateSettingsForm(user);
+    }
+
+    function loadDashboardMetrics(user) {
+      document.getElementById('userDashTitle').innerText = `${user.serviceName} Dashboard`;
+      const invs = user.invoices || [];
+      const cur = user.currency || '₹';
+
+      let paidCount = 0, paidAmount = 0;
+      let pendingCount = 0, pendingAmount = 0;
+      let overdueCount = 0, overdueAmount = 0;
+      let totalRev = 0;
+
+      invs.forEach(i => {
+        totalRev += i.grandTotal;
+        if (i.status === 'PAID') {
+          paidCount++;
+          paidAmount += i.grandTotal;
+        } else if (i.status === 'PENDING') {
+          pendingCount++;
+          pendingAmount += i.grandTotal;
+        } else if (i.status === 'OVERDUE') {
+          overdueCount++;
+          overdueAmount += i.grandTotal;
+        }
+      });
+
+      document.getElementById('dashTotalInvoices').innerText = invs.length;
+      document.getElementById('dashPaidInvoices').innerText = paidCount;
+      document.getElementById('dashPaidAmount').innerText = `${cur}${paidAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('dashPendingInvoices').innerText = pendingCount;
+      document.getElementById('dashPendingAmount').innerText = `${cur}${pendingAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('dashOverdueInvoices').innerText = overdueCount;
+      document.getElementById('dashOverdueAmount').innerText = `${cur}${overdueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('dashTotalRevenue').innerText = `${cur}${totalRev.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+
+    function renderUserInvoices(user) {
+      const tbody = document.getElementById('userInvoicesTableBody');
+      tbody.innerHTML = '';
+      const invs = user.invoices || [];
+      const cur = user.currency || '₹';
+
+      document.getElementById('userInvoicesCount').innerText = `${invs.length} Records`;
+
+      if (invs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No invoices generated yet. Click "+ New Invoice" to start.</td></tr>`;
+        return;
+      }
+
+      invs.forEach((inv, index) => {
+        let badgeColor = 'bg-slate-100 text-slate-600';
+        if (inv.status === 'PAID') badgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+        if (inv.status === 'PENDING') badgeColor = 'bg-amber-50 text-amber-700 border border-amber-200';
+        if (inv.status === 'OVERDUE') badgeColor = 'bg-red-50 text-red-700 border border-red-200';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-bold text-indigo-600 font-mono">${inv.number}</td>
+          <td class="py-3 px-4 text-slate-500">${inv.date}</td>
+          <td class="py-3 px-4 text-slate-500">${inv.dueDate || '--'}</td>
+          <td class="py-3 px-4 font-bold text-slate-900">${inv.customerName}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${inv.status}</span>
+          </td>
+          <td class="py-3 px-4 text-right font-bold text-slate-900">${cur}${inv.grandTotal.toFixed(2)}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <button onclick="viewInvoiceDetail(${index})" title="View / Print" class="text-slate-400 hover:text-slate-700 transition"><i class="ph ph-printer"></i></button>
+              <button onclick="duplicateInvoice(${index})" title="Duplicate" class="text-slate-400 hover:text-indigo-600 transition"><i class="ph ph-copy"></i></button>
+              <button onclick="shareInvoiceWhatsApp(${index})" title="Share WhatsApp" class="text-slate-400 hover:text-emerald-600 transition"><i class="ph ph-whatsapp-logo"></i></button>
+              <button onclick="deleteInvoice(${index})" title="Delete" class="text-slate-400 hover:text-red-600 transition"><i class="ph ph-trash"></i></button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function deleteInvoice(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (user && confirm('Are you sure you want to delete this invoice?')) {
+        user.invoices.splice(idx, 1);
+        saveDB();
+        renderUserInvoices(user);
+        loadDashboardMetrics(user);
+      }
+    }
+
+    function duplicateInvoice(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (!user) return;
+      const original = user.invoices[idx];
+      const dup = JSON.parse(JSON.stringify(original));
+      dup.id = 'inv_' + Date.now();
+      dup.number = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
+      dup.date = new Date().toISOString().split('T')[0];
+      dup.status = 'PENDING';
+
+      user.invoices.unshift(dup);
+      saveDB();
+      renderUserInvoices(user);
+      alert(`Invoice duplicated as ${dup.number}`);
+    }
+
+    function shareInvoiceWhatsApp(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const inv = user.invoices[idx];
+      const msg = encodeURIComponent(`Hello ${inv.customerName},\nHere is your invoice ${inv.number} for amount ${user.currency}${inv.grandTotal.toFixed(2)} from ${user.serviceName}.\nDue Date: ${inv.dueDate}.\nThank you!`);
+      const phone = (inv.customerPhone || '').replace(/[^0-9]/g, '');
+      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${msg}`, '_blank');
+    }
+
+    function viewInvoiceDetail(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const inv = user.invoices[idx];
+      loadInvoiceIntoCanvas(user, inv);
+    }
+
+    function renderUserCustomers(user) {
+      const tbody = document.getElementById('userCustomersTableBody');
+      tbody.innerHTML = '';
+      const custs = user.customers || [];
+      const cur = user.currency || '₹';
+
+      if (custs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No customers registered yet. Click "+ Add Customer" above.</td></tr>`;
+        return;
+      }
+
+      custs.forEach((c, idx) => {
+        const outBal = (user.invoices || [])
+          .filter(i => (i.customerName === c.name || i.customerEmail === c.email) && i.status !== 'PAID')
+          .reduce((sum, curr) => sum + curr.grandTotal, 0);
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-bold text-slate-900">${c.name} <span class="text-slate-500 text-xs block font-normal">${c.company || ''}</span></td>
+          <td class="py-3 px-4 text-slate-600 font-mono">${c.email}<span class="block text-slate-500 font-sans text-[11px]">${c.phone}</span></td>
+          <td class="py-3 px-4 text-slate-500 max-w-xs truncate">${c.address || '--'}</td>
+          <td class="py-3 px-4 font-mono text-indigo-600 uppercase font-semibold">${c.gstin || 'N/A'}</td>
+          <td class="py-3 px-4 text-right font-bold ${outBal > 0 ? 'text-amber-600' : 'text-emerald-600'}">${cur}${outBal.toFixed(2)}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="deleteCustomer(${idx})" class="text-slate-400 hover:text-red-600 transition"><i class="ph ph-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAddCustomerModal() {
+      document.getElementById('addCustomerModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('custNewName').focus(), 100);
+    }
+    function closeAddCustomerModal() {
+      document.getElementById('addCustomerModal').classList.add('hidden');
+    }
+    function submitNewCustomer() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const name = document.getElementById('custNewName').value.trim();
+      const company = document.getElementById('custNewCompany').value.trim();
+      const email = document.getElementById('custNewEmail').value.trim();
+      const phone = document.getElementById('custNewPhone').value.trim();
+      const gstin = document.getElementById('custNewGst').value.trim();
+      const address = document.getElementById('custNewAddress').value.trim();
+
+      if (!name || !email) {
+        alert('Please provide at least a customer name and email.');
+        return;
+      }
+
+      if (!user.customers) user.customers = [];
+      user.customers.push({ id: 'c_' + Date.now(), name, company, email, phone, gstin, address });
+      saveDB();
+      closeAddCustomerModal();
+      renderUserCustomers(user);
+    }
+    function deleteCustomer(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (user && confirm('Delete this customer profile?')) {
+        user.customers.splice(idx, 1);
+        saveDB();
+        renderUserCustomers(user);
+      }
+    }
+
+    function renderUserProducts(user) {
+      const tbody = document.getElementById('userProductsTableBody');
+      tbody.innerHTML = '';
+      const prods = user.products || [];
+      const cur = user.currency || '₹';
+
+      if (prods.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No products/services in catalog. Click "+ Add Product" above.</td></tr>`;
+        return;
+      }
+
+      prods.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-bold text-slate-900">${p.name}</td>
+          <td class="py-3 px-4 font-mono text-slate-500">${p.hsn || '--'}</td>
+          <td class="py-3 px-4 text-indigo-600 font-bold">${p.taxRate}% GST</td>
+          <td class="py-3 px-4 text-right font-bold text-slate-900">${cur}${p.price.toFixed(2)}</td>
+          <td class="py-3 px-4 text-center font-mono text-slate-500">${p.stock || 'N/A'}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="deleteProduct(${idx})" class="text-slate-400 hover:text-red-600 transition"><i class="ph ph-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAddProductModal() {
+      document.getElementById('addProductModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('prodNewName').focus(), 100);
+    }
+    function closeAddProductModal() {
+      document.getElementById('addProductModal').classList.add('hidden');
+    }
+    function submitNewProduct() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const name = document.getElementById('prodNewName').value.trim();
+      const price = parseFloat(document.getElementById('prodNewPrice').value) || 0;
+      const taxRate = parseFloat(document.getElementById('prodNewTax').value) || 0;
+      const hsn = document.getElementById('prodNewHsn').value.trim();
+      const stock = document.getElementById('prodNewStock').value.trim() || 'Unlimited';
+
+      if (!name) {
+        alert('Please enter a valid product/service description.');
+        return;
+      }
+
+      if (!user.products) user.products = [];
+      user.products.push({ id: 'p_' + Date.now(), name, price, taxRate, hsn, stock });
+      saveDB();
+      closeAddProductModal();
+      renderUserProducts(user);
+    }
+    function deleteProduct(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (user && confirm('Delete this catalog item?')) {
+        user.products.splice(idx, 1);
+        saveDB();
+        renderUserProducts(user);
+      }
+    }
+
+    function renderUserReports(user) {
+      const cur = user.currency || '₹';
+      const invs = user.invoices || [];
+
+      let totalCgst = 0, totalSgst = 0, realizedSales = 0, outstanding = 0;
+
+      invs.forEach(i => {
+        totalCgst += (i.cgst || (i.grandTotal ? i.grandTotal * 0.09 : 0));
+        totalSgst += (i.sgst || (i.grandTotal ? i.grandTotal * 0.09 : 0));
+        if (i.status === 'PAID') realizedSales += i.grandTotal;
+        else outstanding += i.grandTotal;
+      });
+
+      const totalTax = totalCgst + totalSgst;
+      document.getElementById('reportTaxCollected').innerText = `${cur}${totalTax.toFixed(2)}`;
+      document.getElementById('reportCgst').innerText = `${cur}${totalCgst.toFixed(2)}`;
+      document.getElementById('reportSgst').innerText = `${cur}${totalSgst.toFixed(2)}`;
+      document.getElementById('reportRealizedSales').innerText = `${cur}${realizedSales.toFixed(2)}`;
+      document.getElementById('reportOutstanding').innerText = `${cur}${outstanding.toFixed(2)}`;
+    }
+
+    function populateSettingsForm(user) {
+      document.getElementById('setBusinessName').value = user.serviceName || '';
+      document.getElementById('setCategory').value = user.category || '';
+      document.getElementById('setGstin').value = user.gstNumber || '';
+      document.getElementById('setEmail').value = user.email || '';
+      document.getElementById('setPhone').value = user.phone || '';
+      document.getElementById('setWebsite').value = user.website || '';
+      document.getElementById('setLogoUrl').value = user.logoUrl || '';
+      document.getElementById('setAddress').value = user.address || '';
+      document.getElementById('setUpiId').value = user.upiId || '';
+      document.getElementById('setBankName').value = user.bankName || '';
+      document.getElementById('setBankAccount').value = user.accountNumber || '';
+      document.getElementById('setBankIfsc').value = user.ifsc || '';
+      document.getElementById('setInvPrefix').value = user.invoicePrefix || 'INV';
+      document.getElementById('setCurrency').value = user.currency || '₹';
+      document.getElementById('setTerms').value = user.terms || '';
+      document.getElementById('setNotes').value = user.notes || '';
+    }
+
+    function saveAllUserSettings() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (!user) return;
+
+      user.serviceName = document.getElementById('setBusinessName').value.trim();
+      user.category = document.getElementById('setCategory').value.trim();
+      user.gstNumber = document.getElementById('setGstin').value.trim();
+      user.email = document.getElementById('setEmail').value.trim();
+      user.phone = document.getElementById('setPhone').value.trim();
+      user.website = document.getElementById('setWebsite').value.trim();
+      user.logoUrl = document.getElementById('setLogoUrl').value.trim();
+      user.address = document.getElementById('setAddress').value.trim();
+      user.upiId = document.getElementById('setUpiId').value.trim();
+      user.bankName = document.getElementById('setBankName').value.trim();
+      user.accountNumber = document.getElementById('setBankAccount').value.trim();
+      user.ifsc = document.getElementById('setBankIfsc').value.trim();
+      user.invoicePrefix = document.getElementById('setInvPrefix').value.trim();
+      user.currency = document.getElementById('setCurrency').value;
+      user.terms = document.getElementById('setTerms').value;
+      user.notes = document.getElementById('setNotes').value;
+
+      saveDB();
+      switchRole('user');
+      alert('All business settings and invoice defaults saved successfully!');
+    }
+
+    // -------------------------------------------------------------
+    // INVOICE BUILDER ENGINE (WITH STRICT EXPIRATION LOCK)
+    // -------------------------------------------------------------
+    function openInvoiceEditor() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      
+      const daysLeft = getRemainingDays(user.validUntil);
+      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
+        alert('❌ Subscription Expired! Renewal is required to generate new invoices. Please select your renewal package.');
+        openRenewalModal();
+        return;
+      }
+
+      document.getElementById('userView').classList.add('hidden');
+      document.getElementById('invoiceEditorView').classList.remove('hidden');
+
+      document.getElementById('invRenderBusinessName').innerText = user.serviceName;
+      document.getElementById('invRenderAddress').innerText = user.address;
+      document.getElementById('invRenderEmail').innerText = user.email;
+      document.getElementById('invRenderPhone').innerText = user.phone || '+91 0000000000';
+      document.getElementById('invRenderGstin').innerText = user.gstNumber || 'UNREGISTERED';
+
+      if (user.website) {
+        document.getElementById('invRenderWebsiteRow').classList.remove('hidden');
+        document.getElementById('invRenderWebsite').innerText = user.website;
+      } else {
+        document.getElementById('invRenderWebsiteRow').classList.add('hidden');
+      }
+
+      document.getElementById('invEditDate').value = new Date().toISOString().split('T')[0];
+      const nextDue = new Date();
+      nextDue.setDate(nextDue.getDate() + 14);
+      document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
+      document.getElementById('invEditNumber').value = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      document.getElementById('invRenderUpiId').innerText = user.upiId || 'Not Configured';
+      document.getElementById('invRenderBankName').innerText = user.bankName || 'Not Configured';
+      document.getElementById('invRenderAccountNo').innerText = user.accountNumber || 'Not Configured';
+      document.getElementById('invRenderIfsc').innerText = user.ifsc || 'Not Configured';
+
+      document.getElementById('invRenderNotes').innerText = user.notes || 'Thank you for your business.';
+      document.getElementById('invRenderTerms').innerText = user.terms || 'Warranty valid as per standard terms.';
+
+      if (user.products && user.products.length > 0) {
+        const p = user.products[0];
+        activeInvoiceLines = [
+          { description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate }
+        ];
+      } else {
+        activeInvoiceLines = [
+          { description: 'Website Design', qty: 1, price: 10000, discount: 500, tax: 18 }
+        ];
+      }
+
+      renderInvoiceRows();
+    }
+
+    function closeInvoiceEditor() {
+      document.getElementById('invoiceEditorView').classList.add('hidden');
+      document.getElementById('userView').classList.remove('hidden');
+    }
+
+    function loadInvoiceIntoCanvas(user, inv) {
+      document.getElementById('userView').classList.add('hidden');
+      document.getElementById('invoiceEditorView').classList.remove('hidden');
+
+      document.getElementById('invRenderBusinessName').innerText = user.serviceName;
+      document.getElementById('invRenderAddress').innerText = user.address;
+      document.getElementById('invRenderEmail').innerText = user.email;
+      document.getElementById('invRenderPhone').innerText = user.phone || '';
+      document.getElementById('invRenderGstin').innerText = user.gstNumber || 'UNREGISTERED';
+
+      document.getElementById('invEditNumber').value = inv.number;
+      document.getElementById('invEditDate').value = inv.date;
+      document.getElementById('invEditDueDate').value = inv.dueDate || '';
+      document.getElementById('invEditStatus').value = inv.status;
+      document.getElementById('invEditPaymentTerms').value = inv.paymentTerms || 'Due on Receipt';
+
+      document.getElementById('invCustName').value = inv.customerName;
+      document.getElementById('invCustCompany').value = inv.customerCompany || '';
+      document.getElementById('invCustEmail').value = inv.customerEmail || '';
+      document.getElementById('invCustPhone').value = inv.customerPhone || '';
+      document.getElementById('invCustGstin').value = inv.customerGstin || '';
+      document.getElementById('invCustBillingAddress').value = inv.billingAddress || '';
+      document.getElementById('invCustShippingAddress').value = inv.shippingAddress || '';
+
+      document.getElementById('invRenderUpiId').innerText = user.upiId || '--';
+      document.getElementById('invRenderBankName').innerText = user.bankName || '--';
+      document.getElementById('invRenderAccountNo').innerText = user.accountNumber || '--';
+      document.getElementById('invRenderIfsc').innerText = user.ifsc || '--';
+
+      activeInvoiceLines = (inv.lines || []).map(l => ({
+        description: l.description,
+        qty: l.qty,
+        price: l.price,
+        discount: l.discount || 0,
+        tax: l.tax || 0
+      }));
+
+      document.getElementById('invCalcShipping').value = inv.shipping || 0;
+      renderInvoiceRows();
+    }
+
+    function renderInvoiceRows() {
+      const tbody = document.getElementById('invoiceLineItemsTbody');
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const cur = user.currency || '₹';
+      tbody.innerHTML = '';
+
+      let subtotal = 0;
+      let totalDiscount = 0;
+      let taxableAmount = 0;
+      let totalTax = 0;
+
+      activeInvoiceLines.forEach((line, idx) => {
+        const itemGross = line.qty * line.price;
+        const itemTaxable = Math.max(0, itemGross - line.discount);
+        const itemTax = itemTaxable * (line.tax / 100);
+        const itemTotal = itemTaxable + itemTax;
+
+        subtotal += itemGross;
+        totalDiscount += line.discount;
+        taxableAmount += itemTaxable;
+        totalTax += itemTax;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2.5 px-3">
+            <input type="text" value="${line.description}" oninput="updateLine(${idx}, 'description', this.value)" class="w-full font-bold text-slate-900 border-b border-transparent hover:border-slate-300 focus:outline-none" />
+          </td>
+          <td class="py-2.5 px-2">
+            <input type="number" min="1" value="${line.qty}" oninput="updateLine(${idx}, 'qty', this.value)" class="w-full text-right font-medium border-b border-transparent hover:border-slate-300 focus:outline-none" />
+          </td>
+          <td class="py-2.5 px-2">
+            <input type="number" min="0" step="any" value="${line.price}" oninput="updateLine(${idx}, 'price', this.value)" class="w-full text-right font-medium border-b border-transparent hover:border-slate-300 focus:outline-none" />
+          </td>
+          <td class="py-2.5 px-2">
+            <input type="number" min="0" value="${line.discount}" oninput="updateLine(${idx}, 'discount', this.value)" class="w-full text-right font-medium border-b border-transparent hover:border-slate-300 focus:outline-none" />
+          </td>
+          <td class="py-2.5 px-2 text-right">
+            <input type="number" min="0" value="${line.tax}" oninput="updateLine(${idx}, 'tax', this.value)" class="w-10 text-right font-medium border-b border-transparent hover:border-slate-300 focus:outline-none" />%
+          </td>
+          <td class="py-2.5 px-3 text-right font-bold text-slate-900">
+            ${cur}${itemTotal.toFixed(2)}
+          </td>
+          <td class="py-2.5 text-center no-print">
+            <button onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 transition"><i class="ph ph-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const cgst = totalTax / 2;
+      const sgst = totalTax / 2;
+      const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
+      const grandTotal = taxableAmount + totalTax + shipping;
+
+      document.getElementById('invCalcSubtotal').innerText = `${cur}${subtotal.toFixed(2)}`;
+      document.getElementById('invCalcDiscount').innerText = `-${cur}${totalDiscount.toFixed(2)}`;
+      document.getElementById('invCalcTaxable').innerText = `${cur}${taxableAmount.toFixed(2)}`;
+      document.getElementById('invCalcCgst').innerText = `${cur}${cgst.toFixed(2)}`;
+      document.getElementById('invCalcSgst').innerText = `${cur}${sgst.toFixed(2)}`;
+      document.getElementById('invCalcGrandTotal').innerText = `${cur}${grandTotal.toFixed(2)}`;
+    }
+
+    function addInvoiceRow() {
+      activeInvoiceLines.push({ description: 'New Service / Item', qty: 1, price: 1000, discount: 0, tax: 18 });
+      renderInvoiceRows();
+    }
+
+    function removeLine(idx) {
+      if (activeInvoiceLines.length > 1) {
+        activeInvoiceLines.splice(idx, 1);
+        renderInvoiceRows();
+      }
+    }
+
+    function updateLine(idx, field, val) {
+      activeInvoiceLines[idx][field] = field === 'description' ? val : (parseFloat(val) || 0);
+      renderInvoiceRows();
+    }
+
+    function saveAndFinalizeInvoice() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (!user) return;
+
+      const daysLeft = getRemainingDays(user.validUntil);
+      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
+        alert('❌ Plan Expired! Renewal required.');
+        openRenewalModal();
+        return;
+      }
+
+      let subtotal = 0, discount = 0, taxable = 0, totalTax = 0;
+
+      const processedLines = activeInvoiceLines.map(l => {
+        const itemGross = l.qty * l.price;
+        const itemTaxable = Math.max(0, itemGross - l.discount);
+        const itemTax = itemTaxable * (l.tax / 100);
+        const itemTotal = itemTaxable + itemTax;
+
+        subtotal += itemGross;
+        discount += l.discount;
+        taxable += itemTaxable;
+        totalTax += itemTax;
+
+        return {
+          description: l.description,
+          qty: l.qty,
+          price: l.price,
+          discount: l.discount,
+          tax: l.tax,
+          total: itemTotal
+        };
+      });
+
+      const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
+      const grandTotal = taxable + totalTax + shipping;
+
+      const invoiceRecord = {
+        id: 'inv_' + Date.now(),
+        number: document.getElementById('invEditNumber').value.trim(),
+        date: document.getElementById('invEditDate').value,
+        dueDate: document.getElementById('invEditDueDate').value,
+        status: document.getElementById('invEditStatus').value,
+        paymentTerms: document.getElementById('invEditPaymentTerms').value,
+        customerName: document.getElementById('invCustName').value.trim() || 'Client',
+        customerCompany: document.getElementById('invCustCompany').value.trim(),
+        customerEmail: document.getElementById('invCustEmail').value.trim(),
+        customerPhone: document.getElementById('invCustPhone').value.trim(),
+        customerGstin: document.getElementById('invCustGstin').value.trim(),
+        billingAddress: document.getElementById('invCustBillingAddress').value.trim(),
+        shippingAddress: document.getElementById('invCustShippingAddress').value.trim(),
+        lines: processedLines,
+        subtotal: subtotal,
+        discount: discount,
+        taxable: taxable,
+        cgst: totalTax / 2,
+        sgst: totalTax / 2,
+        shipping: shipping,
+        grandTotal: grandTotal
+      };
+
+      const existingIdx = (user.invoices || []).findIndex(i => i.number === invoiceRecord.number);
+      if (existingIdx >= 0) {
+        user.invoices[existingIdx] = invoiceRecord;
+      } else {
+        if (!user.invoices) user.invoices = [];
+        user.invoices.unshift(invoiceRecord);
+      }
+
+      saveDB();
+      alert(`Invoice ${invoiceRecord.number} successfully saved!`);
+      closeInvoiceEditor();
+      switchUserSection('invoices');
+    }
+
+    init();
+  </script>
+</body>
+</html>
