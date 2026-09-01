@@ -24,10 +24,12 @@
       border-radius: 4px;
     }
 
-    /* Enhanced Touch Targets for Mobile */
+    /* Enhanced Touch & Click Target for Mobile */
     .touch-target {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      cursor: pointer;
     }
 
     @media print {
@@ -52,7 +54,7 @@
       <i class="ph ph-shield-check text-lg"></i>
       <span>Admin View: Currently logged in as <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
-    <button onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
+    <button onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
     </button>
   </div>
@@ -295,13 +297,14 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Client Accounts & Validity Tracking</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Track remaining days, review merchant business performance, approve registrations, and assign validity plans</p>
+              <p class="text-xs text-slate-500 mt-0.5">Review merchant accounts, approve validity plans, and monitor live sales status</p>
             </div>
             <button onclick="openCreateUserModal()" class="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition self-start sm:self-auto touch-target">
               <i class="ph ph-user-plus text-base"></i> Create Account
             </button>
           </div>
 
+          <!-- Admin Top KPI Cards -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
               <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500">Pending Approvals</p>
@@ -325,7 +328,8 @@
             </div>
           </div>
 
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <!-- Desktop Table View (Hidden on mobile, Visible on sm and larger) -->
+          <div class="hidden sm:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 flex items-center justify-between">
               <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Tenant Directory & Detailed Validity Status</h3>
               <span class="text-[11px] text-slate-500 font-mono">Master Database</span>
@@ -348,6 +352,11 @@
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <!-- Mobile Responsive Cards Container (Visible on mobile, Hidden on sm and larger) -->
+          <div class="sm:hidden space-y-3" id="adminUsersMobileCards">
+            <!-- Dynamic Mobile Cards injected by JavaScript -->
           </div>
         </section>
 
@@ -512,10 +521,10 @@
                     <tr>
                       <th class="py-3 px-3 sm:px-4">Item Name / Service</th>
                       <th class="py-3 px-3 sm:px-4">HSN / SAC</th>
-                      <th class="py-3 px-3 sm:px-4">Tax / GST Slab</th>
-                      <th class="py-3 px-3 sm:px-4 text-right">Unit Price</th>
-                      <th class="py-3 px-3 sm:px-4 text-center">Stock</th>
-                      <th class="py-3 px-3 sm:px-4 text-center">Action</th>
+                      <th class="py-3 px-4">Tax / GST Slab</th>
+                      <th class="py-3 px-4 text-right">Unit Price</th>
+                      <th class="py-3 px-4 text-center">Stock</th>
+                      <th class="py-3 px-4 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="userProductsTableBody" class="divide-y divide-slate-100 font-medium">
@@ -836,13 +845,10 @@
   </div>
 
   <!-- ==================== 3. FLOATING WHATSAPP & CHATBOT WIDGETS ==================== -->
-  
-  <!-- WhatsApp Direct Floating Button -->
   <a href="https://api.whatsapp.com/send?phone=917382680200&text=Hello%20OTTLoop%20Support,%20I%20need%20assistance%20with%20my%20Billing%20Portal." target="_blank" class="no-print fixed bottom-4 sm:bottom-6 right-16 sm:right-20 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 touch-target" title="Chat on WhatsApp / Call: 7382680200">
     <i class="ph ph-whatsapp-logo text-2xl"></i>
   </a>
 
-  <!-- Chatbot Floating Launcher -->
   <button onclick="toggleChatbot()" class="no-print fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-40 bg-indigo-600 hover:bg-indigo-700 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 touch-target" title="AI Billing Support Assistant">
     <i class="ph ph-chat-centered-dots text-2xl" id="chatbotToggleIcon"></i>
   </button>
@@ -959,189 +965,6 @@
     </div>
   </div>
 
-  <!-- OTHER MODALS (ADMIN CREATION, APPROVAL, CUSTOMER, PRODUCT) -->
-  <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Create & Assign Plan Validity</h3>
-        <button onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccCategory')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccUsername')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Username</label>
-          <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPhone')" />
-            <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@ottloop.com</span>
-          </div>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="newAccPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPassword')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Login Password</label>
-          <input type="text" id="newAccPassword" value="user123" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="newAccGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPlanPreset')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Select Subscription Plan Validity</label>
-          <select id="newAccPlanPreset" onchange="onPlanPresetChange('newAccPlanPreset', 'newAccValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Custom / Allocated Days</label>
-          <input type="number" id="newAccValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewAccount')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Create & Authorize Plan</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="approvePlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div>
-          <h3 class="font-bold text-sm text-slate-900">Authorize Plan & Set Validity</h3>
-          <p class="text-[11px] text-slate-500 truncate max-w-xs" id="approveModalTargetUser">User: --</p>
-        </div>
-        <button onclick="closeApprovePlanModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <input type="hidden" id="approveTargetUserId" />
-
-      <div class="space-y-3">
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Select Approval Plan</label>
-          <select id="approvePlanPreset" onchange="onPlanPresetChange('approvePlanPreset', 'approveValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Days to Assign / Add</label>
-          <input type="number" id="approveValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeApprovePlanModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="confirmApprovePlan()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 touch-target">
-          <i class="ph ph-check-bold"></i> Confirm & Activate Plan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
-        <button onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
-          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewCompany')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
-          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewEmail')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
-          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewPhone')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewAddress')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
-          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewCustomer')"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Customer</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service</h3>
-        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
-          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewTax')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
-          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewHsn')">
-            <option value="0">0% Non-Taxable</option>
-            <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18" selected>18% GST</option>
-            <option value="28">28% GST</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
-          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewStock')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
-          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewProduct')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Item</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
@@ -1151,7 +974,7 @@
     let currentRole = null;
     let loggedInUserId = null;
     let currentReviewUserId = null;
-    let isImpersonating = false; // Flag to track if admin is viewing as user
+    let isImpersonating = false;
 
     let tenantUsers = [
       {
@@ -1190,6 +1013,20 @@
     ];
 
     let activeInvoiceLines = [];
+
+    // Responsive Mobile Sidebar Drawer Toggle
+    function toggleMobileSidebar(forceClose = false) {
+      const sidebar = document.getElementById('appSidebar');
+      const backdrop = document.getElementById('mobileSidebarBackdrop');
+      
+      if (forceClose || !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      }
+    }
 
     function getRemainingDays(dateStr) {
       if (!dateStr) return -999;
@@ -1542,11 +1379,11 @@
           renewalBanner.classList.add('hidden');
 
           if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
           }
 
@@ -1584,11 +1421,13 @@
     }
 
     // -------------------------------------------------------------
-    // SUPER ADMIN FUNCTIONS
+    // SUPER ADMIN FUNCTIONS (TABLE FOR DESKTOP + CARDS FOR MOBILE)
     // -------------------------------------------------------------
     function renderAdminUsersTable() {
       const tbody = document.getElementById('adminUsersTableBody');
+      const mobileCardsContainer = document.getElementById('adminUsersMobileCards');
       tbody.innerHTML = '';
+      mobileCardsContainer.innerHTML = '';
 
       let pendingCount = 0;
       let activeCount = 0;
@@ -1617,36 +1456,88 @@
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
+        // 1. Desktop Table Row
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition';
         tr.innerHTML = `
-          <td class="py-3 px-3 sm:px-4 font-bold text-slate-900">${u.serviceName}</td>
-          <td class="py-3 px-3 sm:px-4 text-slate-600 font-medium">${u.category || 'OTT & Broadband'}</td>
-          <td class="py-3 px-3 sm:px-4 text-slate-600 font-mono">${u.email}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
-          <td class="py-3 px-3 sm:px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">${planLabel}</span></td>
-          <td class="py-3 px-3 sm:px-4 text-slate-600 font-mono">${u.validUntil || 'Not Assigned'}</td>
-          <td class="py-3 px-3 sm:px-4">${daysLeftBadge}</td>
-          <td class="py-3 px-3 sm:px-4">${badgeHtml}</td>
-          <td class="py-3 px-3 sm:px-4 text-center">
+          <td class="py-3.5 px-3 sm:px-4 font-bold text-slate-900">${u.serviceName}</td>
+          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-medium">${u.category || 'OTT & Broadband'}</td>
+          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.email}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
+          <td class="py-3.5 px-3 sm:px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">${planLabel}</span></td>
+          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.validUntil || 'Not Assigned'}</td>
+          <td class="py-3.5 px-3 sm:px-4">${daysLeftBadge}</td>
+          <td class="py-3.5 px-3 sm:px-4">${badgeHtml}</td>
+          <td class="py-3.5 px-3 sm:px-4 text-center">
             <div class="flex items-center justify-center gap-1.5 flex-wrap min-w-[200px]">
               ${u.status === 'ACTIVE' ? `
-                <button onclick="openUserReviewModal('${u.id}')" title="Review Business Performance & Invoices" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-[11px] shadow-sm transition flex items-center gap-1 touch-target">
+                <button type="button" onclick="openUserReviewModal('${u.id}')" title="Review Business Performance & Invoices" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-[11px] shadow-sm transition flex items-center gap-1 touch-target">
                   <i class="ph ph-magnifying-glass font-bold"></i> Review
                 </button>
-                <button onclick="impersonateUser('${u.id}')" title="Login as this User" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-[11px] shadow-sm transition touch-target">
+                <button type="button" onclick="impersonateUser('${u.id}')" title="Login as this User" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-[11px] shadow-sm transition touch-target">
                   Login
                 </button>
               ` : ''}
-              <button onclick="openApprovePlanModal('${u.id}')" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs shadow-sm transition flex items-center gap-1 touch-target">
+              <button type="button" onclick="openApprovePlanModal('${u.id}')" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs shadow-sm transition flex items-center gap-1 touch-target">
                 <i class="ph ph-calendar-plus"></i> Plan
               </button>
-              <button onclick="deleteTenantAccount('${u.id}')" class="text-slate-400 hover:text-red-600 p-2 touch-target">
+              <button type="button" onclick="deleteTenantAccount('${u.id}')" class="text-slate-400 hover:text-red-600 p-2 touch-target">
                 <i class="ph ph-trash text-base"></i>
               </button>
             </div>
           </td>
         `;
         tbody.appendChild(tr);
+
+        // 2. Mobile Responsive Card
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">${u.serviceName}</h4>
+              <p class="text-[11px] text-slate-500">${u.category || 'OTT & Broadband'}</p>
+              <p class="text-[11px] font-mono text-indigo-600 font-bold">${u.email}</p>
+            </div>
+            <div class="text-right">
+              ${badgeHtml}
+              <p class="text-[10px] text-slate-400 font-mono mt-1">${u.phone || ''}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Plan:</span>
+              <span class="font-bold text-slate-800">${planLabel}</span>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Validity:</span>
+              <span class="font-bold text-slate-800">${daysLeftBadge}</span>
+            </div>
+          </div>
+
+          <!-- Mobile Action Buttons Matrix -->
+          <div class="grid grid-cols-3 gap-2 pt-1">
+            ${u.status === 'ACTIVE' ? `
+              <button type="button" onclick="openUserReviewModal('${u.id}')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
+                <i class="ph ph-magnifying-glass"></i> Review
+              </button>
+              <button type="button" onclick="impersonateUser('${u.id}')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
+                <i class="ph ph-user"></i> Login
+              </button>
+            ` : `
+              <div class="col-span-2"></div>
+            `}
+            <button type="button" onclick="openApprovePlanModal('${u.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
+              <i class="ph ph-calendar-plus"></i> Plan
+            </button>
+          </div>
+          <div class="flex justify-end pt-1">
+            <button type="button" onclick="deleteTenantAccount('${u.id}')" class="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 p-1 touch-target">
+              <i class="ph ph-trash"></i> Delete Merchant Account
+            </button>
+          </div>
+        `;
+        mobileCardsContainer.appendChild(card);
       });
 
       document.getElementById('statPendingApprovals').innerText = pendingCount;
@@ -1890,7 +1781,7 @@
     }
 
     // -------------------------------------------------------------
-    // USER BUSINESS SECTIONS
+    // USER BUSINESS SECTIONS & STRICT BILL GENERATION LOCK
     // -------------------------------------------------------------
     function switchUserSection(sectionId) {
       const sections = ['Dashboard', 'Invoices', 'Customers', 'Products', 'Reports', 'Settings'];
@@ -1988,9 +1879,9 @@
           <td class="py-3 px-3 sm:px-4 text-right font-bold text-slate-900">${cur}${inv.grandTotal.toFixed(2)}</td>
           <td class="py-3 px-3 sm:px-4 text-center">
             <div class="flex items-center justify-center gap-1 sm:gap-2">
-              <button onclick="viewInvoiceDetail(${index})" title="View / Print" class="text-slate-400 hover:text-slate-700 transition p-1.5 touch-target"><i class="ph ph-printer text-base"></i></button>
-              <button onclick="duplicateInvoice(${index})" title="Duplicate" class="text-slate-400 hover:text-indigo-600 transition p-1.5 touch-target"><i class="ph ph-copy text-base"></i></button>
-              <button onclick="deleteInvoice(${index})" title="Delete" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
+              <button type="button" onclick="viewInvoiceDetail(${index})" title="View / Print" class="text-slate-400 hover:text-slate-700 transition p-1.5 touch-target"><i class="ph ph-printer text-base"></i></button>
+              <button type="button" onclick="duplicateInvoice(${index})" title="Duplicate" class="text-slate-400 hover:text-indigo-600 transition p-1.5 touch-target"><i class="ph ph-copy text-base"></i></button>
+              <button type="button" onclick="deleteInvoice(${index})" title="Delete" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
             </div>
           </td>
         `;
@@ -2055,7 +1946,7 @@
           <td class="py-3 px-3 sm:px-4 font-mono text-indigo-600 uppercase font-semibold">${c.gstin || 'N/A'}</td>
           <td class="py-3 px-3 sm:px-4 text-right font-bold ${outBal > 0 ? 'text-amber-600' : 'text-emerald-600'}">${cur}${outBal.toFixed(2)}</td>
           <td class="py-3 px-3 sm:px-4 text-center">
-            <button onclick="deleteCustomer(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
+            <button type="button" onclick="deleteCustomer(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -2119,7 +2010,7 @@
           <td class="py-3 px-3 sm:px-4 text-right font-bold text-slate-900">${cur}${p.price.toFixed(2)}</td>
           <td class="py-3 px-3 sm:px-4 text-center font-mono text-slate-500">${p.stock || 'N/A'}</td>
           <td class="py-3 px-3 sm:px-4 text-center">
-            <button onclick="deleteProduct(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
+            <button type="button" onclick="deleteProduct(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -2228,7 +2119,7 @@
     }
 
     // -------------------------------------------------------------
-    // INVOICE BUILDER ENGINE
+    // INVOICE BUILDER ENGINE (WITH STRICT EXPIRATION LOCK)
     // -------------------------------------------------------------
     function openInvoiceEditor() {
       const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
@@ -2373,7 +2264,7 @@
             ${cur}${itemTotal.toFixed(2)}
           </td>
           <td class="py-2.5 text-center no-print">
-            <button onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
+            <button type="button" onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
