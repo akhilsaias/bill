@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Be Bill - Enterprise Invoicing Suite</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -76,7 +79,7 @@
       </div>
 
       <!-- LOGIN FORM -->
-      <form onsubmit="handleLoginSubmit(event)" id="formLoginContainer" class="space-y-4 text-xs">
+      <div id="formLoginContainer" class="space-y-4 text-xs">
         <div>
           <label class="font-bold text-slate-700 block mb-1.5">Username</label>
           <div class="flex items-center">
@@ -85,7 +88,7 @@
               id="loginUsername" 
               placeholder="username" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl px-3.5 py-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs transition" 
-              required
+              onkeydown="handleEnterNavigation(event, 'loginPassword')"
             />
             <span class="bg-slate-100 text-slate-600 px-3 sm:px-3.5 py-2.5 rounded-r-xl font-mono text-[11px] sm:text-xs border border-l-0 border-slate-300 font-bold select-none whitespace-nowrap">
               @bebill.in
@@ -100,27 +103,26 @@
             id="loginPassword" 
             placeholder="••••••••" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs transition" 
-            required
+            onkeydown="handleEnterNavigation(event, 'btnLoginSubmit')"
           />
         </div>
 
-        <button type="submit" id="btnLoginSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs touch-target">
+        <button type="button" onclick="handleLoginSubmit()" id="btnLoginSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs touch-target">
           Sign In to Dashboard
         </button>
 
-        <!-- 1-Click Fill Helper for Easy Testing -->
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-          <span class="text-slate-400 font-semibold">Quick Fill:</span>
+          <span class="text-slate-400 font-semibold">Quick Test:</span>
           <div class="flex gap-2">
-            <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold">Fill Admin</button>
+            <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Admin</button>
             <span class="text-slate-300">•</span>
-            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold">Fill Demo User</button>
+            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User</button>
           </div>
         </div>
-      </form>
+      </div>
 
       <!-- SIGN UP FORM -->
-      <form onsubmit="handleSignupSubmit(event)" id="formSignupContainer" class="hidden space-y-3 text-xs">
+      <div id="formSignupContainer" class="hidden space-y-3 text-xs">
         <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[11px] leading-relaxed">
           <i class="ph ph-info font-bold"></i> New merchant accounts require <b>Super Admin Plan Approval</b> before login.
         </div>
@@ -132,7 +134,7 @@
             id="signupServiceName" 
             placeholder="e.g. Apex Digital Networks" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
-            required
+            onkeydown="handleEnterNavigation(event, 'signupCategory')"
           />
         </div>
 
@@ -156,7 +158,7 @@
               id="signupUsername" 
               placeholder="apexmedia" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
-              required
+              onkeydown="handleEnterNavigation(event, 'signupPhone')"
             />
             <span class="bg-slate-100 text-slate-600 px-2.5 py-2 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">
               @bebill.in
@@ -171,7 +173,7 @@
             id="signupPhone" 
             placeholder="+91 9876543210" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
-            required
+            onkeydown="handleEnterNavigation(event, 'signupPassword')"
           />
         </div>
 
@@ -182,7 +184,7 @@
             id="signupPassword" 
             placeholder="Create password" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
-            required
+            onkeydown="handleEnterNavigation(event, 'signupGst')"
           />
         </div>
 
@@ -193,13 +195,14 @@
             id="signupGst" 
             placeholder="36AAAAA0000A1Z5" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            onkeydown="handleEnterNavigation(event, 'btnSignupSubmit')"
           />
         </div>
 
-        <button type="submit" id="btnSignupSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs touch-target">
+        <button type="button" onclick="handleSignupSubmit()" id="btnSignupSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 text-xs touch-target">
           Submit for Admin Approval
         </button>
-      </form>
+      </div>
 
     </div>
   </div>
@@ -207,12 +210,13 @@
   <!-- ==================== 2. PROTECTED APPLICATION PORTAL ==================== -->
   <div id="mainAppContainer" class="hidden flex-col h-full w-full">
     
-    <!-- Header -->
+    <!-- Top Header Bar -->
     <header class="no-print h-14 lg:h-12 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-3 sm:px-5 text-xs shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 sm:gap-3">
         <button type="button" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition touch-target" aria-label="Toggle Sidebar">
           <i class="ph ph-list text-xl"></i>
         </button>
+
         <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span class="font-bold text-slate-700 hidden sm:inline">Be Bill:</span>
         <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">SUPER_ADMIN</span>
@@ -233,7 +237,7 @@
     <div class="flex-1 flex overflow-hidden relative">
       <div id="mobileSidebarBackdrop" onclick="toggleMobileSidebar()" class="hidden fixed inset-0 bg-slate-900/50 z-30 lg:hidden backdrop-blur-xs"></div>
 
-      <!-- Sidebar -->
+      <!-- Responsive Sidebar Drawer -->
       <aside id="appSidebar" class="no-print fixed lg:static inset-y-0 left-0 z-40 w-64 sm:w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         <div class="overflow-y-auto custom-scrollbar">
           <div class="h-14 lg:h-16 px-5 flex items-center justify-between border-b border-slate-100">
@@ -251,6 +255,7 @@
             </button>
           </div>
 
+          <!-- Merchant Plan Card in Sidebar -->
           <div id="userValiditySidebarCard" class="hidden m-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plan Validity</span>
@@ -280,7 +285,7 @@
         </div>
       </aside>
 
-      <!-- Main Area -->
+      <!-- Main Dynamic Content Area -->
       <main class="flex-1 bg-slate-50 overflow-y-auto custom-scrollbar p-3 sm:p-6 md:p-8 w-full">
         
         <!-- ADMIN VIEW -->
@@ -1003,14 +1008,8 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
   <script>
-    // Supabase
-    const SUPABASE_URL = "https://grpnfwvssadmlsqlwlaa.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_hyxkJNppVqwAD5Uc5eGzxQ_PgyYsrKO";
-
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
     const WHATSAPP_HELPLINE = '917382680200';
@@ -1020,6 +1019,7 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
+    // Guaranteed Default Local Cache
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1058,7 +1058,6 @@
 
     let activeInvoiceLines = [];
 
-    // Helper functions for filling test credentials
     function fillAdminCredentials() {
       document.getElementById('loginUsername').value = 'billottloopstore';
       document.getElementById('loginPassword').value = '1604130028As..@@';
@@ -1215,940 +1214,7 @@
       localStorage.setItem('bebill_enterprise_db', JSON.stringify(tenantUsers));
     }
 
-    function switchAuthMode(mode) {
-      hideAuthAlert();
-      const loginForm = document.getElementById('formLoginContainer');
-      const signupForm = document.getElementById('formSignupContainer');
-      const tabLogin = document.getElementById('tabBtnAuthLogin');
-      const tabSignup = document.getElementById('tabBtnAuthSignup');
-      const title = document.getElementById('authHeaderTitle');
-      const subtitle = document.getElementById('authHeaderSubtitle');
-
-      if (mode === 'login') {
-        loginForm.classList.remove('hidden');
-        signupForm.classList.add('hidden');
-        tabLogin.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target';
-        tabSignup.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition touch-target';
-        title.innerText = 'Be Bill Portal';
-        subtitle.innerText = 'Sign in to your @bebill.in account';
-        setTimeout(() => document.getElementById('loginUsername').focus(), 100);
-      } else {
-        signupForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        tabSignup.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target';
-        tabLogin.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition touch-target';
-        title.innerText = 'Create Business Account';
-        subtitle.innerText = 'Get access with your @bebill.in username';
-        setTimeout(() => document.getElementById('signupServiceName').focus(), 100);
-      }
-    }
-
-    function showAuthAlert(msg, isSuccess = false) {
-      const box = document.getElementById('authAlertBox');
-      const txt = document.getElementById('authAlertText');
-      const icon = document.getElementById('authAlertIcon');
-
-      txt.innerText = msg;
-      if (isSuccess) {
-        box.className = 'text-xs font-semibold p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-center gap-2';
-        icon.className = 'ph ph-check-circle text-base flex-shrink-0 text-emerald-600';
-      } else {
-        box.className = 'text-xs font-semibold p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl flex items-center gap-2';
-        icon.className = 'ph ph-warning-circle text-base flex-shrink-0 text-red-600';
-      }
-      box.classList.remove('hidden');
-    }
-
-    function hideAuthAlert() {
-      document.getElementById('authAlertBox').classList.add('hidden');
-    }
-
-    async function handleLoginSubmit(event) {
-      if (event) event.preventDefault();
-      hideAuthAlert();
-
-      const rawInput = document.getElementById('loginUsername').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-
-      if (!rawInput || !pass) {
-        showAuthAlert('Please enter both your username and password.');
-        return;
-      }
-
-      const cleanUser = rawInput.toLowerCase().replace(/@(bebill\.in|ottloop\.com)$/i, '').trim();
-
-      isImpersonating = false;
-
-      // 1. Instant Super Admin Authentication
-      if (cleanUser === SUPER_ADMIN_USER.toLowerCase() && pass === SUPER_ADMIN_PASS) {
-        unlockApp('admin');
-        return;
-      }
-
-      // 2. User / Merchant Check
-      const fullEmail = `${cleanUser}@bebill.in`;
-      let matchUser = tenantUsers.find(u => 
-        (u.username.toLowerCase() === cleanUser || u.email.toLowerCase() === fullEmail) && 
-        u.password === pass
-      );
-
-      // Direct Supabase fallback
-      if (!matchUser && supabase) {
-        try {
-          const { data: dbUser } = await supabase.from('tenants')
-            .select('*')
-            .or(`username.eq.${cleanUser},email.eq.${fullEmail}`)
-            .eq('password', pass)
-            .maybeSingle();
-
-          if (dbUser) {
-            await syncDataFromSupabase();
-            matchUser = tenantUsers.find(u => u.id === dbUser.id);
-          }
-        } catch (e) {}
-      }
-
-      if (matchUser) {
-        if (matchUser.status === 'PENDING') {
-          showAuthAlert('⏳ Account registration is awaiting Super Admin plan approval.');
-          return;
-        }
-        loggedInUserId = matchUser.id;
-        unlockApp('user');
-        return;
-      }
-
-      showAuthAlert('❌ Invalid username or password! Please verify credentials.');
-    }
-
-    async function handleSignupSubmit(event) {
-      if (event) event.preventDefault();
-      hideAuthAlert();
-
-      const sName = document.getElementById('signupServiceName').value.trim();
-      const sCategory = document.getElementById('signupCategory').value;
-      let rawUser = document.getElementById('signupUsername').value.trim().toLowerCase().replace(/@(bebill\.in|ottloop\.com)$/i, '');
-      const sPhone = document.getElementById('signupPhone').value.trim();
-      const sPass = document.getElementById('signupPassword').value.trim();
-      const sGst = document.getElementById('signupGst').value.trim();
-
-      if (!sName || !rawUser || !sPass) {
-        showAuthAlert('Please complete all required fields.');
-        return;
-      }
-
-      const cleanEmail = `${rawUser}@bebill.in`;
-      const userExists = tenantUsers.some(u => u.username.toLowerCase() === rawUser || u.email.toLowerCase() === cleanEmail);
-      if (userExists) {
-        showAuthAlert(`The username "${rawUser}" is already taken.`);
-        return;
-      }
-
-      const newId = 'usr_' + Date.now();
-
-      // Cloud Push to Supabase
-      if (supabase) {
-        try {
-          const { error: sbErr } = await supabase.from('tenants').insert([{
-            id: newId,
-            username: rawUser,
-            email: cleanEmail,
-            password: sPass,
-            service_name: sName,
-            category: sCategory,
-            phone: sPhone || '+91 9800000000',
-            gst_number: sGst || 'UNREGISTERED',
-            status: 'PENDING',
-            plan_preset: '30'
-          }]);
-          if (sbErr) {
-            console.error('Supabase signup insert error:', sbErr);
-            showAuthAlert(`Cloud DB Note: ${sbErr.message}`, false);
-          }
-        } catch (e) {}
-      }
-
-      // Local Cache insertion
-      tenantUsers.unshift({
-        id: newId,
-        username: rawUser,
-        email: cleanEmail,
-        password: sPass,
-        serviceName: sName,
-        category: sCategory,
-        phone: sPhone,
-        gstNumber: sGst || 'UNREGISTERED',
-        status: 'PENDING',
-        planPreset: '30',
-        validUntil: '',
-        customers: [],
-        products: [],
-        invoices: []
-      });
-      saveDB();
-
-      showAuthAlert('✅ Request submitted! Super Admin will assign your validity plan shortly.', true);
-      setTimeout(() => {
-        document.getElementById('signupServiceName').value = '';
-        document.getElementById('signupUsername').value = '';
-        document.getElementById('signupPassword').value = '';
-        document.getElementById('signupPhone').value = '';
-        document.getElementById('signupGst').value = '';
-        switchAuthMode('login');
-      }, 1800);
-    }
-
-    function logoutToLoginScreen() {
-      document.getElementById('loginUsername').value = '';
-      document.getElementById('loginPassword').value = '';
-      hideAuthAlert();
-      switchAuthMode('login');
-      isImpersonating = false;
-      lockApp();
-    }
-
-    function impersonateUser(userId) {
-      const user = tenantUsers.find(u => u.id === userId);
-      if (!user) return;
-
-      isImpersonating = true;
-      loggedInUserId = user.id;
-
-      document.getElementById('impersonatedUserName').innerText = `${user.serviceName} (${user.username}@bebill.in)`;
-      document.getElementById('impersonationBanner').classList.remove('hidden');
-
-      switchRole('user');
-    }
-
-    function exitImpersonationToAdmin() {
-      isImpersonating = false;
-      document.getElementById('impersonationBanner').classList.add('hidden');
-      switchRole('admin');
-    }
-
-    function switchRole(role) {
-      const adminSec = document.getElementById('adminView');
-      const userSec = document.getElementById('userView');
-      const invSec = document.getElementById('invoiceEditorView');
-      const navContainer = document.getElementById('sidebarNavigation');
-      const roleBadge = document.getElementById('currentRoleDisplay');
-      const switcherContainer = document.getElementById('roleSwitcherButtons');
-      const btnAdmin = document.getElementById('btnRoleAdmin');
-      const btnUser = document.getElementById('btnRoleUser');
-      const userPlanCard = document.getElementById('userValiditySidebarCard');
-
-      invSec.classList.add('hidden');
-
-      if (role === 'admin') {
-        currentRole = 'SUPER_ADMIN';
-        loggedInUserId = 'admin';
-        isImpersonating = false;
-        document.getElementById('impersonationBanner').classList.add('hidden');
-
-        roleBadge.innerText = 'SUPER_ADMIN';
-        roleBadge.className = 'bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold';
-        switcherContainer.classList.remove('hidden');
-        switcherContainer.classList.add('flex');
-        btnAdmin.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition touch-target';
-        btnUser.className = 'px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition touch-target';
-
-        adminSec.classList.remove('hidden');
-        userSec.classList.add('hidden');
-        userPlanCard.classList.add('hidden');
-
-        document.getElementById('sidebarOrgName').innerText = 'Be Bill';
-        document.getElementById('sidebarSubText').innerText = 'Super Admin Control';
-        document.getElementById('sessionUserName').innerText = 'Super Admin';
-        document.getElementById('sessionUserEmail').innerText = `${SUPER_ADMIN_USER}@bebill.in`;
-        document.getElementById('userBadgeAvatar').innerText = 'SA';
-
-        navContainer.innerHTML = `
-          <button type="button" onclick="toggleMobileSidebar(true)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100 touch-target">
-            <i class="ph ph-users-three text-lg"></i> Client Accounts & Approvals
-          </button>
-        `;
-
-        renderAdminUsersTable();
-      } else {
-        currentRole = 'CLIENT_USER';
-        const activeUser = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-        
-        roleBadge.innerText = `BUSINESS (${activeUser.serviceName.slice(0, 12)}...)`;
-        roleBadge.className = 'bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono font-semibold';
-        switcherContainer.classList.add('hidden');
-
-        if (isImpersonating) {
-          document.getElementById('impersonationBanner').classList.remove('hidden');
-          document.getElementById('impersonatedUserName').innerText = `${activeUser.serviceName} (${activeUser.username}@bebill.in)`;
-        } else {
-          document.getElementById('impersonationBanner').classList.add('hidden');
-        }
-
-        adminSec.classList.add('hidden');
-        userSec.classList.remove('hidden');
-        userPlanCard.classList.remove('hidden');
-
-        document.getElementById('sidebarOrgName').innerText = activeUser.serviceName;
-        document.getElementById('sidebarSubText').innerText = `GST: ${activeUser.gstNumber || 'UNREGISTERED'}`;
-        document.getElementById('sessionUserName').innerText = activeUser.serviceName;
-        document.getElementById('sessionUserEmail').innerText = activeUser.email;
-        document.getElementById('userBadgeAvatar').innerText = activeUser.serviceName.slice(0, 2).toUpperCase();
-
-        const daysLeft = getRemainingDays(activeUser.validUntil);
-        const isExpired = (daysLeft <= 0 || activeUser.status !== 'ACTIVE');
-
-        const planBadge = document.getElementById('userPlanBadge');
-        const daysLeftText = document.getElementById('userPlanDaysLeftText');
-        const expiryDateText = document.getElementById('userPlanExpiryDateText');
-        const renewalBanner = document.getElementById('renewalRequiredBanner');
-
-        const btnDashCreateInv = document.getElementById('btnUserDashCreateInv');
-        const btnInvoicesCreateInv = document.getElementById('btnUserInvoicesCreateInv');
-
-        if (isExpired) {
-          planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-700 border border-red-300';
-          planBadge.innerText = 'EXPIRED (RENEWAL REQUIRED)';
-          daysLeftText.innerText = '0 Days Left';
-          daysLeftText.className = 'text-xs font-black text-red-600';
-          expiryDateText.innerText = `Expired on: ${activeUser.validUntil || 'N/A'}`;
-          renewalBanner.classList.remove('hidden');
-
-          if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition touch-target';
-            btnDashCreateInv.innerHTML = `<i class="ph ph-lock-key"></i> Renewal Required`;
-          }
-          if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow touch-target';
-            btnInvoicesCreateInv.innerHTML = `<i class="ph ph-lock-key"></i> Renewal Required`;
-          }
-        } else {
-          planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200';
-          planBadge.innerText = 'ACTIVE PLAN';
-          daysLeftText.innerText = `${daysLeft} Days Remaining`;
-          daysLeftText.className = 'text-xs font-black text-slate-800';
-          expiryDateText.innerText = `Valid till: ${activeUser.validUntil}`;
-          renewalBanner.classList.add('hidden');
-
-          if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
-            btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
-          }
-          if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
-            btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
-          }
-        }
-
-        navContainer.innerHTML = `
-          <button type="button" onclick="switchUserSection('dashboard'); toggleMobileSidebar(true);" id="navUserDash" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm touch-target">
-            <i class="ph ph-squares-four text-lg"></i> Dashboard
-          </button>
-          <button type="button" onclick="switchUserSection('invoices'); toggleMobileSidebar(true);" id="navUserInvoices" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target">
-            <i class="ph ph-receipt text-lg"></i> Invoices
-          </button>
-          <button type="button" onclick="switchUserSection('customers'); toggleMobileSidebar(true);" id="navUserCustomers" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target">
-            <i class="ph ph-users text-lg"></i> Customers
-          </button>
-          <button type="button" onclick="switchUserSection('products'); toggleMobileSidebar(true);" id="navUserProducts" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target">
-            <i class="ph ph-package text-lg"></i> Products / Services
-          </button>
-          <button type="button" onclick="switchUserSection('reports'); toggleMobileSidebar(true);" id="navUserReports" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target">
-            <i class="ph ph-chart-pie-slice text-lg"></i> Reports & GST
-          </button>
-          <button type="button" onclick="switchUserSection('settings'); toggleMobileSidebar(true);" id="navUserSettings" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target">
-            <i class="ph ph-sliders text-lg"></i> Business Settings
-          </button>
-        `;
-
-        switchUserSection('dashboard');
-      }
-    }
-
-    function renderAdminUsersTable() {
-      const tbody = document.getElementById('adminUsersTableBody');
-      const mobileCardsContainer = document.getElementById('adminUsersMobileCards');
-      tbody.innerHTML = '';
-      mobileCardsContainer.innerHTML = '';
-
-      let pendingCount = 0, activeCount = 0, suspendedCount = 0;
-
-      tenantUsers.forEach(u => {
-        const daysLeft = getRemainingDays(u.validUntil);
-        const isExpired = (daysLeft <= 0 || u.status !== 'ACTIVE');
-
-        if (u.status === 'PENDING') pendingCount++;
-        else if (u.status === 'ACTIVE' && !isExpired) activeCount++;
-        else suspendedCount++;
-
-        let badgeHtml = '';
-        let planLabel = u.planPreset === '7' ? 'Free Trial (7d)' : u.planPreset === '30' ? '1 Month (₹99)' : u.planPreset === '90' ? '3 Months (₹249)' : u.planPreset === '180' ? '6 Months (₹449)' : u.planPreset === '365' ? '12 Months (₹799)' : 'Custom Days';
-
-        let daysLeftBadge = '';
-        if (u.status === 'PENDING') {
-          daysLeftBadge = `<span class="text-slate-400 font-mono italic">Not Set</span>`;
-          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-300 animate-pulse">PENDING APPROVAL</span>`;
-        } else if (isExpired) {
-          daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-red-100 text-red-700 border border-red-300">0 Days (Expired)</span>`;
-          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">EXPIRED</span>`;
-        } else {
-          daysLeftBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
-          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
-        }
-
-        // Desktop Table Row
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
-        tr.innerHTML = `
-          <td class="py-3.5 px-3 sm:px-4 font-bold text-slate-900">${u.serviceName}</td>
-          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-medium">${u.category || 'OTT & Broadband'}</td>
-          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.email}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
-          <td class="py-3.5 px-3 sm:px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">${planLabel}</span></td>
-          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.validUntil || 'Not Assigned'}</td>
-          <td class="py-3.5 px-3 sm:px-4">${daysLeftBadge}</td>
-          <td class="py-3.5 px-3 sm:px-4">${badgeHtml}</td>
-          <td class="py-3.5 px-3 sm:px-4 text-center">
-            <div class="flex items-center justify-center gap-1.5 flex-wrap min-w-[200px]">
-              ${u.status === 'ACTIVE' ? `
-                <button type="button" onclick="openUserReviewModal('${u.id}')" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-[11px] shadow-sm transition flex items-center gap-1 touch-target">
-                  <i class="ph ph-magnifying-glass font-bold"></i> Review
-                </button>
-                <button type="button" onclick="impersonateUser('${u.id}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-[11px] shadow-sm transition touch-target">
-                  Login
-                </button>
-              ` : ''}
-              <button type="button" onclick="openApprovePlanModal('${u.id}')" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs shadow-sm transition flex items-center gap-1 touch-target">
-                <i class="ph ph-calendar-plus"></i> Plan
-              </button>
-              <button type="button" onclick="deleteTenantAccount('${u.id}')" class="text-slate-400 hover:text-red-600 p-2 touch-target">
-                <i class="ph ph-trash text-base"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-
-        // Mobile Responsive Card
-        const card = document.createElement('div');
-        card.className = 'bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3';
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
-            <div>
-              <h4 class="font-bold text-slate-900 text-sm">${u.serviceName}</h4>
-              <p class="text-[11px] text-slate-500">${u.category || 'OTT & Broadband'}</p>
-              <p class="text-[11px] font-mono text-indigo-600 font-bold">${u.email}</p>
-            </div>
-            <div class="text-right">
-              ${badgeHtml}
-              <p class="text-[10px] text-slate-400 font-mono mt-1">${u.phone || ''}</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase block">Plan:</span>
-              <span class="font-bold text-slate-800">${planLabel}</span>
-            </div>
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase block">Validity:</span>
-              <span class="font-bold text-slate-800">${daysLeftBadge}</span>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-2 pt-1">
-            ${u.status === 'ACTIVE' ? `
-              <button type="button" onclick="openUserReviewModal('${u.id}')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
-                <i class="ph ph-magnifying-glass"></i> Review
-              </button>
-              <button type="button" onclick="impersonateUser('${u.id}')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
-                <i class="ph ph-user"></i> Login
-              </button>
-            ` : `<div class="col-span-2"></div>`}
-            <button type="button" onclick="openApprovePlanModal('${u.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-sm touch-target">
-              <i class="ph ph-calendar-plus"></i> Plan
-            </button>
-          </div>
-          <div class="flex justify-end pt-1">
-            <button type="button" onclick="deleteTenantAccount('${u.id}')" class="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 p-1 touch-target">
-              <i class="ph ph-trash"></i> Delete Account
-            </button>
-          </div>
-        `;
-        mobileCardsContainer.appendChild(card);
-      });
-
-      document.getElementById('statPendingApprovals').innerText = pendingCount;
-      document.getElementById('statActiveUsers').innerText = activeCount;
-      document.getElementById('statSuspendedUsers').innerText = suspendedCount;
-      document.getElementById('statTotalUsers').innerText = tenantUsers.length;
-    }
-
-    function openApprovePlanModal(userId) {
-      const user = tenantUsers.find(u => u.id === userId);
-      if (!user) return;
-      document.getElementById('approveTargetUserId').value = user.id;
-      document.getElementById('approveModalTargetUser').innerText = `Merchant: ${user.serviceName} (${user.email})`;
-      document.getElementById('approvePlanPreset').value = user.planPreset || '365';
-      document.getElementById('approveValidityDays').value = user.planPreset && user.planPreset !== 'custom' ? user.planPreset : '365';
-      document.getElementById('approvePlanModal').classList.remove('hidden');
-    }
-
-    function closeApprovePlanModal() {
-      document.getElementById('approvePlanModal').classList.add('hidden');
-    }
-
-    async function confirmApprovePlan() {
-      const userId = document.getElementById('approveTargetUserId').value;
-      const user = tenantUsers.find(u => u.id === userId);
-      if (!user) return;
-
-      const preset = document.getElementById('approvePlanPreset').value;
-      const days = parseInt(document.getElementById('approveValidityDays').value) || 30;
-
-      const expDate = new Date();
-      expDate.setDate(expDate.getDate() + days);
-      const validUntilStr = expDate.toISOString().split('T')[0];
-
-      user.planPreset = preset;
-      user.validUntil = validUntilStr;
-      user.status = 'ACTIVE';
-      saveDB();
-
-      if (supabase) {
-        try {
-          await supabase.from('tenants').update({
-            plan_preset: preset,
-            valid_until: validUntilStr,
-            status: 'ACTIVE'
-          }).eq('id', user.id);
-        } catch (e) {}
-      }
-
-      closeApprovePlanModal();
-      renderAdminUsersTable();
-      alert(`Plan approved & activated for "${user.serviceName}" with ${days} days validity!`);
-    }
-
-    function openCreateUserModal() {
-      document.getElementById('createUserModal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('newAccServiceName').focus(), 100);
-    }
-    function closeCreateUserModal() {
-      document.getElementById('createUserModal').classList.add('hidden');
-    }
-
-    async function submitNewUserAccount() {
-      const name = document.getElementById('newAccServiceName').value.trim();
-      const cat = document.getElementById('newAccCategory').value.trim();
-      let rawUser = document.getElementById('newAccUsername').value.trim().toLowerCase().replace(/@(bebill\.in|ottloop\.com)$/i, '');
-      const phone = document.getElementById('newAccPhone').value.trim();
-      const pass = document.getElementById('newAccPassword').value.trim();
-      const gst = document.getElementById('newAccGst').value.trim();
-      const planPreset = document.getElementById('newAccPlanPreset').value;
-      const validityDays = parseInt(document.getElementById('newAccValidityDays').value) || 365;
-
-      if (!name || !rawUser) {
-        alert('Please provide Company Name and Username.');
-        return;
-      }
-
-      const cleanEmail = `${rawUser}@bebill.in`;
-      const expDate = new Date();
-      expDate.setDate(expDate.getDate() + validityDays);
-
-      const newId = 'usr_' + Date.now();
-
-      tenantUsers.unshift({
-        id: newId,
-        username: rawUser,
-        email: cleanEmail,
-        password: pass || 'user123',
-        serviceName: name,
-        category: cat || 'OTT & Broadband Services',
-        phone: phone || '+91 9800000000',
-        gstNumber: gst || 'UNREGISTERED',
-        planPreset: planPreset,
-        status: 'ACTIVE',
-        validUntil: expDate.toISOString().split('T')[0],
-        customers: [],
-        products: [],
-        invoices: []
-      });
-      saveDB();
-
-      if (supabase) {
-        try {
-          await supabase.from('tenants').insert([{
-            id: newId,
-            username: rawUser,
-            email: cleanEmail,
-            password: pass || 'user123',
-            service_name: name,
-            category: cat,
-            gst_number: gst || 'UNREGISTERED',
-            phone: phone || '+91 9800000000',
-            plan_preset: planPreset,
-            status: 'ACTIVE',
-            valid_until: expDate.toISOString().split('T')[0]
-          }]);
-        } catch (e) {}
-      }
-
-      closeCreateUserModal();
-      renderAdminUsersTable();
-      alert(`Account ${cleanEmail} created successfully!`);
-    }
-
-    async function deleteTenantAccount(userId) {
-      if (confirm('Are you sure you want to remove this account?')) {
-        tenantUsers = tenantUsers.filter(u => u.id !== userId);
-        saveDB();
-        if (supabase) {
-          try { await supabase.from('tenants').delete().eq('id', userId); } catch (e) {}
-        }
-        renderAdminUsersTable();
-      }
-    }
-
-    // Invoice Builder Engine
-    function openInvoiceEditor() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      
-      const daysLeft = getRemainingDays(user.validUntil);
-      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
-        alert('❌ Subscription Expired! Renewal is required to generate new invoices.');
-        openRenewalModal();
-        return;
-      }
-
-      document.getElementById('userView').classList.add('hidden');
-      document.getElementById('invoiceEditorView').classList.remove('hidden');
-
-      document.getElementById('invRenderBusinessName').innerText = user.serviceName;
-      document.getElementById('invRenderAddress').innerText = user.address || 'Address Not Set';
-      document.getElementById('invRenderEmail').innerText = user.email;
-      document.getElementById('invRenderPhone').innerText = user.phone || '+91 0000000000';
-      document.getElementById('invRenderGstin').innerText = user.gstNumber || 'UNREGISTERED';
-
-      document.getElementById('invRenderUpiId').innerText = user.upiId || 'Not Configured';
-      document.getElementById('invRenderBankName').innerText = user.bankName || 'Not Configured';
-      document.getElementById('invRenderAccountNo').innerText = user.accountNumber || 'Not Configured';
-      document.getElementById('invRenderIfsc').innerText = user.ifsc || 'Not Configured';
-
-      document.getElementById('invEditDate').value = new Date().toISOString().split('T')[0];
-      const nextDue = new Date();
-      nextDue.setDate(nextDue.getDate() + 14);
-      document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
-      document.getElementById('invEditNumber').value = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
-      document.getElementById('invEditStatus').value = 'PENDING';
-
-      document.getElementById('invCustName').value = '';
-      document.getElementById('invCustPhone').value = '';
-      document.getElementById('invCustEmail').value = '';
-      document.getElementById('invCustGstin').value = '';
-      document.getElementById('invCustBillingAddress').value = '';
-
-      const picker = document.getElementById('invCustomerSelectPicker');
-      picker.innerHTML = '<option value="">+ Load Saved Customer</option>';
-      (user.customers || []).forEach(c => {
-        picker.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-      });
-
-      if (user.products && user.products.length > 0) {
-        const p = user.products[0];
-        activeInvoiceLines = [
-          { description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate }
-        ];
-      } else {
-        activeInvoiceLines = [
-          { description: 'Service / Product Item', qty: 1, price: 1000, discount: 0, tax: 18 }
-        ];
-      }
-
-      document.getElementById('invCalcShipping').value = 0;
-      renderInvoiceRows();
-      updateLiveInvoicePreview();
-    }
-
-    function closeInvoiceEditor() {
-      document.getElementById('invoiceEditorView').classList.add('hidden');
-      document.getElementById('userView').classList.remove('hidden');
-    }
-
-    function pickSavedCustomer(custId) {
-      if (!custId) return;
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const cust = (user.customers || []).find(c => c.id === custId);
-      if (cust) {
-        document.getElementById('invCustName').value = cust.name;
-        document.getElementById('invCustPhone').value = cust.phone || '';
-        document.getElementById('invCustEmail').value = cust.email || '';
-        document.getElementById('invCustGstin').value = cust.gstin || '';
-        document.getElementById('invCustBillingAddress').value = cust.address || '';
-        updateLiveInvoicePreview();
-      }
-    }
-
-    function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'INV-001';
-      document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
-      document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
-
-      const status = document.getElementById('invEditStatus').value;
-      const statusBadge = document.getElementById('invRenderStatusBadge');
-      statusBadge.innerText = status;
-      if (status === 'PAID') statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-300';
-      else if (status === 'PENDING') statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-300';
-      else statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-red-50 text-red-700 border border-red-300';
-
-      document.getElementById('invRenderCustName').innerText = document.getElementById('invCustName').value || 'Customer / Client Name';
-      document.getElementById('invRenderCustPhone').innerText = document.getElementById('invCustPhone').value || '--';
-      document.getElementById('invRenderCustGstin').innerText = document.getElementById('invCustGstin').value || '--';
-      document.getElementById('invRenderCustAddress').innerText = document.getElementById('invCustBillingAddress').value || 'Billing address not specified';
-    }
-
-    function renderInvoiceRows() {
-      const formList = document.getElementById('formLineItemsList');
-      const previewTbody = document.getElementById('invoiceLineItemsTbody');
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const cur = user.currency || '₹';
-      const catalog = user.products || [];
-
-      formList.innerHTML = '';
-      previewTbody.innerHTML = '';
-
-      let subtotal = 0, totalDiscount = 0, taxableAmount = 0, totalTax = 0;
-
-      activeInvoiceLines.forEach((line, idx) => {
-        const itemGross = line.qty * line.price;
-        const itemTaxable = Math.max(0, itemGross - line.discount);
-        const itemTax = itemTaxable * (line.tax / 100);
-        const itemTotal = itemTaxable + itemTax;
-
-        subtotal += itemGross;
-        totalDiscount += line.discount;
-        taxableAmount += itemTaxable;
-        totalTax += itemTax;
-
-        let catalogOptionsHtml = `<option value="">-- Choose from Catalog --</option>`;
-        catalog.forEach((prod, pIdx) => {
-          catalogOptionsHtml += `<option value="${pIdx}">${prod.name} (₹${prod.price} | GST: ${prod.taxRate}%)</option>`;
-        });
-
-        const card = document.createElement('div');
-        card.className = 'p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs shadow-xs';
-        card.innerHTML = `
-          <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
-            <span class="font-bold text-slate-500 text-[10px] uppercase">Item #${idx + 1}</span>
-            <div class="flex items-center gap-2">
-              <select onchange="populateLineFromCatalog(${idx}, this.value)" class="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg p-1 font-semibold">
-                ${catalogOptionsHtml}
-              </select>
-              <button type="button" onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 p-1"><i class="ph ph-trash text-base"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Item Name / Description</label>
-            <input type="text" value="${line.description}" oninput="updateLine(${idx}, 'description', this.value)" class="w-full font-bold bg-white border border-slate-300 rounded-xl p-2 focus:outline-none" />
-          </div>
-          <div class="grid grid-cols-4 gap-2">
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Qty</label>
-              <input type="number" min="1" value="${line.qty}" oninput="updateLine(${idx}, 'qty', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Rate (₹)</label>
-              <input type="number" min="0" value="${line.price}" oninput="updateLine(${idx}, 'price', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Disc (₹)</label>
-              <input type="number" min="0" value="${line.discount}" oninput="updateLine(${idx}, 'discount', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Tax %</label>
-              <input type="number" min="0" value="${line.tax}" oninput="updateLine(${idx}, 'tax', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
-            </div>
-          </div>
-        `;
-        formList.appendChild(card);
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-slate-800">${line.description || 'Untitled Item'}</td>
-          <td class="py-2.5 px-2 text-right">${line.qty}</td>
-          <td class="py-2.5 px-2 text-right">${cur}${line.price.toFixed(2)}</td>
-          <td class="py-2.5 px-2 text-right text-red-500">${line.discount ? '-' + cur + line.discount : '--'}</td>
-          <td class="py-2.5 px-2 text-right">${line.tax}%</td>
-          <td class="py-2.5 px-3 text-right font-bold text-slate-900">${cur}${itemTotal.toFixed(2)}</td>
-        `;
-        previewTbody.appendChild(tr);
-      });
-
-      const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
-      const grandTotal = taxableAmount + totalTax + shipping;
-
-      document.getElementById('invCalcSubtotal').innerText = `${cur}${subtotal.toFixed(2)}`;
-      document.getElementById('invCalcDiscount').innerText = `-${cur}${totalDiscount.toFixed(2)}`;
-      document.getElementById('invCalcTaxable').innerText = `${cur}${taxableAmount.toFixed(2)}`;
-      document.getElementById('invCalcTaxCombined').innerText = `${cur}${totalTax.toFixed(2)}`;
-      document.getElementById('invCalcGrandTotal').innerText = `${cur}${grandTotal.toFixed(2)}`;
-    }
-
-    function populateLineFromCatalog(lineIdx, catalogIdx) {
-      if (catalogIdx === "") return;
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const prod = (user.products || [])[parseInt(catalogIdx)];
-      if (prod) {
-        activeInvoiceLines[lineIdx].description = prod.name;
-        activeInvoiceLines[lineIdx].price = prod.price;
-        activeInvoiceLines[lineIdx].tax = prod.taxRate;
-        renderInvoiceRows();
-        updateLiveInvoicePreview();
-      }
-    }
-
-    function addInvoiceRow() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && user.products && user.products.length > 0) {
-        const p = user.products[0];
-        activeInvoiceLines.push({ description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate });
-      } else {
-        activeInvoiceLines.push({ description: 'New Service Item', qty: 1, price: 1000, discount: 0, tax: 18 });
-      }
-      renderInvoiceRows();
-    }
-
-    function removeLine(idx) {
-      if (activeInvoiceLines.length > 1) {
-        activeInvoiceLines.splice(idx, 1);
-        renderInvoiceRows();
-      }
-    }
-
-    function updateLine(idx, field, val) {
-      activeInvoiceLines[idx][field] = field === 'description' ? val : (parseFloat(val) || 0);
-      renderInvoiceRows();
-    }
-
-    function shareActiveInvoice() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const invNum = document.getElementById('invEditNumber').value || 'INV-001';
-      const custName = document.getElementById('invCustName').value || 'Client';
-      const custPhone = (document.getElementById('invCustPhone').value || '').replace(/[^0-9]/g, '');
-      const totalAmount = document.getElementById('invCalcGrandTotal').innerText;
-      const dueDate = document.getElementById('invEditDueDate').value || 'Immediate';
-
-      const shareText = `*Tax Invoice Details - ${user.serviceName} (bebill.in)*\n\n📄 Invoice #: ${invNum}\n👤 Billed To: ${custName}\n💰 Total Amount: ${totalAmount}\n📅 Due Date: ${dueDate}\n\nGenerated via Be Bill (https://bebill.in). Thank you!`;
-
-      if (navigator.share && window.innerWidth < 768) {
-        navigator.share({
-          title: `Invoice ${invNum} from ${user.serviceName}`,
-          text: shareText
-        }).catch(() => {});
-      } else {
-        const whatsappMsg = encodeURIComponent(shareText);
-        const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
-        window.open(url, '_blank');
-      }
-    }
-
-    async function saveAndFinalizeInvoice() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (!user) return;
-
-      const daysLeft = getRemainingDays(user.validUntil);
-      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
-        alert('❌ Plan Expired! Renewal required.');
-        openRenewalModal();
-        return;
-      }
-
-      let subtotal = 0, discount = 0, taxable = 0, totalTax = 0;
-
-      const processedLines = activeInvoiceLines.map(l => {
-        const itemGross = l.qty * l.price;
-        const itemTaxable = Math.max(0, itemGross - l.discount);
-        const itemTax = itemTaxable * (l.tax / 100);
-        const itemTotal = itemTaxable + itemTax;
-
-        subtotal += itemGross;
-        discount += l.discount;
-        taxable += itemTaxable;
-        totalTax += itemTax;
-
-        return {
-          description: l.description,
-          qty: l.qty,
-          price: l.price,
-          discount: l.discount,
-          tax: l.tax,
-          total: itemTotal
-        };
-      });
-
-      const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
-      const grandTotal = taxable + totalTax + shipping;
-
-      const invoiceRecord = {
-        id: 'inv_' + Date.now(),
-        number: document.getElementById('invEditNumber').value.trim(),
-        date: document.getElementById('invEditDate').value,
-        dueDate: document.getElementById('invEditDueDate').value,
-        status: document.getElementById('invEditStatus').value,
-        customerName: document.getElementById('invCustName').value.trim() || 'Client',
-        customerEmail: document.getElementById('invCustEmail').value.trim(),
-        customerPhone: document.getElementById('invCustPhone').value.trim(),
-        customerGstin: document.getElementById('invCustGstin').value.trim(),
-        billingAddress: document.getElementById('invCustBillingAddress').value.trim(),
-        lines: processedLines,
-        subtotal: subtotal,
-        discount: discount,
-        taxable: taxable,
-        cgst: totalTax / 2,
-        sgst: totalTax / 2,
-        shipping: shipping,
-        grandTotal: grandTotal
-      };
-
-      const existingIdx = (user.invoices || []).findIndex(i => i.number === invoiceRecord.number);
-      if (existingIdx >= 0) {
-        user.invoices[existingIdx] = invoiceRecord;
-      } else {
-        if (!user.invoices) user.invoices = [];
-        user.invoices.unshift(invoiceRecord);
-      }
-
-      saveDB();
-
-      if (supabase) {
-        try {
-          await supabase.from('invoices').insert([{
-            id: invoiceRecord.id,
-            tenant_id: user.id,
-            number: invoiceRecord.number,
-            date: invoiceRecord.date,
-            due_date: invoiceRecord.dueDate,
-            status: invoiceRecord.status,
-            customer_name: invoiceRecord.customerName,
-            customer_email: invoiceRecord.customerEmail,
-            customer_phone: invoiceRecord.customerPhone,
-            customer_gstin: invoiceRecord.customerGstin,
-            billing_address: invoiceRecord.billingAddress,
-            lines: invoiceRecord.lines,
-            subtotal: invoiceRecord.subtotal,
-            discount: invoiceRecord.discount,
-            taxable: invoiceRecord.taxable,
-            cgst: invoiceRecord.cgst,
-            sgst: invoiceRecord.sgst,
-            shipping: invoiceRecord.shipping,
-            grand_total: invoiceRecord.grandTotal
-          }]);
-        } catch (e) {}
-      }
-
-      alert(`Invoice ${invoiceRecord.number} successfully saved on Be Bill!`);
-      closeInvoiceEditor();
-      switchUserSection('invoices');
-    }
-
-    // Customer Handlers
+    // Customer & Product Handlers
     function openAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('custNewName').focus(), 100);
@@ -2171,7 +1237,6 @@
       }
 
       const newCust = { id: 'c_' + Date.now(), name, company, email, phone, gstin, address };
-
       if (!user.customers) user.customers = [];
       user.customers.push(newCust);
       saveDB();
@@ -2194,7 +1259,6 @@
       closeAddCustomerModal();
       renderUserCustomers(user);
     }
-
     async function deleteCustomer(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const cust = user.customers[idx];
@@ -2208,7 +1272,6 @@
       }
     }
 
-    // Product Handlers
     function openAddProductModal() {
       document.getElementById('addProductModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('prodNewName').focus(), 100);
@@ -2230,7 +1293,6 @@
       }
 
       const newProd = { id: 'p_' + Date.now(), name, price, taxRate, hsn, stock };
-
       if (!user.products) user.products = [];
       user.products.push(newProd);
       saveDB();
@@ -2252,7 +1314,6 @@
       closeAddProductModal();
       renderUserProducts(user);
     }
-
     async function deleteProduct(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const prod = user.products[idx];
@@ -2264,56 +1325,6 @@
         }
         renderUserProducts(user);
       }
-    }
-
-    // Settings
-    async function saveAllUserSettings() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (!user) return;
-
-      user.serviceName = document.getElementById('setBusinessName').value.trim();
-      user.category = document.getElementById('setCategory').value.trim();
-      user.gstNumber = document.getElementById('setGstin').value.trim();
-      user.email = document.getElementById('setEmail').value.trim();
-      user.phone = document.getElementById('setPhone').value.trim();
-      user.website = document.getElementById('setWebsite').value.trim();
-      user.logoUrl = document.getElementById('setLogoUrl').value.trim();
-      user.address = document.getElementById('setAddress').value.trim();
-      user.upiId = document.getElementById('setUpiId').value.trim();
-      user.bankName = document.getElementById('setBankName').value.trim();
-      user.accountNumber = document.getElementById('setBankAccount').value.trim();
-      user.ifsc = document.getElementById('setBankIfsc').value.trim();
-      user.invoicePrefix = document.getElementById('setInvPrefix').value.trim();
-      user.currency = document.getElementById('setCurrency').value;
-      user.terms = document.getElementById('setTerms').value;
-      user.notes = document.getElementById('setNotes').value;
-
-      saveDB();
-
-      if (supabase) {
-        try {
-          await supabase.from('tenants').update({
-            service_name: user.serviceName,
-            category: user.category,
-            gst_number: user.gstNumber,
-            email: user.email,
-            phone: user.phone,
-            website: user.website,
-            address: user.address,
-            upi_id: user.upiId,
-            bank_name: user.bankName,
-            account_number: user.accountNumber,
-            ifsc: user.ifsc,
-            invoice_prefix: user.invoicePrefix,
-            currency: user.currency,
-            terms: user.terms,
-            notes: user.notes
-          }).eq('id', user.id);
-        } catch (e) {}
-      }
-
-      switchRole('user');
-      alert('Settings saved successfully!');
     }
 
     // Modal Utilities
@@ -2386,7 +1397,6 @@
       return `For support, reach out to our team at <b>+91 7382680200</b> or via the WhatsApp button below!`;
     }
 
-    // Start
     init();
   </script>
 </body>
