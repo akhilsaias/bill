@@ -43,27 +43,25 @@
   <div id="impersonationBanner" class="hidden no-print bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between z-50 shadow-md flex-shrink-0">
     <div class="flex items-center gap-2">
       <i class="ph ph-shield-check text-lg"></i>
-      <span>Admin View: Currently logged in as <b id="impersonatedUserName" class="underline">User</b></span>
+      <span>Admin Impersonation: Logged in as <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
     <button type="button" onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
     </button>
   </div>
 
-  <!-- ==================== 1. STRICT GATEWAY: LOGIN & SIGNUP SCREEN ==================== -->
+  <!-- ==================== 1. GATEWAY: LOGIN & SIGNUP SCREEN ==================== -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl shadow-xl p-6 sm:p-8 space-y-5 my-auto">
       
-      <!-- Brand Logo -->
       <div class="text-center">
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight" id="authHeaderTitle">Be Bill Portal</h2>
-        <p class="text-xs text-slate-500 mt-0.5" id="authHeaderSubtitle">Enter valid credentials to access bebill.in</p>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill Portal</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Access bebill.in Invoicing Suite</p>
       </div>
 
-      <!-- Auth Tabs -->
       <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
         <button type="button" onclick="switchAuthMode('login')" id="tabBtnAuthLogin" class="flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target">
           Sign In
@@ -73,13 +71,12 @@
         </button>
       </div>
 
-      <!-- Alert Box -->
       <div id="authAlertBox" class="hidden text-xs font-semibold p-3 rounded-xl flex items-center gap-2">
         <i id="authAlertIcon" class="ph ph-warning-circle text-base flex-shrink-0"></i>
-        <span id="authAlertText">Notification message</span>
+        <span id="authAlertText">Notification</span>
       </div>
 
-      <!-- LOGIN FORM -->
+      <!-- Sign In Form -->
       <div id="formLoginContainer" class="space-y-4 text-xs">
         <div>
           <label class="font-bold text-slate-700 block mb-1.5">Username</label>
@@ -113,7 +110,7 @@
         </button>
 
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-          <span class="text-slate-400 font-semibold">Quick Test:</span>
+          <span class="text-slate-400 font-semibold">Quick Fill:</span>
           <div class="flex gap-2">
             <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Admin</button>
             <span class="text-slate-300">•</span>
@@ -122,7 +119,7 @@
         </div>
       </div>
 
-      <!-- SIGN UP FORM -->
+      <!-- Sign Up Form -->
       <div id="formSignupContainer" class="hidden space-y-3 text-xs">
         <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[11px] leading-relaxed">
           <i class="ph ph-info font-bold"></i> New merchant accounts require <b>Super Admin Plan Approval</b> before login.
@@ -141,7 +138,7 @@
 
         <div>
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium" onkeydown="handleEnterNavigation(event, 'signupUsername')">
+          <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
             <option value="OTT & Digital Streaming" selected>OTT & Digital Streaming</option>
             <option value="ISP & Broadband Services">ISP & Broadband Services</option>
             <option value="IT Services & Web Dev">IT Services & Web Dev</option>
@@ -208,7 +205,7 @@
     </div>
   </div>
 
-  <!-- ==================== 2. PROTECTED APPLICATION PORTAL ==================== -->
+  <!-- ==================== 2. APPLICATION PORTAL ==================== -->
   <div id="mainAppContainer" class="hidden flex-col h-full w-full">
     
     <!-- Top Header Bar -->
@@ -243,7 +240,7 @@
         <div class="overflow-y-auto custom-scrollbar">
           <div class="h-14 lg:h-16 px-5 flex items-center justify-between border-b border-slate-100">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center font-black text-base shadow-sm" id="sidebarLogoContainer">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center font-black text-base shadow-sm">
                 B
               </div>
               <div class="overflow-hidden">
@@ -636,33 +633,6 @@
                 </div>
               </div>
 
-              <div class="pt-4 border-t border-slate-100">
-                <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-3">3. Invoice Defaults & Terms</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs">
-                  <div>
-                    <label class="font-bold text-slate-700 block mb-1">Default Invoice Prefix</label>
-                    <input type="text" id="setInvPrefix" value="INV" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono uppercase focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" />
-                  </div>
-                  <div>
-                    <label class="font-bold text-slate-700 block mb-1">Currency Symbol</label>
-                    <select id="setCurrency" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                      <option value="₹">INR (₹)</option>
-                      <option value="$">USD ($)</option>
-                      <option value="€">EUR (€)</option>
-                      <option value="AED">AED (د.إ)</option>
-                    </select>
-                  </div>
-                  <div class="sm:col-span-2">
-                    <label class="font-bold text-slate-700 block mb-1">Default Terms & Conditions</label>
-                    <textarea id="setTerms" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-16 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"></textarea>
-                  </div>
-                  <div class="sm:col-span-2">
-                    <label class="font-bold text-slate-700 block mb-1">Default Notes</label>
-                    <textarea id="setNotes" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"></textarea>
-                  </div>
-                </div>
-              </div>
-
               <button type="button" onclick="saveAllUserSettings()" id="btnSaveAllSettings" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition touch-target">
                 Save All Business Settings
               </button>
@@ -764,7 +734,7 @@
                 </div>
               </div>
 
-              <!-- Line Items -->
+              <!-- Line Items with Catalog Dropdown -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
@@ -782,7 +752,6 @@
                   <input type="number" id="invCalcShipping" value="0" min="0" oninput="renderInvoiceRows()" class="w-24 text-right bg-slate-50 border border-slate-300 rounded-xl p-1.5 font-bold" />
                 </div>
               </div>
-
             </div>
 
             <!-- RIGHT: LIVE INVOICE PREVIEW -->
@@ -893,7 +862,7 @@
   </div>
 
   <!-- ==================== 3. FLOATING WHATSAPP & CHATBOT WIDGETS ==================== -->
-  <a href="https://api.whatsapp.com/send?phone=917382680200&text=Hello%20Be%20Bill%20Support,%20I%20need%20assistance%20with%20my%20Billing%20Portal." target="_blank" class="no-print fixed bottom-4 sm:bottom-6 right-16 sm:right-20 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 touch-target" title="Chat on WhatsApp / Call: 7382680200">
+  <a href="https://api.whatsapp.com/send?phone=917382680200&text=Hello%20Be%20Bill%20Support," target="_blank" class="no-print fixed bottom-4 sm:bottom-6 right-16 sm:right-20 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 touch-target" title="Chat on WhatsApp / Call: 7382680200">
     <i class="ph ph-whatsapp-logo text-2xl"></i>
   </a>
 
@@ -1012,7 +981,122 @@
     </div>
   </div>
 
-  <!-- MODALS -->
+  <!-- ==================== MODAL: ADMIN USER AUDIT / REVIEW ==================== -->
+  <div id="userReviewModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 w-full max-w-4xl rounded-3xl p-5 sm:p-8 space-y-5 sm:space-y-6 text-xs shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar my-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-start border-b border-slate-100 pb-3 sm:pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">MERCHANT AUDIT</span>
+            <span id="revPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1" id="revBusinessName">Business Name</h3>
+          <p class="text-xs text-slate-500 font-mono" id="revUsernameEmail">user@bebill.in</p>
+        </div>
+        <button type="button" onclick="closeUserReviewModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 touch-target">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <!-- Overview Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Category</span>
+          <span class="font-bold text-slate-800" id="revCategory">Broadband / OTT</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Phone</span>
+          <span class="font-mono text-slate-800 font-bold" id="revPhone">+91 --</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">GSTIN</span>
+          <span class="font-mono text-indigo-700 font-bold uppercase" id="revGst">--</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Address</span>
+          <span class="text-slate-600 truncate block" id="revAddress">--</span>
+        </div>
+      </div>
+
+      <!-- KPI Tiles -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Total Sales</p>
+          <p class="text-base sm:text-lg font-black text-indigo-600 mt-0.5" id="revTotalSales">₹0.00</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Current Month</p>
+          <p class="text-base sm:text-lg font-black text-emerald-600 mt-0.5" id="revMonthlySales">₹0.00</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Invoices</p>
+          <p class="text-base sm:text-lg font-black text-slate-800 mt-0.5" id="revTotalInvoices">0</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-purple-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Validity Left</p>
+          <p class="text-base sm:text-lg font-black text-purple-600 mt-0.5" id="revDaysLeft">0 Days</p>
+        </div>
+      </div>
+
+      <!-- Custom Date Filter -->
+      <div class="bg-indigo-50/50 p-3.5 sm:p-4 rounded-2xl border border-indigo-100 space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h4 class="font-bold text-indigo-950 text-xs uppercase tracking-wider">Custom Date Range Filter</h4>
+            <p class="text-[11px] text-indigo-700">Audit sales and invoice counts generated during specific dates</p>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
+              <span class="text-[10px] font-bold text-slate-500">From:</span>
+              <input type="date" id="revFilterFrom" class="text-xs bg-transparent focus:outline-none font-medium" />
+            </div>
+            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
+              <span class="text-[10px] font-bold text-slate-500">To:</span>
+              <input type="date" id="revFilterTo" class="text-xs bg-transparent focus:outline-none font-medium" />
+            </div>
+            <button type="button" onclick="applyReviewDateFilter()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm touch-target">
+              Filter
+            </button>
+            <button type="button" onclick="resetReviewDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl transition touch-target">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white px-3.5 sm:px-4 py-2.5 rounded-xl border border-indigo-100 text-xs gap-1 sm:gap-0">
+          <span class="text-slate-600">Range: <b id="revFilteredRangeLabel" class="text-indigo-950">All Time</b></span>
+          <div class="flex gap-4">
+            <span>Count: <b id="revFilteredInvoicesCount" class="text-slate-900 font-mono">0</b></span>
+            <span>Sales: <b id="revFilteredTotalAmount" class="text-emerald-600 font-mono font-bold">₹0.00</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices Breakdown Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto max-h-56 custom-scrollbar">
+          <table class="w-full text-left text-xs min-w-[500px]">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 sticky top-0">
+              <tr>
+                <th class="py-2 px-3">Invoice #</th>
+                <th class="py-2 px-3">Date</th>
+                <th class="py-2 px-3">Customer</th>
+                <th class="py-2 px-3">Status</th>
+                <th class="py-2 px-3 text-right">Grand Total</th>
+              </tr>
+            </thead>
+            <tbody id="revInvoicesTbody" class="divide-y divide-slate-100 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OTHER MODALS -->
   <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1195,7 +1279,7 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
@@ -1259,7 +1343,9 @@
       if (savedDB) {
         try { 
           const parsed = JSON.parse(savedDB);
-          if (parsed && parsed.length > 0) tenantUsers = parsed;
+          if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+            tenantUsers = parsed;
+          }
         } catch (e) {}
       }
       lockApp();
@@ -1332,24 +1418,18 @@
       const signupForm = document.getElementById('formSignupContainer');
       const tabLogin = document.getElementById('tabBtnAuthLogin');
       const tabSignup = document.getElementById('tabBtnAuthSignup');
-      const title = document.getElementById('authHeaderTitle');
-      const subtitle = document.getElementById('authHeaderSubtitle');
 
       if (mode === 'login') {
         loginForm.classList.remove('hidden');
         signupForm.classList.add('hidden');
         tabLogin.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target';
         tabSignup.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition touch-target';
-        title.innerText = 'Be Bill Portal';
-        subtitle.innerText = 'Sign in to your @bebill.in account';
         setTimeout(() => document.getElementById('loginUsername').focus(), 100);
       } else {
         signupForm.classList.remove('hidden');
         loginForm.classList.add('hidden');
         tabSignup.className = 'flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target';
         tabLogin.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition touch-target';
-        title.innerText = 'Create Business Account';
-        subtitle.innerText = 'Get access with your @bebill.in username';
         setTimeout(() => document.getElementById('signupServiceName').focus(), 100);
       }
     }
@@ -1381,24 +1461,23 @@
       const pass = document.getElementById('loginPassword').value.trim();
 
       if (!rawInput || !pass) {
-        showAuthAlert('Please enter both your username and password.');
+        showAuthAlert('Please enter both username and password.');
         return;
       }
 
       const cleanUser = rawInput.toLowerCase().replace(/@(bebill\.in|ottloop\.com)$/i, '').trim();
-
       isImpersonating = false;
 
-      // 1. Instant Super Admin Authentication
+      // Master Super Admin Check
       if (cleanUser === SUPER_ADMIN_USER.toLowerCase() && pass === SUPER_ADMIN_PASS) {
         unlockApp('admin');
         return;
       }
 
-      // 2. User / Merchant Check
+      // User / Merchant Check
       const fullEmail = `${cleanUser}@bebill.in`;
-      let matchUser = tenantUsers.find(u => 
-        (u.username.toLowerCase() === cleanUser || u.email.toLowerCase() === fullEmail) && 
+      const matchUser = tenantUsers.find(u => 
+        (u.username.toLowerCase() === cleanUser || (u.email && u.email.toLowerCase() === fullEmail)) && 
         u.password === pass
       );
 
@@ -1412,7 +1491,7 @@
         return;
       }
 
-      showAuthAlert('❌ Invalid username or password! Please verify credentials.');
+      showAuthAlert('❌ Invalid username or password!');
     }
 
     function handleSignupSubmit() {
@@ -1431,7 +1510,7 @@
       }
 
       const cleanEmail = `${rawUser}@bebill.in`;
-      const userExists = tenantUsers.some(u => u.username.toLowerCase() === rawUser || u.email.toLowerCase() === cleanEmail);
+      const userExists = tenantUsers.some(u => u.username.toLowerCase() === rawUser || (u.email && u.email.toLowerCase() === cleanEmail));
       if (userExists) {
         showAuthAlert(`The username "${rawUser}" is already taken.`);
         return;
@@ -1457,7 +1536,7 @@
       });
       saveDB();
 
-      showAuthAlert('✅ Request submitted! Super Admin will assign your validity plan shortly.', true);
+      showAuthAlert('✅ Request submitted! Super Admin will assign your plan shortly.', true);
       setTimeout(() => {
         document.getElementById('signupServiceName').value = '';
         document.getElementById('signupUsername').value = '';
@@ -1561,7 +1640,7 @@
         document.getElementById('sidebarOrgName').innerText = activeUser.serviceName;
         document.getElementById('sidebarSubText').innerText = `GST: ${activeUser.gstNumber || 'UNREGISTERED'}`;
         document.getElementById('sessionUserName').innerText = activeUser.serviceName;
-        document.getElementById('sessionUserEmail').innerText = activeUser.email;
+        document.getElementById('sessionUserEmail').innerText = activeUser.email || `${activeUser.username}@bebill.in`;
         document.getElementById('userBadgeAvatar').innerText = activeUser.serviceName.slice(0, 2).toUpperCase();
 
         const daysLeft = getRemainingDays(activeUser.validUntil);
@@ -1577,7 +1656,7 @@
 
         if (isExpired) {
           planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-700 border border-red-300';
-          planBadge.innerText = 'EXPIRED (RENEWAL REQUIRED)';
+          planBadge.innerText = 'EXPIRED';
           daysLeftText.innerText = '0 Days Left';
           daysLeftText.className = 'text-xs font-black text-red-600';
           expiryDateText.innerText = `Expired on: ${activeUser.validUntil || 'N/A'}`;
@@ -1600,13 +1679,21 @@
           renewalBanner.classList.add('hidden');
 
           if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
           }
+        }
+
+        // Automatic 1-Day Prior Alert Popup
+        if (daysLeft === 1) {
+          setTimeout(() => {
+            alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan to continue using invoice services.');
+            openRenewalModal();
+          }, 600);
         }
 
         navContainer.innerHTML = `
@@ -1661,7 +1748,7 @@
           daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-red-100 text-red-700 border border-red-300">0 Days (Expired)</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">EXPIRED</span>`;
         } else {
-          daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
+          daysLeftBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
@@ -1671,7 +1758,7 @@
         tr.innerHTML = `
           <td class="py-3.5 px-3 sm:px-4 font-bold text-slate-900">${u.serviceName}</td>
           <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-medium">${u.category || 'OTT & Broadband'}</td>
-          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.email}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
+          <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.email || u.username + '@bebill.in'}<span class="block text-slate-500 font-sans text-[11px]">${u.phone || '--'}</span></td>
           <td class="py-3.5 px-3 sm:px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">${planLabel}</span></td>
           <td class="py-3.5 px-3 sm:px-4 text-slate-600 font-mono">${u.validUntil || 'Not Assigned'}</td>
           <td class="py-3.5 px-3 sm:px-4">${daysLeftBadge}</td>
@@ -1697,7 +1784,7 @@
         `;
         tbody.appendChild(tr);
 
-        // Mobile Responsive Card
+        // Mobile Card View
         const card = document.createElement('div');
         card.className = 'bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3';
         card.innerHTML = `
@@ -1705,7 +1792,7 @@
             <div>
               <h4 class="font-bold text-slate-900 text-sm">${u.serviceName}</h4>
               <p class="text-[11px] text-slate-500">${u.category || 'OTT & Broadband'}</p>
-              <p class="text-[11px] font-mono text-indigo-600 font-bold">${u.email}</p>
+              <p class="text-[11px] font-mono text-indigo-600 font-bold">${u.email || u.username + '@bebill.in'}</p>
             </div>
             <div class="text-right">
               ${badgeHtml}
@@ -1754,7 +1841,7 @@
       const user = tenantUsers.find(u => u.id === userId);
       if (!user) return;
       document.getElementById('approveTargetUserId').value = user.id;
-      document.getElementById('approveModalTargetUser').innerText = `Merchant: ${user.serviceName} (${user.email})`;
+      document.getElementById('approveModalTargetUser').innerText = `Merchant: ${user.serviceName} (${user.email || user.username + '@bebill.in'})`;
       document.getElementById('approvePlanPreset').value = user.planPreset || '365';
       document.getElementById('approveValidityDays').value = user.planPreset && user.planPreset !== 'custom' ? user.planPreset : '365';
       document.getElementById('approvePlanModal').classList.remove('hidden');
@@ -1862,7 +1949,7 @@
 
       document.getElementById('invRenderBusinessName').innerText = user.serviceName;
       document.getElementById('invRenderAddress').innerText = user.address || 'Address Not Set';
-      document.getElementById('invRenderEmail').innerText = user.email;
+      document.getElementById('invRenderEmail').innerText = user.email || `${user.username}@bebill.in`;
       document.getElementById('invRenderPhone').innerText = user.phone || '+91 0000000000';
       document.getElementById('invRenderGstin').innerText = user.gstNumber || 'UNREGISTERED';
 
@@ -2146,11 +2233,11 @@
         grandTotal: grandTotal
       };
 
-      const existingIdx = (user.invoices || []).findIndex(i => i.number === invoiceRecord.number);
+      if (!user.invoices) user.invoices = [];
+      const existingIdx = user.invoices.findIndex(i => i.number === invoiceRecord.number);
       if (existingIdx >= 0) {
         user.invoices[existingIdx] = invoiceRecord;
       } else {
-        if (!user.invoices) user.invoices = [];
         user.invoices.unshift(invoiceRecord);
       }
 
@@ -2160,7 +2247,7 @@
       switchUserSection('invoices');
     }
 
-    // Customer Handlers
+    // Customer Actions
     function openAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('custNewName').focus(), 100);
@@ -2194,14 +2281,14 @@
 
     function deleteCustomer(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && confirm('Delete this customer profile?')) {
+      if (user && user.customers && confirm('Delete this customer profile?')) {
         user.customers.splice(idx, 1);
         saveDB();
         renderUserCustomers(user);
       }
     }
 
-    // Product Handlers
+    // Product Actions
     function openAddProductModal() {
       document.getElementById('addProductModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('prodNewName').focus(), 100);
@@ -2234,7 +2321,7 @@
 
     function deleteProduct(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && confirm('Delete this catalog item?')) {
+      if (user && user.products && confirm('Delete this catalog item?')) {
         user.products.splice(idx, 1);
         saveDB();
         renderUserProducts(user);
@@ -2282,6 +2369,8 @@
     function renderUserInvoices(user) {
       const tbody = document.getElementById('userInvoicesTableBody');
       tbody.innerHTML = '';
+      document.getElementById('userInvoicesCount').innerText = `${(user.invoices || []).length} Records`;
+      
       (user.invoices || []).forEach((inv, idx) => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50">
@@ -2317,10 +2406,19 @@
       if (sec === 'invoices') renderUserInvoices(user);
       if (sec === 'customers') renderUserCustomers(user);
       if (sec === 'products') renderUserProducts(user);
+      if (sec === 'reports') renderUserReports(user);
       if (sec === 'settings') {
         document.getElementById('setBusinessName').value = user.serviceName || '';
+        document.getElementById('setCategory').value = user.category || '';
         document.getElementById('setGstin').value = user.gstNumber || '';
+        document.getElementById('setEmail').value = user.email || '';
+        document.getElementById('setPhone').value = user.phone || '';
+        document.getElementById('setWebsite').value = user.website || '';
         document.getElementById('setAddress').value = user.address || '';
+        document.getElementById('setUpiId').value = user.upiId || '';
+        document.getElementById('setBankName').value = user.bankName || '';
+        document.getElementById('setBankAccount').value = user.accountNumber || '';
+        document.getElementById('setBankIfsc').value = user.ifsc || '';
       }
       toggleMobileSidebar(true);
     }
@@ -2328,27 +2426,167 @@
     function loadDashboardMetrics(user) {
       const invs = user.invoices || [];
       document.getElementById('dashTotalInvoices').innerText = invs.length;
-      let paid = 0, pending = 0;
+      let paid = 0, pending = 0, overdue = 0;
       invs.forEach(i => {
         if (i.status === 'PAID') paid += i.grandTotal;
+        else if (i.status === 'OVERDUE') overdue += i.grandTotal;
         else pending += i.grandTotal;
       });
       document.getElementById('dashPaidAmount').innerText = `₹${paid.toFixed(2)}`;
       document.getElementById('dashPendingAmount').innerText = `₹${pending.toFixed(2)}`;
-      document.getElementById('dashTotalRevenue').innerText = `₹${(paid + pending).toFixed(2)}`;
+      document.getElementById('dashOverdueAmount').innerText = `₹${overdue.toFixed(2)}`;
+      document.getElementById('dashTotalRevenue').innerText = `₹${(paid + pending + overdue).toFixed(2)}`;
+    }
+
+    function renderUserReports(user) {
+      const invs = user.invoices || [];
+      let totalTax = 0, realized = 0, outstanding = 0;
+      invs.forEach(i => {
+        const tax = (i.grandTotal || 0) * 0.18;
+        totalTax += tax;
+        if (i.status === 'PAID') realized += i.grandTotal;
+        else outstanding += i.grandTotal;
+      });
+      document.getElementById('reportTaxCollected').innerText = `₹${totalTax.toFixed(2)}`;
+      document.getElementById('reportCgst').innerText = `₹${(totalTax / 2).toFixed(2)}`;
+      document.getElementById('reportSgst').innerText = `₹${(totalTax / 2).toFixed(2)}`;
+      document.getElementById('reportRealizedSales').innerText = `₹${realized.toFixed(2)}`;
+      document.getElementById('reportOutstanding').innerText = `₹${outstanding.toFixed(2)}`;
     }
 
     function saveAllUserSettings() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return;
       user.serviceName = document.getElementById('setBusinessName').value.trim();
+      user.category = document.getElementById('setCategory').value.trim();
       user.gstNumber = document.getElementById('setGstin').value.trim();
+      user.email = document.getElementById('setEmail').value.trim();
+      user.phone = document.getElementById('setPhone').value.trim();
+      user.website = document.getElementById('setWebsite').value.trim();
       user.address = document.getElementById('setAddress').value.trim();
+      user.upiId = document.getElementById('setUpiId').value.trim();
+      user.bankName = document.getElementById('setBankName').value.trim();
+      user.accountNumber = document.getElementById('setBankAccount').value.trim();
+      user.ifsc = document.getElementById('setBankIfsc').value.trim();
       saveDB();
       alert('Settings Saved Successfully!');
     }
 
-    // Modal Utilities
+    // Admin Review Modal
+    function openUserReviewModal(userId) {
+      currentReviewUserId = userId;
+      const user = tenantUsers.find(u => u.id === userId);
+      if (!user) return;
+
+      const daysLeft = getRemainingDays(user.validUntil);
+      const isExpired = (daysLeft <= 0 || user.status !== 'ACTIVE');
+
+      document.getElementById('revBusinessName').innerText = user.serviceName;
+      document.getElementById('revUsernameEmail').innerText = `${user.username}@bebill.in • ${user.email || user.username + '@bebill.in'}`;
+      document.getElementById('revCategory').innerText = user.category || 'General Merchant';
+      document.getElementById('revPhone').innerText = user.phone || 'Not Provided';
+      document.getElementById('revGst').innerText = user.gstNumber || 'UNREGISTERED';
+      document.getElementById('revAddress').innerText = user.address || 'Address Not Provided';
+
+      const badge = document.getElementById('revPlanBadge');
+      if (isExpired) {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-300';
+        badge.innerText = 'EXPIRED';
+        document.getElementById('revDaysLeft').innerText = '0 Days (Expired)';
+      } else {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        badge.innerText = 'ACTIVE';
+        document.getElementById('revDaysLeft').innerText = `${daysLeft} Days`;
+      }
+
+      const allInvs = user.invoices || [];
+      const totalSales = allInvs.reduce((sum, i) => sum + (i.grandTotal || 0), 0);
+
+      const now = new Date();
+      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const monthlySales = allInvs
+        .filter(i => (i.date || '').startsWith(currentYearMonth))
+        .reduce((sum, i) => sum + (i.grandTotal || 0), 0);
+
+      document.getElementById('revTotalSales').innerText = `₹${totalSales.toFixed(2)}`;
+      document.getElementById('revMonthlySales').innerText = `₹${monthlySales.toFixed(2)}`;
+      document.getElementById('revTotalInvoices').innerText = allInvs.length;
+
+      document.getElementById('revFilterFrom').value = '';
+      document.getElementById('revFilterTo').value = '';
+
+      renderReviewInvoicesTable(allInvs, 'All Time');
+      document.getElementById('userReviewModal').classList.remove('hidden');
+    }
+
+    function closeUserReviewModal() {
+      document.getElementById('userReviewModal').classList.add('hidden');
+      currentReviewUserId = null;
+    }
+
+    function applyReviewDateFilter() {
+      if (!currentReviewUserId) return;
+      const user = tenantUsers.find(u => u.id === currentReviewUserId);
+      if (!user) return;
+
+      const fromVal = document.getElementById('revFilterFrom').value;
+      const toVal = document.getElementById('revFilterTo').value;
+
+      if (!fromVal && !toVal) {
+        alert('Please select From Date or To Date.');
+        return;
+      }
+
+      let filtered = (user.invoices || []).filter(i => {
+        if (!i.date) return false;
+        if (fromVal && i.date < fromVal) return false;
+        if (toVal && i.date > toVal) return false;
+        return true;
+      });
+
+      const label = `${fromVal || 'Beginning'} → ${toVal || 'Today'}`;
+      renderReviewInvoicesTable(filtered, label);
+    }
+
+    function resetReviewDateFilter() {
+      if (!currentReviewUserId) return;
+      const user = tenantUsers.find(u => u.id === currentReviewUserId);
+      if (!user) return;
+
+      document.getElementById('revFilterFrom').value = '';
+      document.getElementById('revFilterTo').value = '';
+      renderReviewInvoicesTable(user.invoices || [], 'All Time');
+    }
+
+    function renderReviewInvoicesTable(invoicesList, rangeLabel) {
+      const tbody = document.getElementById('revInvoicesTbody');
+      tbody.innerHTML = '';
+
+      document.getElementById('revFilteredRangeLabel').innerText = rangeLabel;
+      document.getElementById('revFilteredInvoicesCount').innerText = invoicesList.length;
+
+      const filteredTotal = invoicesList.reduce((sum, i) => sum + (i.grandTotal || 0), 0);
+      document.getElementById('revFilteredTotalAmount').innerText = `₹${filteredTotal.toFixed(2)}`;
+
+      if (invoicesList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">No invoices found for this period.</td></tr>`;
+        return;
+      }
+
+      invoicesList.forEach(inv => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2.5 px-3 font-bold text-indigo-600 font-mono">${inv.number}</td>
+            <td class="py-2.5 px-3 text-slate-600">${inv.date}</td>
+            <td class="py-2.5 px-3 font-bold text-slate-800">${inv.customerName}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${inv.status==='PAID'?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${inv.status}</span></td>
+            <td class="py-2.5 px-3 text-right font-bold text-slate-900 font-mono">₹${inv.grandTotal.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Renewal Modal
     function openRenewalModal() {
       document.getElementById('renewalPlanModal').classList.remove('hidden');
     }
@@ -2358,11 +2596,12 @@
     function submitRenewalToWhatsApp() {
       const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
       const selectedPlan = document.querySelector('input[name="renewalPlanOption"]:checked')?.value || 'Monthly Plan (1 Month - ₹99)';
-      const messageText = `Hello Admin (Be Bill - bebill.in),%0A%0AI would like to renew my merchant subscription plan.%0A%0A🏢 *Business Name:* ${encodeURIComponent(user.serviceName)}%0A👤 *Username:* ${encodeURIComponent(user.username)}@bebill.in%0A📞 *Contact Phone:* ${encodeURIComponent(user.phone || '--')}%0A📦 *Selected Plan:* ${encodeURIComponent(selectedPlan)}%0A%0APlease share the payment confirmation and activate my validity.`;
+      const messageText = `Hello Admin (Be Bill - bebill.in),%0A%0AI want to renew my subscription plan.%0A%0A🏢 *Business Name:* ${encodeURIComponent(user.serviceName)}%0A👤 *Username:* ${encodeURIComponent(user.username)}@bebill.in%0A📞 *Phone:* ${encodeURIComponent(user.phone || '--')}%0A📦 *Plan:* ${encodeURIComponent(selectedPlan)}%0A%0APlease confirm activation.`;
       window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${messageText}`, '_blank');
       closeRenewalModal();
     }
 
+    // Chatbot
     function toggleChatbot() {
       const widget = document.getElementById('aiChatbotWidget');
       widget.classList.toggle('hidden');
@@ -2382,7 +2621,14 @@
       box.innerHTML += `<div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none text-xs ml-auto max-w-[80%]">${query}</div>`;
       input.value = '';
       setTimeout(() => {
-        box.innerHTML += `<div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-xs">For support, reach our WhatsApp team directly at <b>+91 7382680200</b>!</div>`;
+        let reply = "For immediate support or plan activations, WhatsApp our team at <b>+91 7382680200</b>!";
+        const q = query.toLowerCase();
+        if (q.includes('plan') || q.includes('price')) {
+          reply = "Be Bill Plans:<br>• Free Trial: 7 Days - ₹19<br>• Monthly: 1 Month - ₹99<br>• Quarterly: 3 Months - ₹249<br>• Half-Yearly: 6 Months - ₹449<br>• Yearly: 1 Year - ₹799<br><br><button type='button' onclick='openRenewalModal(); toggleChatbot();' class='text-indigo-600 font-bold underline'>Renew Plan</button>";
+        } else if (q.includes('invoice') || q.includes('create')) {
+          reply = "Click <b>+ Create Invoice</b> on your dashboard. Pick or type customer details, add products from your catalog, preview live, and click <b>Share</b> or <b>Print / PDF</b>!";
+        }
+        box.innerHTML += `<div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-xs">${reply}</div>`;
         box.scrollTop = box.scrollHeight;
       }, 300);
     }
