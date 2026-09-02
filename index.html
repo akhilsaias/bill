@@ -10,7 +10,7 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
     
     .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -43,7 +43,7 @@
   <div id="impersonationBanner" class="hidden no-print bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between z-50 shadow-md flex-shrink-0">
     <div class="flex items-center gap-2">
       <i class="ph ph-shield-check text-lg"></i>
-      <span>Admin View: Currently previewing as <b id="impersonatedUserName" class="underline">User</b></span>
+      <span>Admin View: Currently logged in as <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
     <button type="button" onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
@@ -217,10 +217,15 @@
 
         <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span class="font-bold text-slate-700 hidden sm:inline">Be Bill:</span>
-        <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">MERCHANT</span>
+        <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">SUPER_ADMIN</span>
       </div>
       
       <div class="flex items-center gap-1.5 sm:gap-2">
+        <div id="roleSwitcherButtons" class="hidden items-center gap-1 sm:gap-2">
+          <span class="text-slate-500 font-medium hidden md:inline">Portal View:</span>
+          <button type="button" onclick="switchRole('admin')" id="btnRoleAdmin" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition text-[11px] sm:text-xs touch-target">Admin</button>
+          <button type="button" onclick="switchRole('user')" id="btnRoleUser" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition text-[11px] sm:text-xs touch-target">User</button>
+        </div>
         <button type="button" onclick="logoutToLoginScreen()" class="ml-1 sm:ml-3 px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 font-bold transition flex items-center gap-1 text-[11px] sm:text-xs touch-target">
           <i class="ph ph-sign-out text-base"></i> <span class="hidden sm:inline">Log Out</span>
         </button>
@@ -267,10 +272,10 @@
         <div class="p-3 border-t border-slate-100 bg-slate-50 flex-shrink-0">
           <div class="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 shadow-sm">
             <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center flex-shrink-0" id="userBadgeAvatar">
-              M
+              SA
             </div>
             <div class="text-xs leading-tight truncate">
-              <p class="font-bold text-slate-900 truncate" id="sessionUserName">Merchant</p>
+              <p class="font-bold text-slate-900 truncate" id="sessionUserName">Super Admin</p>
               <p class="text-[10px] text-slate-500 truncate font-mono" id="sessionUserEmail">--</p>
             </div>
           </div>
@@ -682,7 +687,7 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH AUTOMATIC NAMING & SAVING ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH AUTOMATIC FORMATTED NAMING ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-6 pb-32">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -1209,7 +1214,7 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
@@ -1220,7 +1225,6 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
-    // Default Seed In-Memory Cache with Social Media handles
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1519,16 +1523,9 @@
       const invSec = document.getElementById('invoiceEditorView');
       const navContainer = document.getElementById('sidebarNavigation');
       const roleBadge = document.getElementById('currentRoleDisplay');
-      const switcherContainer = document.getElementById('roleSwitcherButtons');
       const userPlanCard = document.getElementById('userValiditySidebarCard');
 
       invSec.classList.add('hidden');
-
-      // STRICT SECURITY: Prevent standard users from accessing admin view
-      if (role === 'admin' && currentRole === 'CLIENT_USER' && !isImpersonating) {
-        alert('Access Denied: Users cannot access the admin panel.');
-        return;
-      }
 
       if (role === 'admin') {
         currentRole = 'SUPER_ADMIN';
@@ -1538,9 +1535,6 @@
 
         roleBadge.innerText = 'SUPER_ADMIN';
         roleBadge.className = 'bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold';
-        
-        // Hide role switcher in header for security clarity
-        switcherContainer.classList.add('hidden');
 
         adminSec.classList.remove('hidden');
         userSec.classList.add('hidden');
@@ -1565,7 +1559,6 @@
         
         roleBadge.innerText = `MERCHANT (${activeUser.serviceName.slice(0, 10)}...)`;
         roleBadge.className = 'bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono font-semibold';
-        switcherContainer.classList.add('hidden'); // Ensure users never see Admin switch buttons
 
         if (isImpersonating) {
           document.getElementById('impersonationBanner').classList.remove('hidden');
@@ -2276,7 +2269,6 @@
         return;
       }
 
-      // Automatically Save before sharing
       const savedInv = compileAndSaveCurrentInvoiceRecord();
       if (!savedInv) return;
 
