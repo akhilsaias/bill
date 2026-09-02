@@ -286,7 +286,7 @@
       <main class="flex-1 bg-slate-50 overflow-y-auto custom-scrollbar p-3 sm:p-6 md:p-8 w-full">
         
         <!-- ==================== VIEW 1: SUPER ADMIN PANEL ==================== -->
-        <section id="adminView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
+        <section id="adminView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto pb-24">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Client Accounts & Validity Tracking</h2>
@@ -351,7 +351,7 @@
         </section>
 
         <!-- ==================== VIEW 2: MERCHANT / USER PANEL ==================== -->
-        <section id="userView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
+        <section id="userView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto pb-24">
           <!-- Renewal Required Banner -->
           <div id="renewalRequiredBanner" class="hidden bg-red-50 border-2 border-red-300 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-red-900 space-y-3">
             <div class="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
@@ -555,13 +555,13 @@
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Realized Sales (Paid)</p>
                 <p class="text-xl sm:text-2xl font-black text-emerald-600" id="reportRealizedSales">₹0.00</p>
-                <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Fully settled and reconciled</p>
+                <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Fully settled and reconciled</div>
               </div>
 
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Outstanding Receivables</p>
                 <p class="text-xl sm:text-2xl font-black text-amber-600" id="reportOutstanding">₹0.00</p>
-                <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Pending & Overdue invoices</p>
+                <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">Pending & Overdue invoices</div>
               </div>
             </div>
           </div>
@@ -640,8 +640,8 @@
           </div>
         </section>
 
-        <!-- INVOICE GENERATOR VIEW -->
-        <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-4 sm:space-y-6">
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH AMPLE BOTTOM PADDING ==================== -->
+        <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-6 pb-32">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
               <button type="button" onclick="closeInvoiceEditor()" class="flex items-center gap-1 text-slate-600 hover:text-slate-900 font-bold text-xs transition touch-target p-1.5 bg-slate-100 rounded-xl">
@@ -664,8 +664,8 @@
             </div>
           </div>
 
-          <!-- Split Builder Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <!-- Split Builder Grid: Left = Form, Right = Canvas -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-12">
             <!-- LEFT: Structured Form -->
             <div class="no-print lg:col-span-5 space-y-4">
               <!-- Invoice Details -->
@@ -754,9 +754,9 @@
               </div>
             </div>
 
-            <!-- RIGHT: LIVE INVOICE PREVIEW -->
+            <!-- RIGHT: LIVE INVOICE PREVIEW WITH PADDING -->
             <div class="lg:col-span-7 sticky top-4">
-              <div class="print-area bg-white text-slate-900 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl border border-slate-200 space-y-6">
+              <div class="print-area bg-white text-slate-900 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl border border-slate-200 space-y-6 mb-16">
                 
                 <div class="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-slate-200 pb-5">
                   <div class="space-y-1">
@@ -839,7 +839,7 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200 text-[11px]">
+                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200 text-[11px] pb-6">
                   <div>
                     <p class="font-bold text-slate-400 uppercase text-[10px]">Notes & Terms</p>
                     <p class="text-slate-500 mt-0.5">Thank you for your business. Valid as per terms.</p>
@@ -1279,7 +1279,7 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
@@ -1290,7 +1290,7 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
-    // Guaranteed Default Local Cache
+    // Default In-Memory Cache
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1679,11 +1679,11 @@
           renewalBanner.classList.add('hidden');
 
           if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
           }
         }
@@ -2618,17 +2618,17 @@
       const query = input.value.trim();
       if (!query) return;
       const box = document.getElementById('chatbotMessages');
-      box.innerHTML += `<div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none text-xs ml-auto max-w-[80%]">${query}</div>`;
+      box.innerHTML += `<div class="bg-indigo-600 text-white p-2 rounded-xl text-right">${query}</div>`;
       input.value = '';
       setTimeout(() => {
         let reply = "For immediate support or plan activations, WhatsApp our team at <b>+91 7382680200</b>!";
         const q = query.toLowerCase();
-        if (q.includes('plan') || q.includes('price')) {
+        if (q.includes('plan') || q.includes('price') || q.includes('cost')) {
           reply = "Be Bill Plans:<br>• Free Trial: 7 Days - ₹19<br>• Monthly: 1 Month - ₹99<br>• Quarterly: 3 Months - ₹249<br>• Half-Yearly: 6 Months - ₹449<br>• Yearly: 1 Year - ₹799<br><br><button type='button' onclick='openRenewalModal(); toggleChatbot();' class='text-indigo-600 font-bold underline'>Renew Plan</button>";
-        } else if (q.includes('invoice') || q.includes('create')) {
+        } else if (q.includes('invoice') || q.includes('bill')) {
           reply = "Click <b>+ Create Invoice</b> on your dashboard. Pick or type customer details, add products from your catalog, preview live, and click <b>Share</b> or <b>Print / PDF</b>!";
         }
-        box.innerHTML += `<div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-xs">${reply}</div>`;
+        box.innerHTML += `<div class="bg-white p-2 rounded-xl border border-slate-200 text-xs">${reply}</div>`;
         box.scrollTop = box.scrollHeight;
       }, 300);
     }
