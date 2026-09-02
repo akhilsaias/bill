@@ -182,7 +182,7 @@
             type="password" 
             id="signupPassword" 
             placeholder="Create password" 
-            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupGst')"
           />
         </div>
@@ -702,9 +702,9 @@
           <!-- Split Builder Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             
-            <!-- LEFT: Structured Form -->
+            <!-- LEFT: Form Details -->
             <div class="no-print lg:col-span-5 space-y-4">
-              <!-- Invoice Meta -->
+              <!-- Invoice Details -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
                   <i class="ph ph-receipt text-base"></i> Step 1: Invoice Details
@@ -1180,7 +1180,6 @@
       localStorage.setItem('bebill_enterprise_db', JSON.stringify(tenantUsers));
     }
 
-    // Auth Form Handlers
     function switchAuthMode(mode) {
       hideAuthAlert();
       const loginForm = document.getElementById('formLoginContainer');
@@ -1241,6 +1240,7 @@
 
       isImpersonating = false;
 
+      // Super Admin Instant Authenticate
       if (rawUser === SUPER_ADMIN_USER.toLowerCase() && pass === SUPER_ADMIN_PASS) {
         unlockApp('admin');
         return;
@@ -1274,20 +1274,19 @@
       const sGst = document.getElementById('signupGst').value.trim();
 
       if (!sName || !rawUser || !sPass) {
-        showAuthAlert('Please complete all required fields (Company Name, Username & Password).');
+        showAuthAlert('Please complete all required fields.');
         return;
       }
 
       const cleanEmail = `${rawUser}@bebill.in`;
       const userExists = tenantUsers.some(u => u.username === rawUser || u.email === cleanEmail);
       if (userExists) {
-        showAuthAlert(`The username "${rawUser}" is already taken. Please choose another.`);
+        showAuthAlert(`The username "${rawUser}" is already taken.`);
         return;
       }
 
       const newId = 'usr_' + Date.now();
 
-      // Cloud Push to Supabase
       const { error: sbErr } = await supabase.from('tenants').insert([{
         id: newId,
         username: rawUser,
@@ -1301,9 +1300,7 @@
         plan_preset: '30'
       }]);
 
-      if (sbErr) {
-        console.error('Supabase signup insert error:', sbErr);
-      }
+      if (sbErr) console.error('Supabase signup insert error:', sbErr);
 
       await syncDataFromSupabase();
 
@@ -1455,15 +1452,8 @@
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
-          }
-
-          if (daysLeft === 1) {
-            setTimeout(() => {
-              alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan.');
-              openRenewalModal();
-            }, 800);
           }
         }
 
@@ -1612,6 +1602,128 @@
       document.getElementById('statTotalUsers').innerText = tenantUsers.length;
     }
 
+    function openUserReviewModal(userId) {
+      currentReviewUserId = userId;
+      const user = tenantUsers.find(u => u.id === userId);
+      if (!user) return;
+
+      const cur = user.currency || '₹';
+      const daysLeft = getRemainingDays(user.validUntil);
+      const isExpired = (daysLeft <= 0 || user.status !== 'ACTIVE');
+
+      document.getElementById('revBusinessName').innerText = user.serviceName;
+      document.getElementById('revUsernameEmail').innerText = `${user.username}@bebill.in • ${user.email}`;
+      document.getElementById('revCategory').innerText = user.category || 'General Merchant';
+      document.getElementById('revPhone').innerText = user.phone || 'Not Provided';
+      document.getElementById('revGst').innerText = user.gstNumber || 'UNREGISTERED';
+      document.getElementById('revAddress').innerText = user.address || 'Address Not Provided';
+
+      const badge = document.getElementById('revPlanBadge');
+      if (isExpired) {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-300';
+        badge.innerText = 'EXPIRED';
+        document.getElementById('revDaysLeft').innerText = '0 Days (Expired)';
+      } else {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        badge.innerText = 'ACTIVE';
+        document.getElementById('revDaysLeft').innerText = `${daysLeft} Days`;
+      }
+
+      const allInvs = user.invoices || [];
+      const totalSales = allInvs.reduce((sum, i) => sum + i.grandTotal, 0);
+
+      const now = new Date();
+      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const monthlySales = allInvs
+        .filter(i => (i.date || '').startsWith(currentYearMonth))
+        .reduce((sum, i) => sum + i.grandTotal, 0);
+
+      document.getElementById('revTotalSales').innerText = `${cur}${totalSales.toFixed(2)}`;
+      document.getElementById('revMonthlySales').innerText = `${cur}${monthlySales.toFixed(2)}`;
+      document.getElementById('revTotalInvoices').innerText = allInvs.length;
+
+      document.getElementById('revFilterFrom').value = '';
+      document.getElementById('revFilterTo').value = '';
+
+      renderReviewInvoicesTable(allInvs, 'All Time');
+
+      document.getElementById('userReviewModal').classList.remove('hidden');
+    }
+
+    function closeUserReviewModal() {
+      document.getElementById('userReviewModal').classList.add('hidden');
+      currentReviewUserId = null;
+    }
+
+    function applyReviewDateFilter() {
+      if (!currentReviewUserId) return;
+      const user = tenantUsers.find(u => u.id === currentReviewUserId);
+      if (!user) return;
+
+      const fromVal = document.getElementById('revFilterFrom').value;
+      const toVal = document.getElementById('revFilterTo').value;
+
+      if (!fromVal && !toVal) {
+        alert('Please select at least a From Date or To Date.');
+        return;
+      }
+
+      let filtered = (user.invoices || []).filter(i => {
+        if (!i.date) return false;
+        if (fromVal && i.date < fromVal) return false;
+        if (toVal && i.date > toVal) return false;
+        return true;
+      });
+
+      const label = `${fromVal || 'Beginning'} → ${toVal || 'Today'}`;
+      renderReviewInvoicesTable(filtered, label);
+    }
+
+    function resetReviewDateFilter() {
+      if (!currentReviewUserId) return;
+      const user = tenantUsers.find(u => u.id === currentReviewUserId);
+      if (!user) return;
+
+      document.getElementById('revFilterFrom').value = '';
+      document.getElementById('revFilterTo').value = '';
+      renderReviewInvoicesTable(user.invoices || [], 'All Time');
+    }
+
+    function renderReviewInvoicesTable(invoicesList, rangeLabel) {
+      const user = tenantUsers.find(u => u.id === currentReviewUserId);
+      const cur = user ? (user.currency || '₹') : '₹';
+      const tbody = document.getElementById('revInvoicesTbody');
+      tbody.innerHTML = '';
+
+      document.getElementById('revFilteredRangeLabel').innerText = rangeLabel;
+      document.getElementById('revFilteredInvoicesCount').innerText = invoicesList.length;
+
+      const filteredTotal = invoicesList.reduce((sum, i) => sum + i.grandTotal, 0);
+      document.getElementById('revFilteredTotalAmount').innerText = `${cur}${filteredTotal.toFixed(2)}`;
+
+      if (invoicesList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">No invoices found for the selected date range.</td></tr>`;
+        return;
+      }
+
+      invoicesList.forEach(inv => {
+        let badgeColor = 'bg-slate-100 text-slate-600';
+        if (inv.status === 'PAID') badgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+        if (inv.status === 'PENDING') badgeColor = 'bg-amber-50 text-amber-700 border border-amber-200';
+        if (inv.status === 'OVERDUE') badgeColor = 'bg-red-50 text-red-700 border border-red-200';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-bold text-indigo-600 font-mono">${inv.number}</td>
+          <td class="py-2.5 px-3 text-slate-600">${inv.date}</td>
+          <td class="py-2.5 px-3 font-bold text-slate-800">${inv.customerName}</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${inv.status}</span></td>
+          <td class="py-2.5 px-3 text-right font-bold text-slate-900 font-mono">${cur}${inv.grandTotal.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
     function openApprovePlanModal(userId) {
       const user = tenantUsers.find(u => u.id === userId);
       if (!user) return;
@@ -1640,7 +1752,6 @@
       expDate.setDate(expDate.getDate() + days);
       const validUntilStr = expDate.toISOString().split('T')[0];
 
-      // Update Supabase
       await supabase.from('tenants').update({
         plan_preset: preset,
         valid_until: validUntilStr,
@@ -1710,7 +1821,7 @@
       }
     }
 
-    // Customer CRM Handlers
+    // Customer Handlers
     function openAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('custNewName').focus(), 100);
@@ -1718,7 +1829,6 @@
     function closeAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.add('hidden');
     }
-
     async function submitNewCustomer() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const name = document.getElementById('custNewName').value.trim();
@@ -1750,7 +1860,6 @@
       closeAddCustomerModal();
       renderUserCustomers(user);
     }
-
     async function deleteCustomer(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const cust = user.customers[idx];
@@ -1761,7 +1870,7 @@
       }
     }
 
-    // Product Catalog Handlers
+    // Product Handlers
     function openAddProductModal() {
       document.getElementById('addProductModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('prodNewName').focus(), 100);
@@ -1769,7 +1878,6 @@
     function closeAddProductModal() {
       document.getElementById('addProductModal').classList.add('hidden');
     }
-
     async function submitNewProduct() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const name = document.getElementById('prodNewName').value.trim();
@@ -1799,7 +1907,6 @@
       closeAddProductModal();
       renderUserProducts(user);
     }
-
     async function deleteProduct(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       const prod = user.products[idx];
@@ -1810,7 +1917,7 @@
       }
     }
 
-    // Save Settings
+    // Settings
     async function saveAllUserSettings() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return;
@@ -1840,7 +1947,7 @@
       alert('All business settings saved to cloud on Be Bill!');
     }
 
-    // Finalize & Save Invoice to Supabase
+    // Invoices Finalize & Save
     async function saveAndFinalizeInvoice() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return;
@@ -1919,7 +2026,77 @@
       }
     }
 
-    // Launch
+    // Renewal & Chatbot
+    function openRenewalModal() {
+      document.getElementById('renewalPlanModal').classList.remove('hidden');
+    }
+    function closeRenewalModal() {
+      document.getElementById('renewalPlanModal').classList.add('hidden');
+    }
+    function submitRenewalToWhatsApp() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const selectedPlan = document.querySelector('input[name="renewalPlanOption"]:checked')?.value || 'Monthly Plan (1 Month - ₹99)';
+      const messageText = `Hello Admin (Be Bill - bebill.in),%0A%0AI would like to renew my merchant subscription plan.%0A%0A🏢 *Business Name:* ${encodeURIComponent(user.serviceName)}%0A👤 *Username:* ${encodeURIComponent(user.username)}@bebill.in%0A📞 *Contact Phone:* ${encodeURIComponent(user.phone || '--')}%0A📦 *Selected Plan:* ${encodeURIComponent(selectedPlan)}%0A%0APlease share the payment confirmation and activate my validity.`;
+      window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${messageText}`, '_blank');
+      closeRenewalModal();
+    }
+
+    function toggleChatbot() {
+      const widget = document.getElementById('aiChatbotWidget');
+      const icon = document.getElementById('chatbotToggleIcon');
+      if (widget.classList.contains('hidden')) {
+        widget.classList.remove('hidden');
+        icon.className = 'ph ph-x text-2xl';
+        setTimeout(() => document.getElementById('chatbotInput').focus(), 100);
+      } else {
+        widget.classList.add('hidden');
+        icon.className = 'ph ph-chat-centered-dots text-2xl';
+      }
+    }
+    function handleChatbotEnter(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleChatbotSend();
+      }
+    }
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chatbotInput').value = promptText;
+      handleChatbotSend();
+    }
+    function handleChatbotSend() {
+      const input = document.getElementById('chatbotInput');
+      const query = input.value.trim();
+      if (!query) return;
+      appendChatMessage(query, 'user');
+      input.value = '';
+      setTimeout(() => {
+        appendChatMessage(generateAIResponse(query), 'bot');
+      }, 450);
+    }
+    function appendChatMessage(text, sender) {
+      const container = document.getElementById('chatbotMessages');
+      const msgDiv = document.createElement('div');
+      if (sender === 'user') {
+        msgDiv.className = 'flex items-start justify-end gap-2';
+        msgDiv.innerHTML = `<div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none text-[11px] max-w-[80%] shadow-sm">${text}</div>`;
+      } else {
+        msgDiv.className = 'flex items-start gap-2';
+        msgDiv.innerHTML = `<div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">AI</div><div class="bg-white p-2.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-[11px] max-w-[85%] leading-relaxed">${text}</div>`;
+      }
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+    function generateAIResponse(query) {
+      const q = query.toLowerCase();
+      if (q.includes('plan') || q.includes('price') || q.includes('cost')) {
+        return `Be Bill Packages:<br>• Free Trial: 7 Days - ₹19<br>• Monthly: 1 Month - ₹99<br>• Quarterly: 3 Months - ₹249<br>• Half-Yearly: 6 Months - ₹449<br>• Yearly: 1 Year - ₹799<br><br><button onclick="openRenewalModal(); toggleChatbot();" class="text-indigo-600 font-bold underline">Renew on WhatsApp</button>`;
+      }
+      if (q.includes('invoice') || q.includes('bill')) {
+        return `Click on "+ Create Invoice". Choose products from your catalog dropdown or add custom rows. Click "Print / PDF" or "Share" to complete!`;
+      }
+      return `For support, reach out to our team at <b>+91 7382680200</b> or via the WhatsApp button below!`;
+    }
+
     init();
   </script>
 </body>
