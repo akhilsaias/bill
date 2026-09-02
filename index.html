@@ -4,27 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Be Bill - Enterprise Invoicing Suite</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
     .touch-target {
       touch-action: manipulation;
@@ -119,10 +108,14 @@
           Sign In to Dashboard
         </button>
 
-        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 space-y-1">
-          <p class="font-bold text-slate-700">Master Access Hint:</p>
-          <p>Admin: <span class="font-mono text-indigo-600 font-bold">billottloopstore</span></p>
-          <p>Demo User: <span class="font-mono text-indigo-600 font-bold">skyline</span> (Pass: <span class="font-mono">user123</span>)</p>
+        <!-- 1-Click Fill Helper for Easy Testing -->
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+          <span class="text-slate-400 font-semibold">Quick Fill:</span>
+          <div class="flex gap-2">
+            <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold">Fill Admin</button>
+            <span class="text-slate-300">•</span>
+            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold">Fill Demo User</button>
+          </div>
         </div>
       </form>
 
@@ -133,7 +126,7 @@
         </div>
 
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Business / Company Name</label>
+          <label class="font-bold text-slate-700 block mb-1">Business / Company Name *</label>
           <input 
             type="text" 
             id="signupServiceName" 
@@ -156,7 +149,7 @@
         </div>
 
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Choose Username</label>
+          <label class="font-bold text-slate-700 block mb-1">Choose Username *</label>
           <div class="flex items-center">
             <input 
               type="text" 
@@ -172,7 +165,7 @@
         </div>
 
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+          <label class="font-bold text-slate-700 block mb-1">Phone Number *</label>
           <input 
             type="text" 
             id="signupPhone" 
@@ -183,12 +176,12 @@
         </div>
 
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Set Account Password</label>
+          <label class="font-bold text-slate-700 block mb-1">Set Account Password *</label>
           <input 
             type="password" 
             id="signupPassword" 
             placeholder="Create password" 
-            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             required
           />
         </div>
@@ -214,13 +207,12 @@
   <!-- ==================== 2. PROTECTED APPLICATION PORTAL ==================== -->
   <div id="mainAppContainer" class="hidden flex-col h-full w-full">
     
-    <!-- Top Header Bar -->
+    <!-- Header -->
     <header class="no-print h-14 lg:h-12 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-3 sm:px-5 text-xs shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 sm:gap-3">
         <button type="button" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition touch-target" aria-label="Toggle Sidebar">
           <i class="ph ph-list text-xl"></i>
         </button>
-
         <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span class="font-bold text-slate-700 hidden sm:inline">Be Bill:</span>
         <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">SUPER_ADMIN</span>
@@ -241,7 +233,7 @@
     <div class="flex-1 flex overflow-hidden relative">
       <div id="mobileSidebarBackdrop" onclick="toggleMobileSidebar()" class="hidden fixed inset-0 bg-slate-900/50 z-30 lg:hidden backdrop-blur-xs"></div>
 
-      <!-- Responsive Sidebar Drawer -->
+      <!-- Sidebar -->
       <aside id="appSidebar" class="no-print fixed lg:static inset-y-0 left-0 z-40 w-64 sm:w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         <div class="overflow-y-auto custom-scrollbar">
           <div class="h-14 lg:h-16 px-5 flex items-center justify-between border-b border-slate-100">
@@ -288,10 +280,10 @@
         </div>
       </aside>
 
-      <!-- Main Dynamic Content Area -->
+      <!-- Main Area -->
       <main class="flex-1 bg-slate-50 overflow-y-auto custom-scrollbar p-3 sm:p-6 md:p-8 w-full">
         
-        <!-- VIEW 1: SUPER ADMIN PANEL -->
+        <!-- ADMIN VIEW -->
         <section id="adminView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -345,8 +337,7 @@
                     <th class="py-3 px-3 sm:px-4 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="adminUsersTableBody" class="divide-y divide-slate-100 font-medium">
-                </tbody>
+                <tbody id="adminUsersTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
               </table>
             </div>
           </div>
@@ -354,7 +345,7 @@
           <div class="sm:hidden space-y-3" id="adminUsersMobileCards"></div>
         </section>
 
-        <!-- VIEW 2: MERCHANT / USER PANEL -->
+        <!-- USER DASHBOARD VIEW -->
         <section id="userView" class="hidden space-y-5 sm:space-y-6 max-w-7xl mx-auto">
           <div id="renewalRequiredBanner" class="hidden bg-red-50 border-2 border-red-300 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-red-900 space-y-3">
             <div class="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
@@ -373,7 +364,6 @@
             </div>
           </div>
 
-          <!-- DASHBOARD -->
           <div id="userSectionDashboard" class="space-y-5 sm:space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -458,8 +448,7 @@
                       <th class="py-3 px-3 sm:px-4 text-center">Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="userInvoicesTableBody" class="divide-y divide-slate-100 font-medium">
-                  </tbody>
+                  <tbody id="userInvoicesTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
                 </table>
               </div>
             </div>
@@ -493,14 +482,13 @@
                       <th class="py-3 px-4 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="userCustomersTableBody" class="divide-y divide-slate-100 font-medium">
-                  </tbody>
+                  <tbody id="userCustomersTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
                 </table>
               </div>
             </div>
           </div>
 
-          <!-- PRODUCTS / SERVICES CATALOG TAB -->
+          <!-- PRODUCTS TAB -->
           <div id="userSectionProducts" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex items-center gap-3">
@@ -531,8 +519,7 @@
                       <th class="py-3 px-4 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="userProductsTableBody" class="divide-y divide-slate-100 font-medium">
-                  </tbody>
+                  <tbody id="userProductsTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
                 </table>
               </div>
             </div>
@@ -673,7 +660,7 @@
           </div>
         </section>
 
-        <!-- VIEW 3: INVOICE GENERATOR -->
+        <!-- INVOICE GENERATOR VIEW -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-4 sm:space-y-6">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -837,8 +824,7 @@
                         <th class="py-2.5 px-3 text-right">Total</th>
                       </tr>
                     </thead>
-                    <tbody id="invoiceLineItemsTbody" class="divide-y divide-slate-100">
-                    </tbody>
+                    <tbody id="invoiceLineItemsTbody" class="divide-y divide-slate-100"></tbody>
                   </table>
                 </div>
 
@@ -1017,191 +1003,9 @@
     </div>
   </div>
 
-  <!-- MODALS -->
-  <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Create & Assign Plan Validity</h3>
-        <button type="button" onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Username</label>
-          <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-            <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
-          </div>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="newAccPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Login Password</label>
-          <input type="text" id="newAccPassword" value="user123" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="newAccGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Select Subscription Plan Validity</label>
-          <select id="newAccPlanPreset" onchange="onPlanPresetChange('newAccPlanPreset', 'newAccValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Custom / Allocated Days</label>
-          <input type="number" id="newAccValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Create & Authorize Plan</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="approvePlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div>
-          <h3 class="font-bold text-sm text-slate-900">Authorize Plan & Set Validity</h3>
-          <p class="text-[11px] text-slate-500 truncate max-w-xs" id="approveModalTargetUser">User: --</p>
-        </div>
-        <button type="button" onclick="closeApprovePlanModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <input type="hidden" id="approveTargetUserId" />
-
-      <div class="space-y-3">
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Select Approval Plan</label>
-          <select id="approvePlanPreset" onchange="onPlanPresetChange('approvePlanPreset', 'approveValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Days to Assign / Add</label>
-          <input type="number" id="approveValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeApprovePlanModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="confirmApprovePlan()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 touch-target">
-          <i class="ph ph-check-bold"></i> Confirm & Activate Plan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
-        <button type="button" onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
-          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
-          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
-          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
-          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Customer</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service to Catalog</h3>
-        <button type="button" onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design & Dev" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
-          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
-          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="0">0% Non-Taxable</option>
-            <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18" selected>18% GST</option>
-            <option value="28">28% GST</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
-          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
-          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save to Catalog</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
+    // Supabase
     const SUPABASE_URL = "https://grpnfwvssadmlsqlwlaa.supabase.co";
     const SUPABASE_KEY = "sb_publishable_hyxkJNppVqwAD5Uc5eGzxQ_PgyYsrKO";
 
@@ -1216,7 +1020,6 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
-    // Guaranteed Default Cache (Prevents blank lockout)
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1255,7 +1058,16 @@
 
     let activeInvoiceLines = [];
 
-    // Safe Cloud Sync: Will not block if table is missing or slow
+    // Helper functions for filling test credentials
+    function fillAdminCredentials() {
+      document.getElementById('loginUsername').value = 'billottloopstore';
+      document.getElementById('loginPassword').value = '1604130028As..@@';
+    }
+    function fillDemoUserCredentials() {
+      document.getElementById('loginUsername').value = 'skyline';
+      document.getElementById('loginPassword').value = 'user123';
+    }
+
     async function syncDataFromSupabase() {
       if (!supabase) return;
       try {
@@ -1339,7 +1151,7 @@
         } catch (e) {}
       }
       lockApp();
-      syncDataFromSupabase(); // Non-blocking background sync
+      syncDataFromSupabase();
     }
 
     function toggleMobileSidebar(forceClose = false) {
@@ -1451,7 +1263,6 @@
       document.getElementById('authAlertBox').classList.add('hidden');
     }
 
-    // Direct, Unblocked Login Flow
     async function handleLoginSubmit(event) {
       if (event) event.preventDefault();
       hideAuthAlert();
@@ -1464,25 +1275,24 @@
         return;
       }
 
-      // Clean input: remove @bebill.in, @ottloop.com if mistakenly typed
       const cleanUser = rawInput.toLowerCase().replace(/@(bebill\.in|ottloop\.com)$/i, '').trim();
 
       isImpersonating = false;
 
-      // 1. MASTER SUPER ADMIN CHECK (Instant)
+      // 1. Instant Super Admin Authentication
       if (cleanUser === SUPER_ADMIN_USER.toLowerCase() && pass === SUPER_ADMIN_PASS) {
         unlockApp('admin');
         return;
       }
 
-      // 2. USER / MERCHANT CHECK
+      // 2. User / Merchant Check
       const fullEmail = `${cleanUser}@bebill.in`;
       let matchUser = tenantUsers.find(u => 
         (u.username.toLowerCase() === cleanUser || u.email.toLowerCase() === fullEmail) && 
         u.password === pass
       );
 
-      // If not in local cache, try fetching directly from Supabase
+      // Direct Supabase fallback
       if (!matchUser && supabase) {
         try {
           const { data: dbUser } = await supabase.from('tenants')
@@ -1536,10 +1346,10 @@
 
       const newId = 'usr_' + Date.now();
 
-      // Push to Supabase if connected
+      // Cloud Push to Supabase
       if (supabase) {
         try {
-          await supabase.from('tenants').insert([{
+          const { error: sbErr } = await supabase.from('tenants').insert([{
             id: newId,
             username: rawUser,
             email: cleanEmail,
@@ -1551,10 +1361,14 @@
             status: 'PENDING',
             plan_preset: '30'
           }]);
+          if (sbErr) {
+            console.error('Supabase signup insert error:', sbErr);
+            showAuthAlert(`Cloud DB Note: ${sbErr.message}`, false);
+          }
         } catch (e) {}
       }
 
-      // Add to local cache
+      // Local Cache insertion
       tenantUsers.unshift({
         id: newId,
         username: rawUser,
@@ -1781,7 +1595,7 @@
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
-        // Desktop Row
+        // Desktop Table Row
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition';
         tr.innerHTML = `
@@ -1813,7 +1627,7 @@
         `;
         tbody.appendChild(tr);
 
-        // Mobile Card
+        // Mobile Responsive Card
         const card = document.createElement('div');
         card.className = 'bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3';
         card.innerHTML = `
@@ -2334,7 +2148,7 @@
       switchUserSection('invoices');
     }
 
-    // Customer Actions
+    // Customer Handlers
     function openAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('custNewName').focus(), 100);
@@ -2356,10 +2170,7 @@
         return;
       }
 
-      const newCust = {
-        id: 'c_' + Date.now(),
-        name, company, email, phone, gstin, address
-      };
+      const newCust = { id: 'c_' + Date.now(), name, company, email, phone, gstin, address };
 
       if (!user.customers) user.customers = [];
       user.customers.push(newCust);
@@ -2397,7 +2208,7 @@
       }
     }
 
-    // Product Actions
+    // Product Handlers
     function openAddProductModal() {
       document.getElementById('addProductModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('prodNewName').focus(), 100);
@@ -2418,10 +2229,7 @@
         return;
       }
 
-      const newProd = {
-        id: 'p_' + Date.now(),
-        name, price, taxRate, hsn, stock
-      };
+      const newProd = { id: 'p_' + Date.now(), name, price, taxRate, hsn, stock };
 
       if (!user.products) user.products = [];
       user.products.push(newProd);
@@ -2508,7 +2316,7 @@
       alert('Settings saved successfully!');
     }
 
-    // Modal and Floating Utilities
+    // Modal Utilities
     function openRenewalModal() {
       document.getElementById('renewalPlanModal').classList.remove('hidden');
     }
@@ -2578,6 +2386,7 @@
       return `For support, reach out to our team at <b>+91 7382680200</b> or via the WhatsApp button below!`;
     }
 
+    // Start
     init();
   </script>
 </body>
