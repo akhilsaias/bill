@@ -43,7 +43,7 @@
   <div id="impersonationBanner" class="hidden no-print bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between z-50 shadow-md flex-shrink-0">
     <div class="flex items-center gap-2">
       <i class="ph ph-shield-check text-lg"></i>
-      <span>Admin Impersonation: Logged in as <b id="impersonatedUserName" class="underline">User</b></span>
+      <span>Admin View: Currently previewing as <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
     <button type="button" onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
@@ -221,10 +221,9 @@
       </div>
       
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <div id="roleSwitcherButtons" class="hidden items-center gap-1 sm:gap-2">
-          <span class="text-slate-500 font-medium hidden md:inline">Portal View:</span>
-          <button type="button" onclick="switchRole('admin')" id="btnRoleAdmin" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition text-[11px] sm:text-xs touch-target">Admin</button>
-          <button type="button" onclick="switchRole('user')" id="btnRoleUser" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition text-[11px] sm:text-xs touch-target">User</button>
+        <div id="roleSwitcherButtons" class="flex items-center gap-1 sm:gap-2">
+          <button type="button" onclick="switchRole('admin')" id="btnRoleAdmin" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition text-[11px] sm:text-xs touch-target">Admin View</button>
+          <button type="button" onclick="switchRole('user')" id="btnRoleUser" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition text-[11px] sm:text-xs touch-target">User View</button>
         </div>
         <button type="button" onclick="logoutToLoginScreen()" class="ml-1 sm:ml-3 px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 font-bold transition flex items-center gap-1 text-[11px] sm:text-xs touch-target">
           <i class="ph ph-sign-out text-base"></i> <span class="hidden sm:inline">Log Out</span>
@@ -711,7 +710,7 @@
             </div>
           </div>
 
-          <!-- Split Builder Grid -->
+          <!-- Split Builder Grid: Left = Form, Right = Canvas -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-12">
             <!-- LEFT: Structured Form -->
             <div class="no-print lg:col-span-5 space-y-4">
@@ -801,7 +800,7 @@
               </div>
             </div>
 
-            <!-- RIGHT: LIVE INVOICE PREVIEW WITH DYNAMIC SOCIAL MEDIA ICONS -->
+            <!-- RIGHT: LIVE INVOICE PREVIEW WITH PADDING -->
             <div class="lg:col-span-7 sticky top-4">
               <div class="print-area bg-white text-slate-900 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl border border-slate-200 space-y-6 mb-16">
                 
@@ -1033,91 +1032,122 @@
     </div>
   </div>
 
-  <!-- MODALS FOR ADDING CUSTOMER / PRODUCT / TENANT -->
-  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
-        <button type="button" onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
+  <!-- MODAL: ADMIN USER AUDIT / REVIEW -->
+  <div id="userReviewModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 w-full max-w-4xl rounded-3xl p-5 sm:p-8 space-y-5 sm:space-y-6 text-xs shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar my-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-start border-b border-slate-100 pb-3 sm:pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">MERCHANT AUDIT</span>
+            <span id="revPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1" id="revBusinessName">Business Name</h3>
+          <p class="text-xs text-slate-500 font-mono" id="revUsernameEmail">user@bebill.in</p>
+        </div>
+        <button type="button" onclick="closeUserReviewModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 touch-target">
+          <i class="ph ph-x"></i>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
-          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+      <!-- Overview Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Category</span>
+          <span class="font-bold text-slate-800" id="revCategory">Broadband / OTT</span>
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
-          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Phone</span>
+          <span class="font-mono text-slate-800 font-bold" id="revPhone">+91 --</span>
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">GSTIN</span>
+          <span class="font-mono text-indigo-700 font-bold uppercase" id="revGst">--</span>
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
-          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
-          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Address</span>
+          <span class="text-slate-600 truncate block" id="revAddress">--</span>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Customer</button>
+      <!-- KPI Tiles -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Total Sales</p>
+          <p class="text-base sm:text-lg font-black text-indigo-600 mt-0.5" id="revTotalSales">₹0.00</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Current Month</p>
+          <p class="text-base sm:text-lg font-black text-emerald-600 mt-0.5" id="revMonthlySales">₹0.00</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Invoices</p>
+          <p class="text-base sm:text-lg font-black text-slate-800 mt-0.5" id="revTotalInvoices">0</p>
+        </div>
+        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-purple-500">
+          <p class="text-[10px] font-bold uppercase text-slate-400">Validity Left</p>
+          <p class="text-base sm:text-lg font-black text-purple-600 mt-0.5" id="revDaysLeft">0 Days</p>
+        </div>
       </div>
+
+      <!-- Custom Date Filter -->
+      <div class="bg-indigo-50/50 p-3.5 sm:p-4 rounded-2xl border border-indigo-100 space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h4 class="font-bold text-indigo-950 text-xs uppercase tracking-wider">Custom Date Range Filter</h4>
+            <p class="text-[11px] text-indigo-700">Audit sales and invoice counts generated during specific dates</p>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
+              <span class="text-[10px] font-bold text-slate-500">From:</span>
+              <input type="date" id="revFilterFrom" class="text-xs bg-transparent focus:outline-none font-medium" />
+            </div>
+            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
+              <span class="text-[10px] font-bold text-slate-500">To:</span>
+              <input type="date" id="revFilterTo" class="text-xs bg-transparent focus:outline-none font-medium" />
+            </div>
+            <button type="button" onclick="applyReviewDateFilter()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm touch-target">
+              Filter
+            </button>
+            <button type="button" onclick="resetReviewDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl transition touch-target">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white px-3.5 sm:px-4 py-2.5 rounded-xl border border-indigo-100 text-xs gap-1 sm:gap-0">
+          <span class="text-slate-600">Range: <b id="revFilteredRangeLabel" class="text-indigo-950">All Time</b></span>
+          <div class="flex gap-4">
+            <span>Count: <b id="revFilteredInvoicesCount" class="text-slate-900 font-mono">0</b></span>
+            <span>Sales: <b id="revFilteredTotalAmount" class="text-emerald-600 font-mono font-bold">₹0.00</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices Breakdown Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto max-h-56 custom-scrollbar">
+          <table class="w-full text-left text-xs min-w-[500px]">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 sticky top-0">
+              <tr>
+                <th class="py-2 px-3">Invoice #</th>
+                <th class="py-2 px-3">Date</th>
+                <th class="py-2 px-3">Customer</th>
+                <th class="py-2 px-3">Status</th>
+                <th class="py-2 px-3 text-right">Grand Total</th>
+              </tr>
+            </thead>
+            <tbody id="revInvoicesTbody" class="divide-y divide-slate-100 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service to Catalog</h3>
-        <button type="button" onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design & Dev" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
-          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
-          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="0">0% Non-Taxable</option>
-            <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18" selected>18% GST</option>
-            <option value="28">28% GST</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
-          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
-          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button type="button" onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save to Catalog</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- OTHER MODALS -->
   <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1472,14 +1502,6 @@
         category: sCategory,
         phone: sPhone,
         gstNumber: sGst || 'UNREGISTERED',
-        socialMedia: {
-          whatsapp: sPhone.replace(/[^0-9]/g, ''),
-          instagram: '',
-          facebook: '',
-          youtube: '',
-          twitter: '',
-          linkedin: ''
-        },
         status: 'PENDING',
         planPreset: '30',
         validUntil: '',
@@ -1534,9 +1556,6 @@
       const invSec = document.getElementById('invoiceEditorView');
       const navContainer = document.getElementById('sidebarNavigation');
       const roleBadge = document.getElementById('currentRoleDisplay');
-      const switcherContainer = document.getElementById('roleSwitcherButtons');
-      const btnAdmin = document.getElementById('btnRoleAdmin');
-      const btnUser = document.getElementById('btnRoleUser');
       const userPlanCard = document.getElementById('userValiditySidebarCard');
 
       invSec.classList.add('hidden');
@@ -1549,10 +1568,6 @@
 
         roleBadge.innerText = 'SUPER_ADMIN';
         roleBadge.className = 'bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold';
-        switcherContainer.classList.remove('hidden');
-        switcherContainer.classList.add('flex');
-        btnAdmin.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition touch-target';
-        btnUser.className = 'px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition touch-target';
 
         adminSec.classList.remove('hidden');
         userSec.classList.add('hidden');
@@ -1577,7 +1592,6 @@
         
         roleBadge.innerText = `BUSINESS (${activeUser.serviceName.slice(0, 12)}...)`;
         roleBadge.className = 'bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono font-semibold';
-        switcherContainer.classList.add('hidden');
 
         if (isImpersonating) {
           document.getElementById('impersonationBanner').classList.remove('hidden');
@@ -1632,13 +1646,21 @@
           renewalBanner.classList.add('hidden');
 
           if (btnDashCreateInv) {
-            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
+            btnDashCreateInv.className = 'flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 transition touch-target';
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
           }
+        }
+
+        // Automatic 1-Day Prior Alert Popup
+        if (daysLeft === 1) {
+          setTimeout(() => {
+            alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan to continue using invoice services.');
+            openRenewalModal();
+          }, 600);
         }
 
         navContainer.innerHTML = `
