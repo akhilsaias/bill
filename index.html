@@ -51,7 +51,7 @@
   <div id="impersonationBanner" class="hidden no-print bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between z-50 shadow-md flex-shrink-0">
     <div class="flex items-center gap-2">
       <i class="ph ph-shield-check text-lg"></i>
-      <span>Admin View: Currently logged in as <b id="impersonatedUserName" class="underline">User</b></span>
+      <span>Admin Impersonation Mode: Active on <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
     <button onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
@@ -62,7 +62,6 @@
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl shadow-xl p-6 sm:p-8 space-y-5 my-auto">
       
-      <!-- Brand Logo -->
       <div class="text-center">
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
@@ -71,7 +70,6 @@
         <p class="text-xs text-slate-500 mt-0.5" id="authHeaderSubtitle">Enter valid credentials to access bebill.in</p>
       </div>
 
-      <!-- Auth Tabs -->
       <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
         <button onclick="switchAuthMode('login')" id="tabBtnAuthLogin" class="flex-1 py-2 rounded-xl bg-white text-indigo-700 shadow-sm transition touch-target">
           Sign In
@@ -81,7 +79,6 @@
         </button>
       </div>
 
-      <!-- Alert Box -->
       <div id="authAlertBox" class="hidden text-xs font-semibold p-3 rounded-xl flex items-center gap-2">
         <i id="authAlertIcon" class="ph ph-warning-circle text-base flex-shrink-0"></i>
         <span id="authAlertText">Notification message</span>
@@ -183,7 +180,7 @@
             type="password" 
             id="signupPassword" 
             placeholder="Create password" 
-            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupGst')"
           />
         </div>
@@ -213,7 +210,6 @@
     <!-- Top Header Bar -->
     <header class="no-print h-14 lg:h-12 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-3 sm:px-5 text-xs shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Mobile Drawer Button -->
         <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition touch-target" aria-label="Toggle Sidebar">
           <i class="ph ph-list text-xl"></i>
         </button>
@@ -237,7 +233,6 @@
 
     <div class="flex-1 flex overflow-hidden relative">
       
-      <!-- Backdrop for mobile sidebar drawer -->
       <div id="mobileSidebarBackdrop" onclick="toggleMobileSidebar()" class="hidden fixed inset-0 bg-slate-900/50 z-30 lg:hidden backdrop-blur-xs"></div>
 
       <!-- Responsive Sidebar Drawer -->
@@ -258,7 +253,7 @@
             </button>
           </div>
 
-          <!-- Merchant Validity Plan Status Box in Sidebar -->
+          <!-- Merchant Plan Card in Sidebar -->
           <div id="userValiditySidebarCard" class="hidden m-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plan Validity</span>
@@ -303,7 +298,6 @@
             </button>
           </div>
 
-          <!-- KPI Cards -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
               <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500">Pending Approvals</p>
@@ -327,6 +321,7 @@
             </div>
           </div>
 
+          <!-- Desktop Table -->
           <div class="hidden sm:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 flex items-center justify-between">
               <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Tenant Directory & Detailed Validity Status</h3>
@@ -352,6 +347,7 @@
             </div>
           </div>
 
+          <!-- Mobile Cards -->
           <div class="sm:hidden space-y-3" id="adminUsersMobileCards">
           </div>
         </section>
@@ -376,7 +372,7 @@
             </div>
           </div>
 
-          <!-- DASHBOARD METRICS -->
+          <!-- DASHBOARD -->
           <div id="userSectionDashboard" class="space-y-5 sm:space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -421,9 +417,9 @@
               <div class="flex flex-wrap gap-2 text-xs">
                 <button onclick="switchUserSection('invoices')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">View Invoices</button>
                 <button onclick="switchUserSection('customers')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">Customers Directory</button>
-                <button onclick="switchUserSection('products')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">Item Catalog</button>
+                <button onclick="switchUserSection('products')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">Manage Products/Services</button>
                 <button onclick="switchUserSection('reports')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">GST & Sales Reports</button>
-                <button onclick="switchUserSection('settings')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">Business Profile Settings</button>
+                <button onclick="switchUserSection('settings')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-semibold transition touch-target">Business Settings</button>
               </div>
             </div>
           </div>
@@ -431,9 +427,12 @@
           <!-- INVOICES TAB -->
           <div id="userSectionInvoices" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
+              <div class="flex items-center gap-3">
+                <button onclick="switchUserSection('dashboard')" class="text-slate-400 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
+                  <i class="ph ph-arrow-left"></i> Dashboard
+                </button>
+                <span class="text-slate-300">|</span>
                 <h2 class="text-lg sm:text-xl font-black text-slate-900">Invoices & Billing History</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Manage, print, duplicate, share and track client payments</p>
               </div>
               <button onclick="openInvoiceEditor()" id="btnUserInvoicesCreateInv" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 self-start sm:self-auto touch-target">
                 + New Invoice
@@ -468,9 +467,12 @@
           <!-- CUSTOMERS TAB -->
           <div id="userSectionCustomers" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
+              <div class="flex items-center gap-3">
+                <button onclick="switchUserSection('dashboard')" class="text-slate-400 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
+                  <i class="ph ph-arrow-left"></i> Dashboard
+                </button>
+                <span class="text-slate-300">|</span>
                 <h2 class="text-lg sm:text-xl font-black text-slate-900">Customers Directory</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Manage client profiles, addresses, tax IDs, and outstanding balances</p>
               </div>
               <button onclick="openAddCustomerModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 self-start sm:self-auto touch-target">
                 + Add Customer
@@ -484,10 +486,10 @@
                     <tr>
                       <th class="py-3 px-3 sm:px-4">Customer / Company</th>
                       <th class="py-3 px-3 sm:px-4">Email & Phone</th>
-                      <th class="py-3 px-3 sm:px-4">Billing Address</th>
-                      <th class="py-3 px-3 sm:px-4">GSTIN</th>
-                      <th class="py-3 px-3 sm:px-4 text-right">Outstanding Due</th>
-                      <th class="py-3 px-3 sm:px-4 text-center">Action</th>
+                      <th class="py-3 px-4">Billing Address</th>
+                      <th class="py-3 px-4">GSTIN</th>
+                      <th class="py-3 px-4 text-right">Outstanding Due</th>
+                      <th class="py-3 px-4 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="userCustomersTableBody" class="divide-y divide-slate-100 font-medium">
@@ -497,12 +499,18 @@
             </div>
           </div>
 
-          <!-- PRODUCTS TAB -->
+          <!-- PRODUCTS / SERVICES CATALOG TAB -->
           <div id="userSectionProducts" class="hidden space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900">Products & Services Catalog</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Predefine items, HSN/SAC codes, tax slabs, and pricing</p>
+              <div class="flex items-center gap-3">
+                <button onclick="switchUserSection('dashboard')" class="text-slate-400 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
+                  <i class="ph ph-arrow-left"></i> Dashboard
+                </button>
+                <span class="text-slate-300">|</span>
+                <div>
+                  <h2 class="text-lg sm:text-xl font-black text-slate-900">Products & Services Catalog</h2>
+                  <p class="text-[11px] text-slate-500">Items added here will appear in the invoice generation dropdown</p>
+                </div>
               </div>
               <button onclick="openAddProductModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 self-start sm:self-auto touch-target">
                 + Add Product / Service
@@ -531,9 +539,12 @@
 
           <!-- REPORTS TAB -->
           <div id="userSectionReports" class="hidden space-y-5 sm:space-y-6">
-            <div>
+            <div class="flex items-center gap-3">
+              <button onclick="switchUserSection('dashboard')" class="text-slate-400 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
+                <i class="ph ph-arrow-left"></i> Dashboard
+              </button>
+              <span class="text-slate-300">|</span>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Business & Tax Reports</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Consolidated summary of sales, CGST, SGST, IGST, and pending collections</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
@@ -562,9 +573,12 @@
 
           <!-- SETTINGS TAB -->
           <div id="userSectionSettings" class="hidden space-y-5 sm:space-y-6">
-            <div>
+            <div class="flex items-center gap-3">
+              <button onclick="switchUserSection('dashboard')" class="text-slate-400 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
+                <i class="ph ph-arrow-left"></i> Dashboard
+              </button>
+              <span class="text-slate-300">|</span>
               <h2 class="text-lg sm:text-xl font-black text-slate-900">Business Settings & Invoice Preferences</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Customize your business brand, bank accounts, UPI, and tax defaults</p>
             </div>
 
             <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 sm:space-y-6 max-w-4xl">
@@ -658,15 +672,15 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH CATALOG AUTO-SYNC ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-4 sm:space-y-6">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
-              <button onclick="closeInvoiceEditor()" class="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 font-bold text-xs transition touch-target p-1">
-                <i class="ph ph-arrow-left text-base"></i> Back
+              <button onclick="closeInvoiceEditor()" class="flex items-center gap-1 text-slate-600 hover:text-slate-900 font-bold text-xs transition touch-target p-1.5 bg-slate-100 rounded-xl">
+                <i class="ph ph-arrow-left text-base"></i> Back to Invoices
               </button>
-              <span class="text-xs font-bold text-slate-400">|</span>
-              <span class="text-xs font-extrabold text-slate-800" id="invEditorHeaderTitle">Create & Preview Invoice</span>
+              <span class="text-xs font-bold text-slate-300">|</span>
+              <span class="text-xs font-extrabold text-slate-800">Invoice Creation Studio</span>
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
@@ -687,6 +701,7 @@
             
             <!-- LEFT: Structured Form -->
             <div class="no-print lg:col-span-5 space-y-4">
+              <!-- Invoice Meta -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
                   <i class="ph ph-receipt text-base"></i> Step 1: Invoice Details
@@ -715,6 +730,7 @@
                 </div>
               </div>
 
+              <!-- Customer Details -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
@@ -728,7 +744,7 @@
                 <div class="space-y-2.5 text-xs">
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Customer / Client Name *</label>
-                    <input type="text" id="invCustName" placeholder="e.g. John Doe / Client Ltd" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
+                    <input type="text" id="invCustName" placeholder="e.g. John Doe / Enterprise Corp" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -751,17 +767,19 @@
                 </div>
               </div>
 
+              <!-- Product / Line Items with Auto-Populate from Catalog -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
                     <i class="ph ph-package text-base"></i> Step 3: Items / Services
                   </div>
-                  <button onclick="addInvoiceRow()" class="text-[11px] bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg hover:bg-indigo-700 transition">
-                    + Add Item
+                  <button onclick="addInvoiceRow()" class="text-[11px] bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg hover:bg-indigo-700 transition flex items-center gap-1">
+                    <i class="ph ph-plus-bold"></i> Add Row
                   </button>
                 </div>
 
                 <div id="formLineItemsList" class="space-y-3">
+                  <!-- Injected via JS -->
                 </div>
 
                 <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
@@ -772,7 +790,7 @@
 
             </div>
 
-            <!-- RIGHT: LIVE PREVIEW -->
+            <!-- RIGHT: LIVE INVOICE PREVIEW -->
             <div class="lg:col-span-7 sticky top-4">
               <div class="print-area bg-white text-slate-900 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl border border-slate-200 space-y-6">
                 
@@ -889,7 +907,6 @@
     <i class="ph ph-chat-centered-dots text-2xl" id="chatbotToggleIcon"></i>
   </button>
 
-  <!-- Interactive AI Assistant Chatbot Box -->
   <div id="aiChatbotWidget" class="hidden no-print fixed bottom-16 sm:bottom-20 right-3 sm:right-6 z-50 w-[92vw] sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-xs max-h-[80vh]">
     <div class="bg-indigo-600 p-3.5 sm:p-4 text-white flex items-center justify-between flex-shrink-0">
       <div class="flex items-center gap-2.5">
@@ -1001,7 +1018,7 @@
     </div>
   </div>
 
-  <!-- MODALS: ADMIN CREATION, APPROVAL, CUSTOMER, PRODUCT -->
+  <!-- MODALS -->
   <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1144,14 +1161,14 @@
   <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service</h3>
+        <h3 class="font-bold text-sm text-slate-900">Add Product / Service to Catalog</h3>
         <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
+          <input type="text" id="prodNewName" placeholder="e.g. Website Design & Dev" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
         </div>
         <div>
           <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
@@ -1179,7 +1196,7 @@
 
       <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
         <button onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Item</button>
+        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save to Catalog</button>
       </div>
     </div>
   </div>
@@ -1433,9 +1450,7 @@
         status: 'PENDING',
         validUntil: '',
         customers: [],
-        products: [
-          { id: 'p_1', name: 'Standard Service Pack 1', hsn: '9984', price: 1000, taxRate: 18, stock: 'Unlimited' }
-        ],
+        products: [],
         invoices: []
       };
 
@@ -1576,7 +1591,6 @@
             btnInvoicesCreateInv.className = 'bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow touch-target';
             btnInvoicesCreateInv.innerHTML = `<i class="ph ph-lock-key"></i> Renewal Required`;
           }
-
           setTimeout(() => openRenewalModal(), 600);
         } else {
           planBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200';
@@ -1591,15 +1605,8 @@
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
-          }
-
-          if (daysLeft === 1) {
-            setTimeout(() => {
-              alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan to prevent service interruption.');
-              openRenewalModal();
-            }, 800);
           }
         }
 
@@ -1958,9 +1965,7 @@
         status: 'ACTIVE',
         validUntil: expDate.toISOString().split('T')[0],
         customers: [],
-        products: [
-          { id: 'p_1', name: 'Standard Service Pack 1', hsn: '9984', price: 1000, taxRate: 18, stock: 'Unlimited' }
-        ],
+        products: [],
         invoices: []
       };
 
@@ -1980,346 +1985,7 @@
     }
 
     // -------------------------------------------------------------
-    // USER BUSINESS SECTIONS & DASHBOARD
-    // -------------------------------------------------------------
-    function switchUserSection(sectionId) {
-      const sections = ['Dashboard', 'Invoices', 'Customers', 'Products', 'Reports', 'Settings'];
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-
-      sections.forEach(s => {
-        const secEl = document.getElementById(`userSection${s}`);
-        const navEl = document.getElementById(`navUser${s}`);
-        if (secEl) secEl.classList.add('hidden');
-        if (navEl) {
-          navEl.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium touch-target';
-        }
-      });
-
-      const activeCapital = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
-      const activeSec = document.getElementById(`userSection${activeCapital}`);
-      const activeNav = document.getElementById(`navUser${activeCapital}`);
-
-      if (activeSec) activeSec.classList.remove('hidden');
-      if (activeNav) {
-        activeNav.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm touch-target';
-      }
-
-      if (sectionId === 'dashboard') loadDashboardMetrics(user);
-      if (sectionId === 'invoices') renderUserInvoices(user);
-      if (sectionId === 'customers') renderUserCustomers(user);
-      if (sectionId === 'products') renderUserProducts(user);
-      if (sectionId === 'reports') renderUserReports(user);
-      if (sectionId === 'settings') populateSettingsForm(user);
-    }
-
-    function loadDashboardMetrics(user) {
-      document.getElementById('userDashTitle').innerText = `${user.serviceName} Dashboard`;
-      const invs = user.invoices || [];
-      const cur = user.currency || '₹';
-
-      let paidCount = 0, paidAmount = 0;
-      let pendingCount = 0, pendingAmount = 0;
-      let overdueCount = 0, overdueAmount = 0;
-      let totalRev = 0;
-
-      invs.forEach(i => {
-        totalRev += i.grandTotal;
-        if (i.status === 'PAID') {
-          paidCount++;
-          paidAmount += i.grandTotal;
-        } else if (i.status === 'PENDING') {
-          pendingCount++;
-          pendingAmount += i.grandTotal;
-        } else if (i.status === 'OVERDUE') {
-          overdueCount++;
-          overdueAmount += i.grandTotal;
-        }
-      });
-
-      document.getElementById('dashTotalInvoices').innerText = invs.length;
-      document.getElementById('dashPaidInvoices').innerText = paidCount;
-      document.getElementById('dashPaidAmount').innerText = `${cur}${paidAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('dashPendingInvoices').innerText = pendingCount;
-      document.getElementById('dashPendingAmount').innerText = `${cur}${pendingAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('dashOverdueInvoices').innerText = overdueCount;
-      document.getElementById('dashOverdueAmount').innerText = `${cur}${overdueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('dashTotalRevenue').innerText = `${cur}${totalRev.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-    }
-
-    function renderUserInvoices(user) {
-      const tbody = document.getElementById('userInvoicesTableBody');
-      tbody.innerHTML = '';
-      const invs = user.invoices || [];
-      const cur = user.currency || '₹';
-
-      document.getElementById('userInvoicesCount').innerText = `${invs.length} Records`;
-
-      if (invs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No invoices generated yet. Click "+ New Invoice" to start.</td></tr>`;
-        return;
-      }
-
-      invs.forEach((inv, index) => {
-        let badgeColor = 'bg-slate-100 text-slate-600';
-        if (inv.status === 'PAID') badgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-        if (inv.status === 'PENDING') badgeColor = 'bg-amber-50 text-amber-700 border border-amber-200';
-        if (inv.status === 'OVERDUE') badgeColor = 'bg-red-50 text-red-700 border border-red-200';
-
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
-        tr.innerHTML = `
-          <td class="py-3 px-3 sm:px-4 font-bold text-indigo-600 font-mono">${inv.number}</td>
-          <td class="py-3 px-3 sm:px-4 text-slate-500">${inv.date}</td>
-          <td class="py-3 px-3 sm:px-4 text-slate-500">${inv.dueDate || '--'}</td>
-          <td class="py-3 px-3 sm:px-4 font-bold text-slate-900">${inv.customerName}</td>
-          <td class="py-3 px-3 sm:px-4">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${inv.status}</span>
-          </td>
-          <td class="py-3 px-3 sm:px-4 text-right font-bold text-slate-900">${cur}${inv.grandTotal.toFixed(2)}</td>
-          <td class="py-3 px-3 sm:px-4 text-center">
-            <div class="flex items-center justify-center gap-1 sm:gap-2">
-              <button type="button" onclick="viewInvoiceDetail(${index})" title="View / Print" class="text-slate-400 hover:text-slate-700 transition p-1.5 touch-target"><i class="ph ph-printer text-base"></i></button>
-              <button type="button" onclick="shareExistingInvoice(${index})" title="Share" class="text-slate-400 hover:text-emerald-600 transition p-1.5 touch-target"><i class="ph ph-share-network text-base"></i></button>
-              <button type="button" onclick="duplicateInvoice(${index})" title="Duplicate" class="text-slate-400 hover:text-indigo-600 transition p-1.5 touch-target"><i class="ph ph-copy text-base"></i></button>
-              <button type="button" onclick="deleteInvoice(${index})" title="Delete" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function deleteInvoice(idx) {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && confirm('Are you sure you want to delete this invoice?')) {
-        user.invoices.splice(idx, 1);
-        saveDB();
-        renderUserInvoices(user);
-        loadDashboardMetrics(user);
-      }
-    }
-
-    function duplicateInvoice(idx) {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (!user) return;
-      const original = user.invoices[idx];
-      const dup = JSON.parse(JSON.stringify(original));
-      dup.id = 'inv_' + Date.now();
-      dup.number = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
-      dup.date = new Date().toISOString().split('T')[0];
-      dup.status = 'PENDING';
-
-      user.invoices.unshift(dup);
-      saveDB();
-      renderUserInvoices(user);
-      alert(`Invoice duplicated as ${dup.number}`);
-    }
-
-    function viewInvoiceDetail(idx) {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const inv = user.invoices[idx];
-      loadInvoiceIntoCanvas(user, inv);
-    }
-
-    function renderUserCustomers(user) {
-      const tbody = document.getElementById('userCustomersTableBody');
-      tbody.innerHTML = '';
-      const custs = user.customers || [];
-      const cur = user.currency || '₹';
-
-      if (custs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No customers registered yet. Click "+ Add Customer" above.</td></tr>`;
-        return;
-      }
-
-      custs.forEach((c, idx) => {
-        const outBal = (user.invoices || [])
-          .filter(i => (i.customerName === c.name || i.customerEmail === c.email) && i.status !== 'PAID')
-          .reduce((sum, curr) => sum + curr.grandTotal, 0);
-
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
-        tr.innerHTML = `
-          <td class="py-3 px-3 sm:px-4 font-bold text-slate-900">${c.name} <span class="text-slate-500 text-xs block font-normal">${c.company || ''}</span></td>
-          <td class="py-3 px-3 sm:px-4 text-slate-600 font-mono">${c.email}<span class="block text-slate-500 font-sans text-[11px]">${c.phone}</span></td>
-          <td class="py-3 px-4 text-slate-500 max-w-xs truncate">${c.address || '--'}</td>
-          <td class="py-3 px-4 font-mono text-indigo-600 uppercase font-semibold">${c.gstin || 'N/A'}</td>
-          <td class="py-3 px-4 text-right font-bold ${outBal > 0 ? 'text-amber-600' : 'text-emerald-600'}">${cur}${outBal.toFixed(2)}</td>
-          <td class="py-3 px-4 text-center">
-            <button type="button" onclick="deleteCustomer(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function openAddCustomerModal() {
-      document.getElementById('addCustomerModal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('custNewName').focus(), 100);
-    }
-    function closeAddCustomerModal() {
-      document.getElementById('addCustomerModal').classList.add('hidden');
-    }
-    function submitNewCustomer() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const name = document.getElementById('custNewName').value.trim();
-      const company = document.getElementById('custNewCompany').value.trim();
-      const email = document.getElementById('custNewEmail').value.trim();
-      const phone = document.getElementById('custNewPhone').value.trim();
-      const gstin = document.getElementById('custNewGst').value.trim();
-      const address = document.getElementById('custNewAddress').value.trim();
-
-      if (!name || !email) {
-        alert('Please provide at least a customer name and email.');
-        return;
-      }
-
-      if (!user.customers) user.customers = [];
-      user.customers.push({ id: 'c_' + Date.now(), name, company, email, phone, gstin, address });
-      saveDB();
-      closeAddCustomerModal();
-      renderUserCustomers(user);
-    }
-    function deleteCustomer(idx) {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && confirm('Delete this customer profile?')) {
-        user.customers.splice(idx, 1);
-        saveDB();
-        renderUserCustomers(user);
-      }
-    }
-
-    function renderUserProducts(user) {
-      const tbody = document.getElementById('userProductsTableBody');
-      tbody.innerHTML = '';
-      const prods = user.products || [];
-      const cur = user.currency || '₹';
-
-      if (prods.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No products/services in catalog. Click "+ Add Product" above.</td></tr>`;
-        return;
-      }
-
-      prods.forEach((p, idx) => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-bold text-slate-900">${p.name}</td>
-          <td class="py-3 px-4 font-mono text-slate-500">${p.hsn || '--'}</td>
-          <td class="py-3 px-4 text-indigo-600 font-bold">${p.taxRate}% GST</td>
-          <td class="py-3 px-4 text-right font-bold text-slate-900">${cur}${p.price.toFixed(2)}</td>
-          <td class="py-3 px-4 text-center font-mono text-slate-500">${p.stock || 'N/A'}</td>
-          <td class="py-3 px-4 text-center">
-            <button type="button" onclick="deleteProduct(${idx})" class="text-slate-400 hover:text-red-600 transition p-1.5 touch-target"><i class="ph ph-trash text-base"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function openAddProductModal() {
-      document.getElementById('addProductModal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('prodNewName').focus(), 100);
-    }
-    function closeAddProductModal() {
-      document.getElementById('addProductModal').classList.add('hidden');
-    }
-    function submitNewProduct() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const name = document.getElementById('prodNewName').value.trim();
-      const price = parseFloat(document.getElementById('prodNewPrice').value) || 0;
-      const taxRate = parseFloat(document.getElementById('prodNewTax').value) || 0;
-      const hsn = document.getElementById('prodNewHsn').value.trim();
-      const stock = document.getElementById('prodNewStock').value.trim() || 'Unlimited';
-
-      if (!name) {
-        alert('Please enter a valid product/service description.');
-        return;
-      }
-
-      if (!user.products) user.products = [];
-      user.products.push({ id: 'p_' + Date.now(), name, price, taxRate, hsn, stock });
-      saveDB();
-      closeAddProductModal();
-      renderUserProducts(user);
-    }
-    function deleteProduct(idx) {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && confirm('Delete this catalog item?')) {
-        user.products.splice(idx, 1);
-        saveDB();
-        renderUserProducts(user);
-      }
-    }
-
-    function renderUserReports(user) {
-      const cur = user.currency || '₹';
-      const invs = user.invoices || [];
-
-      let totalCgst = 0, totalSgst = 0, realizedSales = 0, outstanding = 0;
-
-      invs.forEach(i => {
-        totalCgst += (i.cgst || (i.grandTotal ? i.grandTotal * 0.09 : 0));
-        totalSgst += (i.sgst || (i.grandTotal ? i.grandTotal * 0.09 : 0));
-        if (i.status === 'PAID') realizedSales += i.grandTotal;
-        else outstanding += i.grandTotal;
-      });
-
-      const totalTax = totalCgst + totalSgst;
-      document.getElementById('reportTaxCollected').innerText = `${cur}${totalTax.toFixed(2)}`;
-      document.getElementById('reportCgst').innerText = `${cur}${totalCgst.toFixed(2)}`;
-      document.getElementById('reportSgst').innerText = `${cur}${totalSgst.toFixed(2)}`;
-      document.getElementById('reportRealizedSales').innerText = `${cur}${realizedSales.toFixed(2)}`;
-      document.getElementById('reportOutstanding').innerText = `${cur}${outstanding.toFixed(2)}`;
-    }
-
-    function populateSettingsForm(user) {
-      document.getElementById('setBusinessName').value = user.serviceName || '';
-      document.getElementById('setCategory').value = user.category || '';
-      document.getElementById('setGstin').value = user.gstNumber || '';
-      document.getElementById('setEmail').value = user.email || '';
-      document.getElementById('setPhone').value = user.phone || '';
-      document.getElementById('setWebsite').value = user.website || 'https://bebill.in';
-      document.getElementById('setLogoUrl').value = user.logoUrl || '';
-      document.getElementById('setAddress').value = user.address || '';
-      document.getElementById('setUpiId').value = user.upiId || '';
-      document.getElementById('setBankName').value = user.bankName || '';
-      document.getElementById('setBankAccount').value = user.accountNumber || '';
-      document.getElementById('setBankIfsc').value = user.ifsc || '';
-      document.getElementById('setInvPrefix').value = user.invoicePrefix || 'INV';
-      document.getElementById('setCurrency').value = user.currency || '₹';
-      document.getElementById('setTerms').value = user.terms || '';
-      document.getElementById('setNotes').value = user.notes || '';
-    }
-
-    function saveAllUserSettings() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (!user) return;
-
-      user.serviceName = document.getElementById('setBusinessName').value.trim();
-      user.category = document.getElementById('setCategory').value.trim();
-      user.gstNumber = document.getElementById('setGstin').value.trim();
-      user.email = document.getElementById('setEmail').value.trim();
-      user.phone = document.getElementById('setPhone').value.trim();
-      user.website = document.getElementById('setWebsite').value.trim();
-      user.logoUrl = document.getElementById('setLogoUrl').value.trim();
-      user.address = document.getElementById('setAddress').value.trim();
-      user.upiId = document.getElementById('setUpiId').value.trim();
-      user.bankName = document.getElementById('setBankName').value.trim();
-      user.accountNumber = document.getElementById('setBankAccount').value.trim();
-      user.ifsc = document.getElementById('setBankIfsc').value.trim();
-      user.invoicePrefix = document.getElementById('setInvPrefix').value.trim();
-      user.currency = document.getElementById('setCurrency').value;
-      user.terms = document.getElementById('setTerms').value;
-      user.notes = document.getElementById('setNotes').value;
-
-      saveDB();
-      switchRole('user');
-      alert('All business settings and invoice defaults saved successfully on Be Bill!');
-    }
-
-    // -------------------------------------------------------------
-    // INVOICE BUILDER ENGINE & SHARING
+    // INVOICE BUILDER ENGINE & CATALOG AUTO-SYNC
     // -------------------------------------------------------------
     function openInvoiceEditor() {
       const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
@@ -2364,6 +2030,7 @@
         picker.innerHTML += `<option value="${c.id}">${c.name}</option>`;
       });
 
+      // Default row setup
       if (user.products && user.products.length > 0) {
         const p = user.products[0];
         activeInvoiceLines = [
@@ -2371,7 +2038,7 @@
         ];
       } else {
         activeInvoiceLines = [
-          { description: 'Website Design & Services', qty: 1, price: 5000, discount: 0, tax: 18 }
+          { description: 'Service / Product Item', qty: 1, price: 1000, discount: 0, tax: 18 }
         ];
       }
 
@@ -2422,6 +2089,7 @@
       const previewTbody = document.getElementById('invoiceLineItemsTbody');
       const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
       const cur = user.currency || '₹';
+      const catalog = user.products || [];
 
       formList.innerHTML = '';
       previewTbody.innerHTML = '';
@@ -2442,34 +2110,53 @@
         taxableAmount += itemTaxable;
         totalTax += itemTax;
 
+        // Build Catalog Dropdown Options for User's Saved Items
+        let catalogOptionsHtml = `<option value="">-- Choose from Catalog --</option>`;
+        catalog.forEach((prod, pIdx) => {
+          catalogOptionsHtml += `<option value="${pIdx}">${prod.name} (₹${prod.price} | GST: ${prod.taxRate}%)</option>`;
+        });
+
+        // 1. Structured Form Input Card on Left with Catalog Dropdown
         const card = document.createElement('div');
-        card.className = 'p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs';
+        card.className = 'p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs shadow-xs';
         card.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
-            <input type="text" placeholder="Item / Service Name" value="${line.description}" oninput="updateLine(${idx}, 'description', this.value)" class="flex-1 font-bold bg-white border border-slate-300 rounded-lg p-1.5 focus:outline-none" />
-            <button onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 p-1"><i class="ph ph-trash text-base"></i></button>
+          <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
+            <span class="font-bold text-slate-500 text-[10px] uppercase">Item #${idx + 1}</span>
+            <div class="flex items-center gap-2">
+              <select onchange="populateLineFromCatalog(${idx}, this.value)" class="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg p-1 font-semibold">
+                ${catalogOptionsHtml}
+              </select>
+              <button onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 p-1" title="Remove Row"><i class="ph ph-trash text-base"></i></button>
+            </div>
           </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Item Name / Description</label>
+            <input type="text" placeholder="Description" value="${line.description}" oninput="updateLine(${idx}, 'description', this.value)" class="w-full font-bold bg-white border border-slate-300 rounded-xl p-2 focus:outline-none" />
+          </div>
+
           <div class="grid grid-cols-4 gap-2">
             <div>
               <label class="text-[10px] font-bold text-slate-400 block">Qty</label>
-              <input type="number" min="1" value="${line.qty}" oninput="updateLine(${idx}, 'qty', this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-1 text-right font-medium" />
+              <input type="number" min="1" value="${line.qty}" oninput="updateLine(${idx}, 'qty', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
             </div>
             <div>
               <label class="text-[10px] font-bold text-slate-400 block">Rate (₹)</label>
-              <input type="number" min="0" value="${line.price}" oninput="updateLine(${idx}, 'price', this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-1 text-right font-medium" />
+              <input type="number" min="0" value="${line.price}" oninput="updateLine(${idx}, 'price', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
             </div>
             <div>
               <label class="text-[10px] font-bold text-slate-400 block">Disc (₹)</label>
-              <input type="number" min="0" value="${line.discount}" oninput="updateLine(${idx}, 'discount', this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-1 text-right font-medium" />
+              <input type="number" min="0" value="${line.discount}" oninput="updateLine(${idx}, 'discount', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
             </div>
             <div>
               <label class="text-[10px] font-bold text-slate-400 block">Tax %</label>
-              <input type="number" min="0" value="${line.tax}" oninput="updateLine(${idx}, 'tax', this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-1 text-right font-medium" />
+              <input type="number" min="0" value="${line.tax}" oninput="updateLine(${idx}, 'tax', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
             </div>
           </div>
         `;
         formList.appendChild(card);
 
+        // 2. Clean Preview Row on Right
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="py-2.5 px-3 font-bold text-slate-800">${line.description || 'Untitled Item'}</td>
@@ -2492,8 +2179,27 @@
       document.getElementById('invCalcGrandTotal').innerText = `${cur}${grandTotal.toFixed(2)}`;
     }
 
+    function populateLineFromCatalog(lineIdx, catalogIdx) {
+      if (catalogIdx === "") return;
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const prod = (user.products || [])[parseInt(catalogIdx)];
+      if (prod) {
+        activeInvoiceLines[lineIdx].description = prod.name;
+        activeInvoiceLines[lineIdx].price = prod.price;
+        activeInvoiceLines[lineIdx].tax = prod.taxRate;
+        renderInvoiceRows();
+        updateLiveInvoicePreview();
+      }
+    }
+
     function addInvoiceRow() {
-      activeInvoiceLines.push({ description: 'New Service Item', qty: 1, price: 1000, discount: 0, tax: 18 });
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (user && user.products && user.products.length > 0) {
+        const p = user.products[0];
+        activeInvoiceLines.push({ description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate });
+      } else {
+        activeInvoiceLines.push({ description: 'New Service Item', qty: 1, price: 1000, discount: 0, tax: 18 });
+      }
       renderInvoiceRows();
     }
 
@@ -2501,6 +2207,8 @@
       if (activeInvoiceLines.length > 1) {
         activeInvoiceLines.splice(idx, 1);
         renderInvoiceRows();
+      } else {
+        alert("Invoice must have at least one line item.");
       }
     }
 
@@ -2645,7 +2353,7 @@
     }
 
     // -------------------------------------------------------------
-    // RENEWAL MODAL & WHATSAPP
+    // RENEWAL & CHATBOT
     // -------------------------------------------------------------
     function openRenewalModal() {
       document.getElementById('renewalPlanModal').classList.remove('hidden');
@@ -2666,9 +2374,6 @@
       closeRenewalModal();
     }
 
-    // -------------------------------------------------------------
-    // AI CHATBOT LOGIC
-    // -------------------------------------------------------------
     function toggleChatbot() {
       const widget = document.getElementById('aiChatbotWidget');
       const icon = document.getElementById('chatbotToggleIcon');
@@ -2752,7 +2457,7 @@
       }
 
       if (q.includes('invoice') || q.includes('bill') || q.includes('create')) {
-        return `To generate an invoice, click on the <b>"+ Create Invoice"</b> button on your dashboard. Use the clean form on the left, add items, preview live on the right, and use <b>"Share"</b> or <b>"Print / PDF"</b> to send it to clients!`;
+        return `To generate an invoice, click on the <b>"+ Create Invoice"</b> button on your dashboard. Use the clean form on the left, choose items from your catalog, preview live on the right, and use <b>"Share"</b> or <b>"Print / PDF"</b>!`;
       }
 
       if (q.includes('gst') || q.includes('tax') || q.includes('cgst') || q.includes('sgst')) {
@@ -2763,7 +2468,7 @@
         return `You can reach our Be Bill Admin team directly via WhatsApp or Call at <b>+91 7382680200</b>. Or click the green WhatsApp icon on the bottom right.`;
       }
 
-      return `I understand you have a question regarding <b>"${query}"</b>. You can create invoices, manage customers, or renew your subscription on Be Bill (bebill.in). For personalized assistance, WhatsApp our team at <b>+91 7382680200</b>!`;
+      return `I understand you have a question regarding <b>"${query}"</b>. You can create invoices, manage products/customers, or renew your subscription on Be Bill (bebill.in). For direct help, WhatsApp our team at <b>+91 7382680200</b>!`;
     }
 
     init();
