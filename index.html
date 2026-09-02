@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -298,6 +300,7 @@
             </button>
           </div>
 
+          <!-- KPI Cards -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
               <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500">Pending Approvals</p>
@@ -672,7 +675,7 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH CATALOG AUTO-SYNC ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-4 sm:space-y-6">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -1018,191 +1021,14 @@
     </div>
   </div>
 
-  <!-- MODALS -->
-  <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Create & Assign Plan Validity</h3>
-        <button onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccCategory')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccUsername')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Username</label>
-          <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPhone')" />
-            <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
-          </div>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="newAccPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPassword')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Login Password</label>
-          <input type="text" id="newAccPassword" value="user123" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="newAccGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'newAccPlanPreset')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Select Subscription Plan Validity</label>
-          <select id="newAccPlanPreset" onchange="onPlanPresetChange('newAccPlanPreset', 'newAccValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Custom / Allocated Days</label>
-          <input type="number" id="newAccValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewAccount')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Create & Authorize Plan</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="approvePlanModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div>
-          <h3 class="font-bold text-sm text-slate-900">Authorize Plan & Set Validity</h3>
-          <p class="text-[11px] text-slate-500 truncate max-w-xs" id="approveModalTargetUser">User: --</p>
-        </div>
-        <button onclick="closeApprovePlanModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <input type="hidden" id="approveTargetUserId" />
-
-      <div class="space-y-3">
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Select Approval Plan</label>
-          <select id="approvePlanPreset" onchange="onPlanPresetChange('approvePlanPreset', 'approveValidityDays')" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="7">🆓 Free Trial (7 Days - ₹19)</option>
-            <option value="30">📅 Monthly (1 Month - ₹99)</option>
-            <option value="90">📦 Quarterly (3 Months - ₹249)</option>
-            <option value="180">🚀 Half-Yearly (6 Months - ₹449)</option>
-            <option value="365" selected>👑 Yearly (1 Year - ₹799)</option>
-            <option value="custom">Modify Custom Days...</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Days to Assign / Add</label>
-          <input type="number" id="approveValidityDays" value="365" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeApprovePlanModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="confirmApprovePlan()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 touch-target">
-          <i class="ph ph-check-bold"></i> Confirm & Activate Plan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
-        <button onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
-          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewCompany')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
-          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewGst')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
-          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewEmail')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
-          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewPhone')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
-          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'custNewAddress')" />
-        </div>
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
-          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewCustomer')"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Customer</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-sm text-slate-900">Add Product / Service to Catalog</h3>
-        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="sm:col-span-2">
-          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
-          <input type="text" id="prodNewName" placeholder="e.g. Website Design & Dev" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewPrice')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
-          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewTax')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
-          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewHsn')">
-            <option value="0">0% Non-Taxable</option>
-            <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18" selected>18% GST</option>
-            <option value="28">28% GST</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
-          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'prodNewStock')" />
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
-          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" onkeydown="handleEnterNavigation(event, 'btnSubmitNewProduct')" />
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-        <button onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save to Catalog</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
+  <!-- ==================== SUPABASE CLOUD SYNC & ENGINE ==================== -->
   <script>
+    // Supabase Credentials
+    const SUPABASE_URL = "https://grpnfwvssadmlsqlwlaa.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_hyxkJNppVqwAD5Uc5eGzxQ_PgyYsrKO";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
     const WHATSAPP_HELPLINE = '917382680200';
@@ -1212,43 +1038,86 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
-    let tenantUsers = [
-      {
-        id: 'usr_1',
-        username: 'skyline',
-        email: 'skyline@bebill.in',
-        password: 'user123',
-        serviceName: 'Skyline Fiber & Networks',
-        category: 'ISP & Broadband Services',
-        logoUrl: '',
-        gstNumber: '36AABCS1429B1ZX',
-        phone: '+91 9848022338',
-        website: 'https://bebill.in',
-        address: 'Plot 42, Hitech City Main Rd, Madhapur, Hyderabad, Telangana 500081',
-        currency: '₹',
-        paymentMethod: 'Bank Wire / UPI',
-        upiId: 'skyline@ybl',
-        bankName: 'HDFC Bank Ltd',
-        accountNumber: '50200012345678',
-        ifsc: 'HDFC0001234',
-        invoicePrefix: 'SKY',
-        terms: '1. Payment due within 14 days.\n2. Late payments incur a 1.5% monthly fee.',
-        notes: 'Thank you for choosing Skyline Fiber Networks on Be Bill.',
-        planPreset: '365',
-        status: 'ACTIVE',
-        validUntil: '2027-08-30',
-        customers: [
-          { id: 'c_1', name: 'Global Infotech Inc', company: 'Global Infotech', email: 'accounts@global.com', phone: '+91 9988776655', gstin: '36XYZ1234567', address: 'Tech Park, Gachibowli, Hyderabad' }
-        ],
-        products: [
-          { id: 'p_1', name: 'Website Design & Dev', hsn: '998314', price: 10000, taxRate: 18, stock: 'N/A' },
-          { id: 'p_2', name: '4K Ultra OTT 12-App Bundle', hsn: '9984', price: 499, taxRate: 18, stock: 'Unlimited' }
-        ],
-        invoices: []
-      }
-    ];
-
+    let tenantUsers = [];
     let activeInvoiceLines = [];
+
+    // Sync from Supabase Cloud DB
+    async function syncDataFromSupabase() {
+      try {
+        const { data: tenants, error: tErr } = await supabase.from('tenants').select('*');
+        if (tErr) throw tErr;
+
+        const { data: customers } = await supabase.from('customers').select('*');
+        const { data: products } = await supabase.from('products').select('*');
+        const { data: invoices } = await supabase.from('invoices').select('*');
+
+        tenantUsers = (tenants || []).map(t => ({
+          id: t.id,
+          username: t.username,
+          email: t.email,
+          password: t.password,
+          serviceName: t.service_name,
+          category: t.category,
+          logoUrl: t.logo_url,
+          gstNumber: t.gst_number,
+          phone: t.phone,
+          website: t.website,
+          address: t.address,
+          currency: t.currency || '₹',
+          paymentMethod: t.payment_method,
+          upiId: t.upi_id,
+          bankName: t.bank_name,
+          accountNumber: t.account_number,
+          ifsc: t.ifsc,
+          invoicePrefix: t.invoice_prefix,
+          terms: t.terms,
+          notes: t.notes,
+          planPreset: t.plan_preset,
+          status: t.status,
+          validUntil: t.valid_until,
+          customers: (customers || []).filter(c => c.tenant_id === t.id),
+          products: (products || []).map(p => ({
+            id: p.id,
+            name: p.name,
+            price: parseFloat(p.price) || 0,
+            taxRate: parseFloat(p.tax_rate) || 18,
+            hsn: p.hsn,
+            stock: p.stock
+          })).filter(p => (products || []).some(dbP => dbP.id === p.id && dbP.tenant_id === t.id)),
+          invoices: (invoices || []).filter(i => i.tenant_id === t.id).map(i => ({
+            id: i.id,
+            number: i.number,
+            date: i.date,
+            dueDate: i.due_date,
+            status: i.status,
+            customerName: i.customer_name,
+            customerEmail: i.customer_email,
+            customerPhone: i.customer_phone,
+            customerGstin: i.customer_gstin,
+            billingAddress: i.billing_address,
+            lines: i.lines || [],
+            subtotal: parseFloat(i.subtotal) || 0,
+            discount: parseFloat(i.discount) || 0,
+            taxable: parseFloat(i.taxable) || 0,
+            cgst: parseFloat(i.cgst) || 0,
+            sgst: parseFloat(i.sgst) || 0,
+            shipping: parseFloat(i.shipping) || 0,
+            grandTotal: parseFloat(i.grand_total) || 0
+          }))
+        }));
+
+        localStorage.setItem('bebill_enterprise_db', JSON.stringify(tenantUsers));
+      } catch (err) {
+        console.warn('Supabase fetch failed, using local cache:', err);
+        const saved = localStorage.getItem('bebill_enterprise_db');
+        if (saved) tenantUsers = JSON.parse(saved);
+      }
+    }
+
+    async function init() {
+      await syncDataFromSupabase();
+      lockApp();
+    }
 
     function toggleMobileSidebar(forceClose = false) {
       const sidebar = document.getElementById('appSidebar');
@@ -1284,22 +1153,13 @@
         event.preventDefault();
         const nextEl = document.getElementById(nextElementId);
         if (nextEl) {
-          if (nextEl.tagName === 'BUTTON') {
-            nextEl.click();
-          } else {
+          if (nextEl.tagName === 'BUTTON') nextEl.click();
+          else {
             nextEl.focus();
             if (nextEl.select) nextEl.select();
           }
         }
       }
-    }
-
-    function init() {
-      const savedDB = localStorage.getItem('bebill_enterprise_db');
-      if (savedDB) {
-        try { tenantUsers = JSON.parse(savedDB); } catch (e) {}
-      }
-      lockApp();
     }
 
     function lockApp() {
@@ -1320,6 +1180,7 @@
       localStorage.setItem('bebill_enterprise_db', JSON.stringify(tenantUsers));
     }
 
+    // Auth Form Handlers
     function switchAuthMode(mode) {
       hideAuthAlert();
       const loginForm = document.getElementById('formLoginContainer');
@@ -1368,7 +1229,7 @@
       document.getElementById('authAlertBox').classList.add('hidden');
     }
 
-    function handleLoginSubmit() {
+    async function handleLoginSubmit() {
       hideAuthAlert();
       const rawUser = document.getElementById('loginUsername').value.trim().toLowerCase().replace(/@bebill\.in$/i, '');
       const pass = document.getElementById('loginPassword').value.trim();
@@ -1384,6 +1245,8 @@
         unlockApp('admin');
         return;
       }
+
+      await syncDataFromSupabase();
 
       const fullEmail = `${rawUser}@bebill.in`;
       const matchUser = tenantUsers.find(u => (u.username.toLowerCase() === rawUser || u.email.toLowerCase() === fullEmail) && u.password === pass);
@@ -1401,7 +1264,7 @@
       showAuthAlert('❌ Invalid username or password! Please try again.');
     }
 
-    function handleSignupSubmit() {
+    async function handleSignupSubmit() {
       hideAuthAlert();
       const sName = document.getElementById('signupServiceName').value.trim();
       const sCategory = document.getElementById('signupCategory').value;
@@ -1422,40 +1285,27 @@
         return;
       }
 
-      const expDate = new Date();
-      expDate.setDate(expDate.getDate() + 365);
+      const newId = 'usr_' + Date.now();
 
-      const newUser = {
-        id: 'usr_' + Date.now(),
+      // Cloud Push to Supabase
+      const { error: sbErr } = await supabase.from('tenants').insert([{
+        id: newId,
         username: rawUser,
         email: cleanEmail,
         password: sPass,
-        serviceName: sName,
+        service_name: sName,
         category: sCategory,
-        logoUrl: '',
-        gstNumber: sGst || 'UNREGISTERED',
         phone: sPhone || '+91 9800000000',
-        website: 'https://bebill.in',
-        address: 'Registered Business Address',
-        currency: '₹',
-        paymentMethod: 'Bank Wire / UPI',
-        upiId: '',
-        bankName: '',
-        accountNumber: '',
-        ifsc: '',
-        invoicePrefix: rawUser.slice(0, 3).toUpperCase(),
-        terms: 'Payment due on receipt.',
-        notes: 'Thank you for your business.',
-        planPreset: '30',
+        gst_number: sGst || 'UNREGISTERED',
         status: 'PENDING',
-        validUntil: '',
-        customers: [],
-        products: [],
-        invoices: []
-      };
+        plan_preset: '30'
+      }]);
 
-      tenantUsers.unshift(newUser);
-      saveDB();
+      if (sbErr) {
+        console.error('Supabase signup insert error:', sbErr);
+      }
+
+      await syncDataFromSupabase();
 
       showAuthAlert('✅ Request submitted! Super Admin will assign your validity plan shortly.', true);
       setTimeout(() => {
@@ -1465,7 +1315,7 @@
         document.getElementById('signupPhone').value = '';
         document.getElementById('signupGst').value = '';
         switchAuthMode('login');
-      }, 2500);
+      }, 2000);
     }
 
     function logoutToLoginScreen() {
@@ -1607,6 +1457,13 @@
           if (btnInvoicesCreateInv) {
             btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
+          }
+
+          if (daysLeft === 1) {
+            setTimeout(() => {
+              alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan.');
+              openRenewalModal();
+            }, 800);
           }
         }
 
@@ -1755,128 +1612,6 @@
       document.getElementById('statTotalUsers').innerText = tenantUsers.length;
     }
 
-    function openUserReviewModal(userId) {
-      currentReviewUserId = userId;
-      const user = tenantUsers.find(u => u.id === userId);
-      if (!user) return;
-
-      const cur = user.currency || '₹';
-      const daysLeft = getRemainingDays(user.validUntil);
-      const isExpired = (daysLeft <= 0 || user.status !== 'ACTIVE');
-
-      document.getElementById('revBusinessName').innerText = user.serviceName;
-      document.getElementById('revUsernameEmail').innerText = `${user.username}@bebill.in • ${user.email}`;
-      document.getElementById('revCategory').innerText = user.category || 'General Merchant';
-      document.getElementById('revPhone').innerText = user.phone || 'Not Provided';
-      document.getElementById('revGst').innerText = user.gstNumber || 'UNREGISTERED';
-      document.getElementById('revAddress').innerText = user.address || 'Address Not Provided';
-
-      const badge = document.getElementById('revPlanBadge');
-      if (isExpired) {
-        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-300';
-        badge.innerText = 'EXPIRED';
-        document.getElementById('revDaysLeft').innerText = '0 Days (Expired)';
-      } else {
-        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
-        badge.innerText = 'ACTIVE';
-        document.getElementById('revDaysLeft').innerText = `${daysLeft} Days`;
-      }
-
-      const allInvs = user.invoices || [];
-      const totalSales = allInvs.reduce((sum, i) => sum + i.grandTotal, 0);
-
-      const now = new Date();
-      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const monthlySales = allInvs
-        .filter(i => (i.date || '').startsWith(currentYearMonth))
-        .reduce((sum, i) => sum + i.grandTotal, 0);
-
-      document.getElementById('revTotalSales').innerText = `${cur}${totalSales.toFixed(2)}`;
-      document.getElementById('revMonthlySales').innerText = `${cur}${monthlySales.toFixed(2)}`;
-      document.getElementById('revTotalInvoices').innerText = allInvs.length;
-
-      document.getElementById('revFilterFrom').value = '';
-      document.getElementById('revFilterTo').value = '';
-
-      renderReviewInvoicesTable(allInvs, 'All Time');
-
-      document.getElementById('userReviewModal').classList.remove('hidden');
-    }
-
-    function closeUserReviewModal() {
-      document.getElementById('userReviewModal').classList.add('hidden');
-      currentReviewUserId = null;
-    }
-
-    function applyReviewDateFilter() {
-      if (!currentReviewUserId) return;
-      const user = tenantUsers.find(u => u.id === currentReviewUserId);
-      if (!user) return;
-
-      const fromVal = document.getElementById('revFilterFrom').value;
-      const toVal = document.getElementById('revFilterTo').value;
-
-      if (!fromVal && !toVal) {
-        alert('Please select at least a From Date or To Date.');
-        return;
-      }
-
-      let filtered = (user.invoices || []).filter(i => {
-        if (!i.date) return false;
-        if (fromVal && i.date < fromVal) return false;
-        if (toVal && i.date > toVal) return false;
-        return true;
-      });
-
-      const label = `${fromVal || 'Beginning'} → ${toVal || 'Today'}`;
-      renderReviewInvoicesTable(filtered, label);
-    }
-
-    function resetReviewDateFilter() {
-      if (!currentReviewUserId) return;
-      const user = tenantUsers.find(u => u.id === currentReviewUserId);
-      if (!user) return;
-
-      document.getElementById('revFilterFrom').value = '';
-      document.getElementById('revFilterTo').value = '';
-      renderReviewInvoicesTable(user.invoices || [], 'All Time');
-    }
-
-    function renderReviewInvoicesTable(invoicesList, rangeLabel) {
-      const user = tenantUsers.find(u => u.id === currentReviewUserId);
-      const cur = user ? (user.currency || '₹') : '₹';
-      const tbody = document.getElementById('revInvoicesTbody');
-      tbody.innerHTML = '';
-
-      document.getElementById('revFilteredRangeLabel').innerText = rangeLabel;
-      document.getElementById('revFilteredInvoicesCount').innerText = invoicesList.length;
-
-      const filteredTotal = invoicesList.reduce((sum, i) => sum + i.grandTotal, 0);
-      document.getElementById('revFilteredTotalAmount').innerText = `${cur}${filteredTotal.toFixed(2)}`;
-
-      if (invoicesList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">No invoices found for the selected date range.</td></tr>`;
-        return;
-      }
-
-      invoicesList.forEach(inv => {
-        let badgeColor = 'bg-slate-100 text-slate-600';
-        if (inv.status === 'PAID') badgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-        if (inv.status === 'PENDING') badgeColor = 'bg-amber-50 text-amber-700 border border-amber-200';
-        if (inv.status === 'OVERDUE') badgeColor = 'bg-red-50 text-red-700 border border-red-200';
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-indigo-600 font-mono">${inv.number}</td>
-          <td class="py-2.5 px-3 text-slate-600">${inv.date}</td>
-          <td class="py-2.5 px-3 font-bold text-slate-800">${inv.customerName}</td>
-          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${inv.status}</span></td>
-          <td class="py-2.5 px-3 text-right font-bold text-slate-900 font-mono">${cur}${inv.grandTotal.toFixed(2)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
     function openApprovePlanModal(userId) {
       const user = tenantUsers.find(u => u.id === userId);
       if (!user) return;
@@ -1893,7 +1628,7 @@
       document.getElementById('approvePlanModal').classList.add('hidden');
     }
 
-    function confirmApprovePlan() {
+    async function confirmApprovePlan() {
       const userId = document.getElementById('approveTargetUserId').value;
       const user = tenantUsers.find(u => u.id === userId);
       if (!user) return;
@@ -1903,12 +1638,16 @@
 
       const expDate = new Date();
       expDate.setDate(expDate.getDate() + days);
+      const validUntilStr = expDate.toISOString().split('T')[0];
 
-      user.planPreset = preset;
-      user.validUntil = expDate.toISOString().split('T')[0];
-      user.status = 'ACTIVE';
+      // Update Supabase
+      await supabase.from('tenants').update({
+        plan_preset: preset,
+        valid_until: validUntilStr,
+        status: 'ACTIVE'
+      }).eq('id', user.id);
 
-      saveDB();
+      await syncDataFromSupabase();
       closeApprovePlanModal();
       renderAdminUsersTable();
       alert(`Plan approved & activated for "${user.serviceName}" with ${days} days validity!`);
@@ -1922,7 +1661,7 @@
       document.getElementById('createUserModal').classList.add('hidden');
     }
 
-    function submitNewUserAccount() {
+    async function submitNewUserAccount() {
       const name = document.getElementById('newAccServiceName').value.trim();
       const cat = document.getElementById('newAccCategory').value.trim();
       let rawUser = document.getElementById('newAccUsername').value.trim().toLowerCase().replace(/@bebill\.in$/i, '');
@@ -1941,343 +1680,168 @@
       const expDate = new Date();
       expDate.setDate(expDate.getDate() + validityDays);
 
-      const newUser = {
-        id: 'usr_' + Date.now(),
+      const newId = 'usr_' + Date.now();
+
+      await supabase.from('tenants').insert([{
+        id: newId,
         username: rawUser,
         email: cleanEmail,
         password: pass || 'user123',
-        serviceName: name,
+        service_name: name,
         category: cat || 'OTT & Broadband Services',
-        logoUrl: '',
-        gstNumber: gst || 'UNREGISTERED',
-        currency: '₹',
-        address: 'Default Registered Office Address',
+        gst_number: gst || 'UNREGISTERED',
         phone: phone || '+91 9800000000',
-        website: 'https://bebill.in',
-        upiId: '',
-        bankName: '',
-        accountNumber: '',
-        ifsc: '',
-        invoicePrefix: rawUser.slice(0, 3).toUpperCase(),
-        terms: 'Payment due on receipt.',
-        notes: 'Thank you for your business.',
-        planPreset: planPreset,
+        plan_preset: planPreset,
         status: 'ACTIVE',
-        validUntil: expDate.toISOString().split('T')[0],
-        customers: [],
-        products: [],
-        invoices: []
-      };
+        valid_until: expDate.toISOString().split('T')[0]
+      }]);
 
-      tenantUsers.unshift(newUser);
-      saveDB();
+      await syncDataFromSupabase();
       closeCreateUserModal();
       renderAdminUsersTable();
       alert(`Account ${cleanEmail} created with ${validityDays} days validity!`);
     }
 
-    function deleteTenantAccount(userId) {
+    async function deleteTenantAccount(userId) {
       if (confirm('Are you sure you want to remove this account?')) {
-        tenantUsers = tenantUsers.filter(u => u.id !== userId);
-        saveDB();
+        await supabase.from('tenants').delete().eq('id', userId);
+        await syncDataFromSupabase();
         renderAdminUsersTable();
       }
     }
 
-    // -------------------------------------------------------------
-    // INVOICE BUILDER ENGINE & CATALOG AUTO-SYNC
-    // -------------------------------------------------------------
-    function openInvoiceEditor() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      
-      const daysLeft = getRemainingDays(user.validUntil);
-      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
-        alert('❌ Subscription Expired! Renewal is required to generate new invoices.');
-        openRenewalModal();
+    // Customer CRM Handlers
+    function openAddCustomerModal() {
+      document.getElementById('addCustomerModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('custNewName').focus(), 100);
+    }
+    function closeAddCustomerModal() {
+      document.getElementById('addCustomerModal').classList.add('hidden');
+    }
+
+    async function submitNewCustomer() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const name = document.getElementById('custNewName').value.trim();
+      const company = document.getElementById('custNewCompany').value.trim();
+      const email = document.getElementById('custNewEmail').value.trim();
+      const phone = document.getElementById('custNewPhone').value.trim();
+      const gstin = document.getElementById('custNewGst').value.trim();
+      const address = document.getElementById('custNewAddress').value.trim();
+
+      if (!name) {
+        alert('Please provide at least a customer name.');
         return;
       }
 
-      document.getElementById('userView').classList.add('hidden');
-      document.getElementById('invoiceEditorView').classList.remove('hidden');
+      const newId = 'c_' + Date.now();
 
-      document.getElementById('invRenderBusinessName').innerText = user.serviceName;
-      document.getElementById('invRenderAddress').innerText = user.address;
-      document.getElementById('invRenderEmail').innerText = user.email;
-      document.getElementById('invRenderPhone').innerText = user.phone || '+91 0000000000';
-      document.getElementById('invRenderGstin').innerText = user.gstNumber || 'UNREGISTERED';
+      await supabase.from('customers').insert([{
+        id: newId,
+        tenant_id: user.id,
+        name: name,
+        company: company,
+        email: email,
+        phone: phone,
+        gstin: gstin,
+        address: address
+      }]);
 
-      document.getElementById('invRenderUpiId').innerText = user.upiId || 'Not Configured';
-      document.getElementById('invRenderBankName').innerText = user.bankName || 'Not Configured';
-      document.getElementById('invRenderAccountNo').innerText = user.accountNumber || 'Not Configured';
-      document.getElementById('invRenderIfsc').innerText = user.ifsc || 'Not Configured';
-
-      document.getElementById('invEditDate').value = new Date().toISOString().split('T')[0];
-      const nextDue = new Date();
-      nextDue.setDate(nextDue.getDate() + 14);
-      document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
-      document.getElementById('invEditNumber').value = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
-      document.getElementById('invEditStatus').value = 'PENDING';
-
-      document.getElementById('invCustName').value = '';
-      document.getElementById('invCustPhone').value = '';
-      document.getElementById('invCustEmail').value = '';
-      document.getElementById('invCustGstin').value = '';
-      document.getElementById('invCustBillingAddress').value = '';
-
-      const picker = document.getElementById('invCustomerSelectPicker');
-      picker.innerHTML = '<option value="">+ Load Saved Customer</option>';
-      (user.customers || []).forEach(c => {
-        picker.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-      });
-
-      // Default row setup
-      if (user.products && user.products.length > 0) {
-        const p = user.products[0];
-        activeInvoiceLines = [
-          { description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate }
-        ];
-      } else {
-        activeInvoiceLines = [
-          { description: 'Service / Product Item', qty: 1, price: 1000, discount: 0, tax: 18 }
-        ];
-      }
-
-      document.getElementById('invCalcShipping').value = 0;
-      renderInvoiceRows();
-      updateLiveInvoicePreview();
+      await syncDataFromSupabase();
+      closeAddCustomerModal();
+      renderUserCustomers(user);
     }
 
-    function closeInvoiceEditor() {
-      document.getElementById('invoiceEditorView').classList.add('hidden');
-      document.getElementById('userView').classList.remove('hidden');
-    }
-
-    function pickSavedCustomer(custId) {
-      if (!custId) return;
+    async function deleteCustomer(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const cust = (user.customers || []).find(c => c.id === custId);
-      if (cust) {
-        document.getElementById('invCustName').value = cust.name;
-        document.getElementById('invCustPhone').value = cust.phone || '';
-        document.getElementById('invCustEmail').value = cust.email || '';
-        document.getElementById('invCustGstin').value = cust.gstin || '';
-        document.getElementById('invCustBillingAddress').value = cust.address || '';
-        updateLiveInvoicePreview();
+      const cust = user.customers[idx];
+      if (cust && confirm('Delete this customer profile?')) {
+        await supabase.from('customers').delete().eq('id', cust.id);
+        await syncDataFromSupabase();
+        renderUserCustomers(user);
       }
     }
 
-    function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'INV-001';
-      document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
-      document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
-
-      const status = document.getElementById('invEditStatus').value;
-      const statusBadge = document.getElementById('invRenderStatusBadge');
-      statusBadge.innerText = status;
-      if (status === 'PAID') statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-300';
-      else if (status === 'PENDING') statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-300';
-      else statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-red-50 text-red-700 border border-red-300';
-
-      document.getElementById('invRenderCustName').innerText = document.getElementById('invCustName').value || 'Customer / Client Name';
-      document.getElementById('invRenderCustPhone').innerText = document.getElementById('invCustPhone').value || '--';
-      document.getElementById('invRenderCustGstin').innerText = document.getElementById('invCustGstin').value || '--';
-      document.getElementById('invRenderCustAddress').innerText = document.getElementById('invCustBillingAddress').value || 'Billing address not specified';
+    // Product Catalog Handlers
+    function openAddProductModal() {
+      document.getElementById('addProductModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('prodNewName').focus(), 100);
+    }
+    function closeAddProductModal() {
+      document.getElementById('addProductModal').classList.add('hidden');
     }
 
-    function renderInvoiceRows() {
-      const formList = document.getElementById('formLineItemsList');
-      const previewTbody = document.getElementById('invoiceLineItemsTbody');
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const cur = user.currency || '₹';
-      const catalog = user.products || [];
-
-      formList.innerHTML = '';
-      previewTbody.innerHTML = '';
-
-      let subtotal = 0;
-      let totalDiscount = 0;
-      let taxableAmount = 0;
-      let totalTax = 0;
-
-      activeInvoiceLines.forEach((line, idx) => {
-        const itemGross = line.qty * line.price;
-        const itemTaxable = Math.max(0, itemGross - line.discount);
-        const itemTax = itemTaxable * (line.tax / 100);
-        const itemTotal = itemTaxable + itemTax;
-
-        subtotal += itemGross;
-        totalDiscount += line.discount;
-        taxableAmount += itemTaxable;
-        totalTax += itemTax;
-
-        // Build Catalog Dropdown Options for User's Saved Items
-        let catalogOptionsHtml = `<option value="">-- Choose from Catalog --</option>`;
-        catalog.forEach((prod, pIdx) => {
-          catalogOptionsHtml += `<option value="${pIdx}">${prod.name} (₹${prod.price} | GST: ${prod.taxRate}%)</option>`;
-        });
-
-        // 1. Structured Form Input Card on Left with Catalog Dropdown
-        const card = document.createElement('div');
-        card.className = 'p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs shadow-xs';
-        card.innerHTML = `
-          <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
-            <span class="font-bold text-slate-500 text-[10px] uppercase">Item #${idx + 1}</span>
-            <div class="flex items-center gap-2">
-              <select onchange="populateLineFromCatalog(${idx}, this.value)" class="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg p-1 font-semibold">
-                ${catalogOptionsHtml}
-              </select>
-              <button onclick="removeLine(${idx})" class="text-slate-400 hover:text-red-600 p-1" title="Remove Row"><i class="ph ph-trash text-base"></i></button>
-            </div>
-          </div>
-
-          <div>
-            <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Item Name / Description</label>
-            <input type="text" placeholder="Description" value="${line.description}" oninput="updateLine(${idx}, 'description', this.value)" class="w-full font-bold bg-white border border-slate-300 rounded-xl p-2 focus:outline-none" />
-          </div>
-
-          <div class="grid grid-cols-4 gap-2">
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Qty</label>
-              <input type="number" min="1" value="${line.qty}" oninput="updateLine(${idx}, 'qty', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Rate (₹)</label>
-              <input type="number" min="0" value="${line.price}" oninput="updateLine(${idx}, 'price', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-bold" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Disc (₹)</label>
-              <input type="number" min="0" value="${line.discount}" oninput="updateLine(${idx}, 'discount', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block">Tax %</label>
-              <input type="number" min="0" value="${line.tax}" oninput="updateLine(${idx}, 'tax', this.value)" class="w-full bg-white border border-slate-300 rounded-xl p-1.5 text-right font-medium" />
-            </div>
-          </div>
-        `;
-        formList.appendChild(card);
-
-        // 2. Clean Preview Row on Right
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-slate-800">${line.description || 'Untitled Item'}</td>
-          <td class="py-2.5 px-2 text-right">${line.qty}</td>
-          <td class="py-2.5 px-2 text-right">${cur}${line.price.toFixed(2)}</td>
-          <td class="py-2.5 px-2 text-right text-red-500">${line.discount ? '-' + cur + line.discount : '--'}</td>
-          <td class="py-2.5 px-2 text-right">${line.tax}%</td>
-          <td class="py-2.5 px-3 text-right font-bold text-slate-900">${cur}${itemTotal.toFixed(2)}</td>
-        `;
-        previewTbody.appendChild(tr);
-      });
-
-      const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
-      const grandTotal = taxableAmount + totalTax + shipping;
-
-      document.getElementById('invCalcSubtotal').innerText = `${cur}${subtotal.toFixed(2)}`;
-      document.getElementById('invCalcDiscount').innerText = `-${cur}${totalDiscount.toFixed(2)}`;
-      document.getElementById('invCalcTaxable').innerText = `${cur}${taxableAmount.toFixed(2)}`;
-      document.getElementById('invCalcTaxCombined').innerText = `${cur}${totalTax.toFixed(2)}`;
-      document.getElementById('invCalcGrandTotal').innerText = `${cur}${grandTotal.toFixed(2)}`;
-    }
-
-    function populateLineFromCatalog(lineIdx, catalogIdx) {
-      if (catalogIdx === "") return;
+    async function submitNewProduct() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const prod = (user.products || [])[parseInt(catalogIdx)];
-      if (prod) {
-        activeInvoiceLines[lineIdx].description = prod.name;
-        activeInvoiceLines[lineIdx].price = prod.price;
-        activeInvoiceLines[lineIdx].tax = prod.taxRate;
-        renderInvoiceRows();
-        updateLiveInvoicePreview();
+      const name = document.getElementById('prodNewName').value.trim();
+      const price = parseFloat(document.getElementById('prodNewPrice').value) || 0;
+      const taxRate = parseFloat(document.getElementById('prodNewTax').value) || 0;
+      const hsn = document.getElementById('prodNewHsn').value.trim();
+      const stock = document.getElementById('prodNewStock').value.trim() || 'Unlimited';
+
+      if (!name) {
+        alert('Please enter a valid product/service description.');
+        return;
       }
+
+      const newId = 'p_' + Date.now();
+
+      await supabase.from('products').insert([{
+        id: newId,
+        tenant_id: user.id,
+        name: name,
+        price: price,
+        tax_rate: taxRate,
+        hsn: hsn,
+        stock: stock
+      }]);
+
+      await syncDataFromSupabase();
+      closeAddProductModal();
+      renderUserProducts(user);
     }
 
-    function addInvoiceRow() {
+    async function deleteProduct(idx) {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (user && user.products && user.products.length > 0) {
-        const p = user.products[0];
-        activeInvoiceLines.push({ description: p.name, qty: 1, price: p.price, discount: 0, tax: p.taxRate });
-      } else {
-        activeInvoiceLines.push({ description: 'New Service Item', qty: 1, price: 1000, discount: 0, tax: 18 });
-      }
-      renderInvoiceRows();
-    }
-
-    function removeLine(idx) {
-      if (activeInvoiceLines.length > 1) {
-        activeInvoiceLines.splice(idx, 1);
-        renderInvoiceRows();
-      } else {
-        alert("Invoice must have at least one line item.");
+      const prod = user.products[idx];
+      if (prod && confirm('Delete this catalog item?')) {
+        await supabase.from('products').delete().eq('id', prod.id);
+        await syncDataFromSupabase();
+        renderUserProducts(user);
       }
     }
 
-    function updateLine(idx, field, val) {
-      activeInvoiceLines[idx][field] = field === 'description' ? val : (parseFloat(val) || 0);
-      renderInvoiceRows();
-    }
-
-    function loadInvoiceIntoCanvas(user, inv) {
-      openInvoiceEditor();
-
-      document.getElementById('invEditNumber').value = inv.number;
-      document.getElementById('invEditDate').value = inv.date;
-      document.getElementById('invEditDueDate').value = inv.dueDate || '';
-      document.getElementById('invEditStatus').value = inv.status;
-
-      document.getElementById('invCustName').value = inv.customerName;
-      document.getElementById('invCustPhone').value = inv.customerPhone || '';
-      document.getElementById('invCustEmail').value = inv.customerEmail || '';
-      document.getElementById('invCustGstin').value = inv.customerGstin || '';
-      document.getElementById('invCustBillingAddress').value = inv.billingAddress || '';
-
-      activeInvoiceLines = (inv.lines || []).map(l => ({
-        description: l.description,
-        qty: l.qty,
-        price: l.price,
-        discount: l.discount || 0,
-        tax: l.tax || 0
-      }));
-
-      document.getElementById('invCalcShipping').value = inv.shipping || 0;
-      renderInvoiceRows();
-      updateLiveInvoicePreview();
-    }
-
-    function shareActiveInvoice() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const invNum = document.getElementById('invEditNumber').value || 'INV-001';
-      const custName = document.getElementById('invCustName').value || 'Client';
-      const custPhone = (document.getElementById('invCustPhone').value || '').replace(/[^0-9]/g, '');
-      const totalAmount = document.getElementById('invCalcGrandTotal').innerText;
-      const dueDate = document.getElementById('invEditDueDate').value || 'Immediate';
-
-      const shareText = `*Tax Invoice Details - ${user.serviceName} (bebill.in)*\n\n📄 Invoice #: ${invNum}\n👤 Billed To: ${custName}\n💰 Total Amount: ${totalAmount}\n📅 Due Date: ${dueDate}\n\nGenerated via Be Bill (https://bebill.in). Thank you!`;
-
-      if (navigator.share && window.innerWidth < 768) {
-        navigator.share({
-          title: `Invoice ${invNum} from ${user.serviceName}`,
-          text: shareText
-        }).catch(() => {});
-      } else {
-        const whatsappMsg = encodeURIComponent(shareText);
-        const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
-        window.open(url, '_blank');
-      }
-    }
-
-    function shareExistingInvoice(idx) {
+    // Save Settings
+    async function saveAllUserSettings() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      const inv = user.invoices[idx];
-      const custPhone = (inv.customerPhone || '').replace(/[^0-9]/g, '');
-      const shareText = `*Tax Invoice Details - ${user.serviceName} (bebill.in)*\n\n📄 Invoice #: ${inv.number}\n👤 Billed To: ${inv.customerName}\n💰 Total Amount: ${user.currency}${inv.grandTotal.toFixed(2)}\n📅 Date: ${inv.date}\n\nGenerated via Be Bill (https://bebill.in). Thank you!`;
+      if (!user) return;
 
-      const whatsappMsg = encodeURIComponent(shareText);
-      const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
-      window.open(url, '_blank');
+      const payload = {
+        service_name: document.getElementById('setBusinessName').value.trim(),
+        category: document.getElementById('setCategory').value.trim(),
+        gst_number: document.getElementById('setGstin').value.trim(),
+        email: document.getElementById('setEmail').value.trim(),
+        phone: document.getElementById('setPhone').value.trim(),
+        website: document.getElementById('setWebsite').value.trim(),
+        logo_url: document.getElementById('setLogoUrl').value.trim(),
+        address: document.getElementById('setAddress').value.trim(),
+        upi_id: document.getElementById('setUpiId').value.trim(),
+        bank_name: document.getElementById('setBankName').value.trim(),
+        account_number: document.getElementById('setBankAccount').value.trim(),
+        ifsc: document.getElementById('setBankIfsc').value.trim(),
+        invoice_prefix: document.getElementById('setInvPrefix').value.trim(),
+        currency: document.getElementById('setCurrency').value,
+        terms: document.getElementById('setTerms').value,
+        notes: document.getElementById('setNotes').value
+      };
+
+      await supabase.from('tenants').update(payload).eq('id', user.id);
+      await syncDataFromSupabase();
+      switchRole('user');
+      alert('All business settings saved to cloud on Be Bill!');
     }
 
-    function saveAndFinalizeInvoice() {
+    // Finalize & Save Invoice to Supabase
+    async function saveAndFinalizeInvoice() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return;
 
@@ -2314,20 +1878,18 @@
       const shipping = parseFloat(document.getElementById('invCalcShipping').value) || 0;
       const grandTotal = taxable + totalTax + shipping;
 
-      const invoiceRecord = {
+      const invRecord = {
         id: 'inv_' + Date.now(),
+        tenant_id: user.id,
         number: document.getElementById('invEditNumber').value.trim(),
         date: document.getElementById('invEditDate').value,
-        dueDate: document.getElementById('invEditDueDate').value,
+        due_date: document.getElementById('invEditDueDate').value,
         status: document.getElementById('invEditStatus').value,
-        paymentTerms: 'Due on Receipt',
-        customerName: document.getElementById('invCustName').value.trim() || 'Client',
-        customerCompany: '',
-        customerEmail: document.getElementById('invCustEmail').value.trim(),
-        customerPhone: document.getElementById('invCustPhone').value.trim(),
-        customerGstin: document.getElementById('invCustGstin').value.trim(),
-        billingAddress: document.getElementById('invCustBillingAddress').value.trim(),
-        shippingAddress: '',
+        customer_name: document.getElementById('invCustName').value.trim() || 'Client',
+        customer_email: document.getElementById('invCustEmail').value.trim(),
+        customer_phone: document.getElementById('invCustPhone').value.trim(),
+        customer_gstin: document.getElementById('invCustGstin').value.trim(),
+        billing_address: document.getElementById('invCustBillingAddress').value.trim(),
         lines: processedLines,
         subtotal: subtotal,
         discount: discount,
@@ -2335,142 +1897,29 @@
         cgst: totalTax / 2,
         sgst: totalTax / 2,
         shipping: shipping,
-        grandTotal: grandTotal
+        grand_total: grandTotal
       };
 
-      const existingIdx = (user.invoices || []).findIndex(i => i.number === invoiceRecord.number);
-      if (existingIdx >= 0) {
-        user.invoices[existingIdx] = invoiceRecord;
-      } else {
-        if (!user.invoices) user.invoices = [];
-        user.invoices.unshift(invoiceRecord);
-      }
+      await supabase.from('invoices').insert([invRecord]);
+      await syncDataFromSupabase();
 
-      saveDB();
-      alert(`Invoice ${invoiceRecord.number} successfully saved on Be Bill!`);
+      alert(`Invoice ${invRecord.number} successfully saved on Be Bill!`);
       closeInvoiceEditor();
       switchUserSection('invoices');
     }
 
-    // -------------------------------------------------------------
-    // RENEWAL & CHATBOT
-    // -------------------------------------------------------------
-    function openRenewalModal() {
-      document.getElementById('renewalPlanModal').classList.remove('hidden');
-    }
-
-    function closeRenewalModal() {
-      document.getElementById('renewalPlanModal').classList.add('hidden');
-    }
-
-    function submitRenewalToWhatsApp() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const selectedPlan = document.querySelector('input[name="renewalPlanOption"]:checked')?.value || 'Monthly Plan (1 Month - ₹99)';
-
-      const messageText = `Hello Admin (Be Bill - bebill.in),%0A%0AI would like to renew my merchant subscription plan.%0A%0A🏢 *Business Name:* ${encodeURIComponent(user.serviceName)}%0A👤 *Username:* ${encodeURIComponent(user.username)}@bebill.in%0A📞 *Contact Phone:* ${encodeURIComponent(user.phone || '--')}%0A📦 *Selected Plan:* ${encodeURIComponent(selectedPlan)}%0A%0APlease share the payment confirmation and activate my validity.`;
-
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${messageText}`;
-      window.open(whatsappUrl, '_blank');
-      closeRenewalModal();
-    }
-
-    function toggleChatbot() {
-      const widget = document.getElementById('aiChatbotWidget');
-      const icon = document.getElementById('chatbotToggleIcon');
-      if (widget.classList.contains('hidden')) {
-        widget.classList.remove('hidden');
-        icon.className = 'ph ph-x text-2xl';
-        setTimeout(() => document.getElementById('chatbotInput').focus(), 100);
-      } else {
-        widget.classList.add('hidden');
-        icon.className = 'ph ph-chat-centered-dots text-2xl';
+    async function deleteInvoice(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const inv = user.invoices[idx];
+      if (inv && confirm('Are you sure you want to delete this invoice?')) {
+        await supabase.from('invoices').delete().eq('id', inv.id);
+        await syncDataFromSupabase();
+        renderUserInvoices(user);
+        loadDashboardMetrics(user);
       }
     }
 
-    function handleChatbotEnter(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        handleChatbotSend();
-      }
-    }
-
-    function sendQuickPrompt(promptText) {
-      document.getElementById('chatbotInput').value = promptText;
-      handleChatbotSend();
-    }
-
-    function handleChatbotSend() {
-      const input = document.getElementById('chatbotInput');
-      const query = input.value.trim();
-      if (!query) return;
-
-      appendChatMessage(query, 'user');
-      input.value = '';
-
-      setTimeout(() => {
-        const response = generateAIResponse(query);
-        appendChatMessage(response, 'bot');
-      }, 450);
-    }
-
-    function appendChatMessage(text, sender) {
-      const container = document.getElementById('chatbotMessages');
-      const msgDiv = document.createElement('div');
-      
-      if (sender === 'user') {
-        msgDiv.className = 'flex items-start justify-end gap-2';
-        msgDiv.innerHTML = `
-          <div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none text-[11px] max-w-[80%] shadow-sm">
-            ${text}
-          </div>
-        `;
-      } else {
-        msgDiv.className = 'flex items-start gap-2';
-        msgDiv.innerHTML = `
-          <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">AI</div>
-          <div class="bg-white p-2.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-[11px] max-w-[85%] leading-relaxed">
-            ${text}
-          </div>
-        `;
-      }
-
-      container.appendChild(msgDiv);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function generateAIResponse(query) {
-      const q = query.toLowerCase();
-
-      if (q.includes('plan') || q.includes('price') || q.includes('pricing') || q.includes('cost')) {
-        return `Be Bill (bebill.in) official subscription packages:<br><br>
-        • 🆓 <b>Free Trial:</b> 7 Days – ₹19<br>
-        • 📅 <b>Monthly:</b> 1 Month – ₹99<br>
-        • 📦 <b>Quarterly:</b> 3 Months – ₹249<br>
-        • 🚀 <b>Half-Yearly:</b> 6 Months – ₹449<br>
-        • 👑 <b>Yearly:</b> 1 Year – ₹799<br><br>
-        <button onclick="openRenewalModal(); toggleChatbot();" class="text-indigo-600 font-bold underline">Click here to Select & Renew on WhatsApp</button>`;
-      }
-
-      if (q.includes('renew') || q.includes('expired') || q.includes('validity') || q.includes('extend')) {
-        return `To renew your plan, click on <b>"Renew Plan"</b> in your sidebar or open the renewal window below. You can send your chosen plan directly to admin WhatsApp at <b>+91 7382680200</b>.<br><br>
-        <button onclick="openRenewalModal(); toggleChatbot();" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold text-[10px]">Open Renewal Plans</button>`;
-      }
-
-      if (q.includes('invoice') || q.includes('bill') || q.includes('create')) {
-        return `To generate an invoice, click on the <b>"+ Create Invoice"</b> button on your dashboard. Use the clean form on the left, choose items from your catalog, preview live on the right, and use <b>"Share"</b> or <b>"Print / PDF"</b>!`;
-      }
-
-      if (q.includes('gst') || q.includes('tax') || q.includes('cgst') || q.includes('sgst')) {
-        return `Our invoicing engine automatically splits GST into <b>CGST (50%)</b> and <b>SGST (50%)</b> based on your product tax slab (0%, 5%, 12%, 18%, 28%). Track all reports in the <b>Reports & GST</b> tab.`;
-      }
-
-      if (q.includes('contact') || q.includes('call') || q.includes('support') || q.includes('whatsapp') || q.includes('number')) {
-        return `You can reach our Be Bill Admin team directly via WhatsApp or Call at <b>+91 7382680200</b>. Or click the green WhatsApp icon on the bottom right.`;
-      }
-
-      return `I understand you have a question regarding <b>"${query}"</b>. You can create invoices, manage products/customers, or renew your subscription on Be Bill (bebill.in). For direct help, WhatsApp our team at <b>+91 7382680200</b>!`;
-    }
-
+    // Launch
     init();
   </script>
 </body>
