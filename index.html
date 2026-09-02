@@ -43,7 +43,7 @@
   <div id="impersonationBanner" class="hidden no-print bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between z-50 shadow-md flex-shrink-0">
     <div class="flex items-center gap-2">
       <i class="ph ph-shield-check text-lg"></i>
-      <span>Admin View: Currently previewing as <b id="impersonatedUserName" class="underline">User</b></span>
+      <span>Admin View: Currently logged in as <b id="impersonatedUserName" class="underline">User</b></span>
     </div>
     <button type="button" onclick="exitImpersonationToAdmin()" class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 touch-target shadow">
       <i class="ph ph-arrow-left font-bold"></i> Return to Admin Panel
@@ -221,9 +221,10 @@
       </div>
       
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <div id="roleSwitcherButtons" class="flex items-center gap-1 sm:gap-2">
-          <button type="button" onclick="switchRole('admin')" id="btnRoleAdmin" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition text-[11px] sm:text-xs touch-target">Admin View</button>
-          <button type="button" onclick="switchRole('user')" id="btnRoleUser" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition text-[11px] sm:text-xs touch-target">User View</button>
+        <div id="roleSwitcherButtons" class="hidden items-center gap-1 sm:gap-2">
+          <span class="text-slate-500 font-medium hidden md:inline">Portal View:</span>
+          <button type="button" onclick="switchRole('admin')" id="btnRoleAdmin" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm transition text-[11px] sm:text-xs touch-target">Admin</button>
+          <button type="button" onclick="switchRole('user')" id="btnRoleUser" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition text-[11px] sm:text-xs touch-target">User</button>
         </div>
         <button type="button" onclick="logoutToLoginScreen()" class="ml-1 sm:ml-3 px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 font-bold transition flex items-center gap-1 text-[11px] sm:text-xs touch-target">
           <i class="ph ph-sign-out text-base"></i> <span class="hidden sm:inline">Log Out</span>
@@ -686,7 +687,7 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH SOCIAL ICONS ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH AUTOMATIC FORMATTED NAMING ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-6 pb-32">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -699,7 +700,7 @@
 
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="shareActiveInvoice()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 touch-target">
-                <i class="ph ph-share-network font-bold text-sm"></i> Share
+                <i class="ph ph-share-network font-bold text-sm"></i> Share & Save
               </button>
               <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold border border-slate-300 transition flex items-center gap-1.5 touch-target">
                 <i class="ph ph-printer font-bold text-sm"></i> Print / PDF
@@ -721,7 +722,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <label class="font-bold text-slate-600 block mb-1">Invoice Number</label>
+                    <label class="font-bold text-slate-600 block mb-1">Invoice Number (Auto-Formatted)</label>
                     <input type="text" id="invEditNumber" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-800" />
                   </div>
                   <div>
@@ -734,7 +735,7 @@
                   </div>
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Invoice Date</label>
-                    <input type="date" id="invEditDate" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-medium" />
+                    <input type="date" id="invEditDate" oninput="handleDateChangeForNaming()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-medium" />
                   </div>
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Due Date</label>
@@ -757,7 +758,7 @@
                 <div class="space-y-2.5 text-xs">
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Customer / Client Name *</label>
-                    <input type="text" id="invCustName" placeholder="e.g. John Doe / Enterprise Corp" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
+                    <input type="text" id="invCustName" placeholder="e.g. John Doe" oninput="handleCustomerNameChangeForNaming()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -815,14 +816,12 @@
                     </div>
 
                     <!-- Dynamic Clickable Social Media Icons List on Invoice -->
-                    <div id="invRenderSocialRow" class="flex items-center gap-2 pt-2">
-                      <!-- Rendered only if link exists -->
-                    </div>
+                    <div id="invRenderSocialRow" class="flex items-center gap-2 pt-2"></div>
                   </div>
 
                   <div class="text-left sm:text-right space-y-1 w-full sm:w-auto">
                     <h1 class="text-2xl font-black uppercase tracking-tight text-slate-900">Tax Invoice</h1>
-                    <p class="text-xs font-bold text-slate-700">Inv #: <span id="invRenderNumber" class="font-mono text-indigo-700">INV-001</span></p>
+                    <p class="text-xs font-bold text-slate-700">Inv Name: <span id="invRenderNumber" class="font-mono text-indigo-700 font-bold">--</span></p>
                     <p class="text-xs text-slate-500">Date: <span id="invRenderDate">--</span></p>
                     <p class="text-xs text-slate-500">Due Date: <span id="invRenderDueDate">--</span></p>
                     <div class="pt-1">
@@ -1032,122 +1031,7 @@
     </div>
   </div>
 
-  <!-- MODAL: ADMIN USER AUDIT / REVIEW -->
-  <div id="userReviewModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white border border-slate-200 w-full max-w-4xl rounded-3xl p-5 sm:p-8 space-y-5 sm:space-y-6 text-xs shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar my-auto">
-      
-      <!-- Modal Header -->
-      <div class="flex justify-between items-start border-b border-slate-100 pb-3 sm:pb-4">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">MERCHANT AUDIT</span>
-            <span id="revPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>
-          </div>
-          <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1" id="revBusinessName">Business Name</h3>
-          <p class="text-xs text-slate-500 font-mono" id="revUsernameEmail">user@bebill.in</p>
-        </div>
-        <button type="button" onclick="closeUserReviewModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 touch-target">
-          <i class="ph ph-x"></i>
-        </button>
-      </div>
-
-      <!-- Overview Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Category</span>
-          <span class="font-bold text-slate-800" id="revCategory">Broadband / OTT</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Phone</span>
-          <span class="font-mono text-slate-800 font-bold" id="revPhone">+91 --</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">GSTIN</span>
-          <span class="font-mono text-indigo-700 font-bold uppercase" id="revGst">--</span>
-        </div>
-        <div>
-          <span class="text-[10px] font-bold uppercase text-slate-400 block">Address</span>
-          <span class="text-slate-600 truncate block" id="revAddress">--</span>
-        </div>
-      </div>
-
-      <!-- KPI Tiles -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Total Sales</p>
-          <p class="text-base sm:text-lg font-black text-indigo-600 mt-0.5" id="revTotalSales">₹0.00</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Current Month</p>
-          <p class="text-base sm:text-lg font-black text-emerald-600 mt-0.5" id="revMonthlySales">₹0.00</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Invoices</p>
-          <p class="text-base sm:text-lg font-black text-slate-800 mt-0.5" id="revTotalInvoices">0</p>
-        </div>
-        <div class="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-purple-500">
-          <p class="text-[10px] font-bold uppercase text-slate-400">Validity Left</p>
-          <p class="text-base sm:text-lg font-black text-purple-600 mt-0.5" id="revDaysLeft">0 Days</p>
-        </div>
-      </div>
-
-      <!-- Custom Date Filter -->
-      <div class="bg-indigo-50/50 p-3.5 sm:p-4 rounded-2xl border border-indigo-100 space-y-3">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div>
-            <h4 class="font-bold text-indigo-950 text-xs uppercase tracking-wider">Custom Date Range Filter</h4>
-            <p class="text-[11px] text-indigo-700">Audit sales and invoice counts generated during specific dates</p>
-          </div>
-          
-          <div class="flex flex-wrap items-center gap-2">
-            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
-              <span class="text-[10px] font-bold text-slate-500">From:</span>
-              <input type="date" id="revFilterFrom" class="text-xs bg-transparent focus:outline-none font-medium" />
-            </div>
-            <div class="flex items-center gap-1.5 bg-white border border-indigo-200 rounded-xl px-2 py-1">
-              <span class="text-[10px] font-bold text-slate-500">To:</span>
-              <input type="date" id="revFilterTo" class="text-xs bg-transparent focus:outline-none font-medium" />
-            </div>
-            <button type="button" onclick="applyReviewDateFilter()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm touch-target">
-              Filter
-            </button>
-            <button type="button" onclick="resetReviewDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl transition touch-target">
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white px-3.5 sm:px-4 py-2.5 rounded-xl border border-indigo-100 text-xs gap-1 sm:gap-0">
-          <span class="text-slate-600">Range: <b id="revFilteredRangeLabel" class="text-indigo-950">All Time</b></span>
-          <div class="flex gap-4">
-            <span>Count: <b id="revFilteredInvoicesCount" class="text-slate-900 font-mono">0</b></span>
-            <span>Sales: <b id="revFilteredTotalAmount" class="text-emerald-600 font-mono font-bold">₹0.00</b></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Invoices Breakdown Table -->
-      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto max-h-56 custom-scrollbar">
-          <table class="w-full text-left text-xs min-w-[500px]">
-            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 sticky top-0">
-              <tr>
-                <th class="py-2 px-3">Invoice #</th>
-                <th class="py-2 px-3">Date</th>
-                <th class="py-2 px-3">Customer</th>
-                <th class="py-2 px-3">Status</th>
-                <th class="py-2 px-3 text-right">Grand Total</th>
-              </tr>
-            </thead>
-            <tbody id="revInvoicesTbody" class="divide-y divide-slate-100 font-medium"></tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- OTHER MODALS -->
+  <!-- MODALS -->
   <div id="createUserModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1202,7 +1086,7 @@
 
       <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
         <button type="button" onclick="closeCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
-        <button type="button" onclick="submitNewUserAccount()" id="btnSubmitNewAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Create & Authorize Plan</button>
+        <button type="button" onclick="submitNewUserAccount()" id="btnSubmitNewUserAccount" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Create & Authorize Plan</button>
       </div>
     </div>
   </div>
@@ -1246,6 +1130,90 @@
     </div>
   </div>
 
+  <div id="addCustomerModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm text-slate-900">Add New Customer</h3>
+        <button type="button" onclick="closeAddCustomerModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="sm:col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Customer / Contact Name</label>
+          <input type="text" id="custNewName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Company Name (Optional)</label>
+          <input type="text" id="custNewCompany" placeholder="Acme Labs" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">GSTIN Number (Optional)</label>
+          <input type="text" id="custNewGst" placeholder="36AAAAA0000A1Z5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 uppercase font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Email Address</label>
+          <input type="email" id="custNewEmail" placeholder="client@email.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
+          <input type="text" id="custNewPhone" placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Billing Address</label>
+          <textarea id="custNewAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-14 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button type="button" onclick="closeAddCustomerModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
+        <button type="button" onclick="submitNewCustomer()" id="btnSubmitNewCustomer" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm text-slate-900">Add Product / Service to Catalog</h3>
+        <button type="button" onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 touch-target"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="sm:col-span-2">
+          <label class="font-bold text-slate-700 block mb-1">Item Name / Service Description</label>
+          <input type="text" id="prodNewName" placeholder="e.g. Website Design & Dev" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Unit Price</label>
+          <input type="number" id="prodNewPrice" placeholder="10000" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Tax / GST Slab (%)</label>
+          <select id="prodNewTax" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <option value="0">0% Non-Taxable</option>
+            <option value="5">5% GST</option>
+            <option value="12">12% GST</option>
+            <option value="18" selected>18% GST</option>
+            <option value="28">28% GST</option>
+          </select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">HSN / SAC Code (Optional)</label>
+          <input type="text" id="prodNewHsn" placeholder="998314" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Stock Quantity (Optional)</label>
+          <input type="text" id="prodNewStock" placeholder="Unlimited" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button type="button" onclick="closeAddProductModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition touch-target">Cancel</button>
+        <button type="button" onclick="submitNewProduct()" id="btnSubmitNewProduct" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition touch-target">Save to Catalog</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== JAVASCRIPT STATE ENGINE ==================== -->
   <script>
     const SUPER_ADMIN_USER = 'billottloopstore';
@@ -1257,7 +1225,6 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
-    // Default Seed In-Memory Cache with Social Media handles
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1908,7 +1875,41 @@
       }
     }
 
-    // Invoice Builder Engine with Dynamic Clickable Social Media Icons
+    // Invoice Builder Engine with Automatic Formatted Naming Format: ClientName-ServiceName-MonthDate
+    function generateFormattedInvoiceNumber(clientName, serviceName, dateStr) {
+      const cleanClient = (clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '');
+      const cleanService = (serviceName || 'Service').trim().replace(/[^a-zA-Z0-9]/g, '');
+      
+      const d = dateStr ? new Date(dateStr) : new Date();
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const monthStr = months[d.getMonth()];
+      const dayStr = String(d.getDate()).padStart(2, '0');
+      
+      return `${cleanClient}-${cleanService}-${monthStr}${dayStr}`;
+    }
+
+    function handleCustomerNameChangeForNaming() {
+      updateLiveInvoicePreview();
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const clientName = document.getElementById('invCustName').value;
+      const dateVal = document.getElementById('invEditDate').value;
+      if (clientName) {
+        document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber(clientName, user.serviceName, dateVal);
+        document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value;
+      }
+    }
+
+    function handleDateChangeForNaming() {
+      updateLiveInvoicePreview();
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const clientName = document.getElementById('invCustName').value;
+      const dateVal = document.getElementById('invEditDate').value;
+      if (clientName && dateVal) {
+        document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber(clientName, user.serviceName, dateVal);
+        document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value;
+      }
+    }
+
     function openInvoiceEditor() {
       const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
       
@@ -1933,14 +1934,16 @@
       document.getElementById('invRenderAccountNo').innerText = user.accountNumber || 'Not Configured';
       document.getElementById('invRenderIfsc').innerText = user.ifsc || 'Not Configured';
 
-      // Render Clickable Social Icons on Invoice Canvas ONLY if link exists
       renderInvoiceSocialIcons(user);
 
-      document.getElementById('invEditDate').value = new Date().toISOString().split('T')[0];
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('invEditDate').value = todayStr;
       const nextDue = new Date();
       nextDue.setDate(nextDue.getDate() + 14);
       document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
-      document.getElementById('invEditNumber').value = `${user.invoicePrefix || 'INV'}-${Math.floor(1000 + Math.random() * 9000)}`;
+      
+      // Initial Name Generation
+      document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber('Client', user.serviceName, todayStr);
       document.getElementById('invEditStatus').value = 'PENDING';
 
       document.getElementById('invCustName').value = '';
@@ -2050,7 +2053,7 @@
         document.getElementById('invCustEmail').value = cust.email || '';
         document.getElementById('invCustGstin').value = cust.gstin || '';
         document.getElementById('invCustBillingAddress').value = cust.address || '';
-        updateLiveInvoicePreview();
+        handleCustomerNameChangeForNaming();
       }
     }
 
@@ -2195,41 +2198,12 @@
       renderInvoiceRows();
     }
 
-    function shareActiveInvoice() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const invNum = document.getElementById('invEditNumber').value || 'INV-001';
-      const custName = document.getElementById('invCustName').value || 'Client';
-      const custPhone = (document.getElementById('invCustPhone').value || '').replace(/[^0-9]/g, '');
-      const totalAmount = document.getElementById('invCalcGrandTotal').innerText;
-      const dueDate = document.getElementById('invEditDueDate').value || 'Immediate';
-
-      const shareText = `*Tax Invoice Details - ${user.serviceName} (bebill.in)*\n\n📄 Invoice #: ${invNum}\n👤 Billed To: ${custName}\n💰 Total Amount: ${totalAmount}\n📅 Due Date: ${dueDate}\n\nGenerated via Be Bill (https://bebill.in). Thank you!`;
-
-      if (navigator.share && window.innerWidth < 768) {
-        navigator.share({
-          title: `Invoice ${invNum} from ${user.serviceName}`,
-          text: shareText
-        }).catch(() => {});
-      } else {
-        const whatsappMsg = encodeURIComponent(shareText);
-        const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
-        window.open(url, '_blank');
-      }
-    }
-
-    function saveAndFinalizeInvoice() {
+    // INTERNAL HELPER TO COMPILE & STORE INVOICE AUTOMATICALLY
+    function compileAndSaveCurrentInvoiceRecord() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
-      if (!user) return;
-
-      const daysLeft = getRemainingDays(user.validUntil);
-      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
-        alert('❌ Plan Expired! Renewal required.');
-        openRenewalModal();
-        return;
-      }
+      if (!user) return null;
 
       let subtotal = 0, discount = 0, taxable = 0, totalTax = 0;
-
       const processedLines = activeInvoiceLines.map(l => {
         const itemGross = l.qty * l.price;
         const itemTaxable = Math.max(0, itemGross - l.discount);
@@ -2256,7 +2230,7 @@
 
       const invoiceRecord = {
         id: 'inv_' + Date.now(),
-        number: document.getElementById('invEditNumber').value.trim(),
+        number: document.getElementById('invEditNumber').value.trim() || generateFormattedInvoiceNumber(document.getElementById('invCustName').value, user.serviceName, document.getElementById('invEditDate').value),
         date: document.getElementById('invEditDate').value,
         dueDate: document.getElementById('invEditDueDate').value,
         status: document.getElementById('invEditStatus').value,
@@ -2284,7 +2258,58 @@
       }
 
       saveDB();
-      alert(`Invoice ${invoiceRecord.number} successfully saved on Be Bill!`);
+      return invoiceRecord;
+    }
+
+    function shareActiveInvoice() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
+      const daysLeft = getRemainingDays(user.validUntil);
+      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
+        alert('❌ Plan Expired! Renewal required.');
+        openRenewalModal();
+        return;
+      }
+
+      // Automatically Save before sharing
+      const savedInv = compileAndSaveCurrentInvoiceRecord();
+      if (!savedInv) return;
+
+      const custPhone = (savedInv.customerPhone || '').replace(/[^0-9]/g, '');
+      const totalAmount = `${user.currency || '₹'}${savedInv.grandTotal.toFixed(2)}`;
+
+      const shareText = `*Tax Invoice: ${savedInv.number}*\n🏢 *Issued By:* ${user.serviceName} (bebill.in)\n👤 *Billed To:* ${savedInv.customerName}\n💰 *Amount:* ${totalAmount}\n📅 *Due Date:* ${savedInv.dueDate || 'Receipt'}\n\nThank you for your business!`;
+
+      if (navigator.share && window.innerWidth < 768) {
+        navigator.share({
+          title: `Invoice ${savedInv.number}`,
+          text: shareText
+        }).catch(() => {});
+      } else {
+        const whatsappMsg = encodeURIComponent(shareText);
+        const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
+        window.open(url, '_blank');
+      }
+
+      alert(`Invoice ${savedInv.number} automatically saved & ready for sharing!`);
+      closeInvoiceEditor();
+      switchUserSection('invoices');
+    }
+
+    function saveAndFinalizeInvoice() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      if (!user) return;
+
+      const daysLeft = getRemainingDays(user.validUntil);
+      if (daysLeft <= 0 || user.status !== 'ACTIVE') {
+        alert('❌ Plan Expired! Renewal required.');
+        openRenewalModal();
+        return;
+      }
+
+      const savedInv = compileAndSaveCurrentInvoiceRecord();
+      if (!savedInv) return;
+
+      alert(`Invoice ${savedInv.number} successfully saved!`);
       closeInvoiceEditor();
       switchUserSection('invoices');
     }
@@ -2423,16 +2448,24 @@
             <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${inv.status==='PAID'?'bg-emerald-50 text-emerald-700 border border-emerald-300':'bg-amber-50 text-amber-700 border border-amber-300'}">${inv.status}</span></td>
             <td class="py-3 px-4 text-right font-bold text-slate-900">₹${inv.grandTotal.toFixed(2)}</td>
             <td class="py-3 px-4 text-center">
-              <button type="button" onclick="shareDirectInvoice('${inv.number}', '${inv.customerName}', '${inv.grandTotal}')" class="text-indigo-600 hover:underline font-bold text-xs">Share</button>
+              <button type="button" onclick="shareExistingInvoice(${idx})" class="text-indigo-600 hover:underline font-bold text-xs">Share</button>
             </td>
           </tr>
         `;
       });
     }
 
-    function shareDirectInvoice(number, name, total) {
-      const text = `Invoice ${number} for ${name}: Total ₹${total}. Generated via Be Bill (bebill.in).`;
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    function shareExistingInvoice(idx) {
+      const user = tenantUsers.find(u => u.id === loggedInUserId);
+      const inv = user.invoices[idx];
+      const custPhone = (inv.customerPhone || '').replace(/[^0-9]/g, '');
+      const totalAmount = `${user.currency || '₹'}${inv.grandTotal.toFixed(2)}`;
+      
+      const shareText = `*Tax Invoice: ${inv.number}*\n🏢 *Issued By:* ${user.serviceName} (bebill.in)\n👤 *Billed To:* ${inv.customerName}\n💰 *Amount:* ${totalAmount}\n📅 *Due Date:* ${inv.dueDate || 'Receipt'}\n\nThank you for your business!`;
+
+      const whatsappMsg = encodeURIComponent(shareText);
+      const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
+      window.open(url, '_blank');
     }
 
     function switchUserSection(sec) {
@@ -2462,7 +2495,6 @@
         document.getElementById('setBankAccount').value = user.accountNumber || '';
         document.getElementById('setBankIfsc').value = user.ifsc || '';
 
-        // Populate Social Media Form Inputs
         const sm = user.socialMedia || {};
         document.getElementById('setSocialWhatsapp').value = sm.whatsapp || '';
         document.getElementById('setSocialInstagram').value = sm.instagram || '';
@@ -2521,7 +2553,6 @@
       user.accountNumber = document.getElementById('setBankAccount').value.trim();
       user.ifsc = document.getElementById('setBankIfsc').value.trim();
 
-      // Save Social Media Accounts object
       user.socialMedia = {
         whatsapp: document.getElementById('setSocialWhatsapp').value.trim(),
         instagram: document.getElementById('setSocialInstagram').value.trim(),
@@ -2689,7 +2720,7 @@
         if (q.includes('plan') || q.includes('price')) {
           reply = "Be Bill Plans:<br>• Free Trial: 7 Days - ₹19<br>• Monthly: 1 Month - ₹99<br>• Quarterly: 3 Months - ₹249<br>• Half-Yearly: 6 Months - ₹449<br>• Yearly: 1 Year - ₹799<br><br><button type='button' onclick='openRenewalModal(); toggleChatbot();' class='text-indigo-600 font-bold underline'>Renew Plan</button>";
         } else if (q.includes('invoice') || q.includes('create')) {
-          reply = "Click <b>+ Create Invoice</b> on your dashboard. Pick or type customer details, add products from your catalog, preview live, and click <b>Share</b> or <b>Print / PDF</b>!";
+          reply = "Click <b>+ Create Invoice</b> on your dashboard. Pick or type customer details, add products from your catalog, preview live, and click <b>Share & Save</b>!";
         }
         box.innerHTML += `<div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-xs">${reply}</div>`;
         box.scrollTop = box.scrollHeight;
