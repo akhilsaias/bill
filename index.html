@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Be Bill - Enterprise Invoicing PWA</title>
+  <title>Be Bill - Enterprise Invoicing App</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- PWA Web App Manifest -->
+  <!-- PWA Web App Manifest for Desktop & Mobile Installation -->
   <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Be%20Bill%20Invoicing%20App%22%2C%22short_name%22%3A%22BeBill%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%5D%7D">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -60,8 +60,8 @@
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill PWA Suite</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Enterprise Invoicing App (bebill.in)</p>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill Installable App</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Enterprise Invoicing Suite (bebill.in)</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
@@ -223,7 +223,7 @@
       </div>
       
       <div class="flex items-center gap-2">
-        <!-- Install App Button -->
+        <!-- Install App Button (Visible near Bookmark/Address bar area & mobile) -->
         <button type="button" id="installAppBtn" onclick="triggerAppInstall()" class="hidden no-print bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold text-xs transition items-center gap-1.5 shadow-sm touch-target">
           <i class="ph ph-desktop-tower text-sm"></i> Install App
         </button>
@@ -1365,7 +1365,7 @@
     let isImpersonating = false;
     let deferredPrompt = null;
 
-    // PWA Install Prompt Listener
+    // PWA Install Prompt Listener for Phone and PC
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -1383,15 +1383,8 @@
           deferredPrompt = null;
         });
       } else {
-        alert('To install this app, tap your browser menu (⋮ or share) and select "Install App" or "Add to Home Screen".');
+        alert('To install this app on your phone or PC, tap your browser menu (⋮ or share) and select "Install App" or "Add to Home Screen".');
       }
-    }
-
-    // Service Worker Registration for PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('data:text/javascript;base64,JG9uKCdzZXR1cicsI কোনো നീഡ് లేదు');
-      });
     }
 
     let tenantUsers = [
@@ -2903,7 +2896,7 @@
       widget.classList.toggle('hidden');
     }
     function handleChatbotEnter(event) {
-      if (event.key === 'Enter') handleChatbotSend();
+      if (key === 'Enter') handleChatbotSend();
     }
     function sendQuickPrompt(promptText) {
       document.getElementById('chatbotInput').value = promptText;
