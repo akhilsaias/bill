@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Be Bill - Enterprise Invoicing PWA</title>
+  <title>Be Bill - Enterprise Invoicing App</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- PWA Web App Manifest Link -->
-  <link rel="manifest" href="./manifest.json">
+  <!-- PWA Web App Manifest -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Be%20Bill%20Invoicing%20App%22%2C%22short_name%22%3A%22BeBill%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%5D%7D">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -60,7 +60,7 @@
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill PWA App</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill App</h2>
         <p class="text-xs text-slate-500 mt-0.5">Enterprise Invoicing Suite (bebill.in)</p>
       </div>
 
@@ -218,14 +218,14 @@
         </button>
 
         <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="font-bold text-slate-700 hidden sm:inline">Be Bill PWA:</span>
+        <span class="font-bold text-slate-700 hidden sm:inline">Be Bill App:</span>
         <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">SUPER_ADMIN</span>
       </div>
       
       <div class="flex items-center gap-2">
-        <!-- Install App Button (Visible near bookmark/address bar area & mobile) -->
-        <button type="button" id="installAppBtn" onclick="triggerAppInstall()" class="hidden no-print bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold text-xs transition items-center gap-1.5 shadow-sm touch-target">
-          <i class="ph ph-desktop-tower text-sm"></i> Install App
+        <!-- Always visible Install App Button -->
+        <button type="button" id="installAppBtn" onclick="triggerAppInstall()" class="no-print bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 shadow-sm touch-target">
+          <i class="ph ph-download-simple text-sm font-bold"></i> Install App
         </button>
 
         <div id="roleSwitcherButtons" class="hidden items-center gap-1 sm:gap-2">
@@ -1365,12 +1365,12 @@
     let isImpersonating = false;
     let deferredPrompt = null;
 
-    // PWA Install Prompt Listener
+    // Robust PWA Install Event Handler for PC and Mobile
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       const installBtn = document.getElementById('installAppBtn');
-      if (installBtn) installBtn.classList.remove('hidden');
+      if (installBtn) installBtn.style.display = 'flex';
     });
 
     function triggerAppInstall() {
@@ -1378,12 +1378,12 @@
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            document.getElementById('installAppBtn').classList.add('hidden');
+            document.getElementById('installAppBtn').style.display = 'none';
           }
           deferredPrompt = null;
         });
       } else {
-        alert('To install this app on your phone or PC, tap your browser menu (⋮ or share) and select "Install App" or "Add to Home Screen".');
+        alert('💡 To install this app:\n\n• On Phone (Android/iPhone): Tap your browser menu (⋮ / Share) and select "Install App" or "Add to Home Screen".\n• On PC/Laptop: Check the right corner of your address bar for the Install icon (💻).');
       }
     }
 
