@@ -114,7 +114,7 @@
           <div class="flex gap-2">
             <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Admin</button>
             <span class="text-slate-300">•</span>
-            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Skyline)</button>
+            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Yes Genesis)</button>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@
           <input 
             type="text" 
             id="signupServiceName" 
-            placeholder="e.g. Skyline Fiber" 
+            placeholder="e.g. Yes Genesis" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupCategory')"
           />
@@ -139,8 +139,8 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
           <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-            <option value="OTT & Digital Streaming">OTT & Digital Streaming</option>
-            <option value="ISP & Broadband Services" selected>ISP & Broadband Services</option>
+            <option value="OTT & Digital Streaming" selected>OTT & Digital Streaming</option>
+            <option value="ISP & Broadband Services">ISP & Broadband Services</option>
             <option value="IT Services & Web Dev">IT Services & Web Dev</option>
             <option value="Retail & Store Billing">Retail & Store Billing</option>
             <option value="Consulting & Agency">Consulting & Agency</option>
@@ -154,7 +154,7 @@
             <input 
               type="text" 
               id="signupUsername" 
-              placeholder="skyline" 
+              placeholder="yesgenesis" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
               onkeydown="handleEnterNavigation(event, 'signupPhone')"
             />
@@ -1643,7 +1643,6 @@
 
       invSec.classList.add('hidden');
 
-      // STRICT SECURITY: Users cannot access admin panel unless impersonating
       if (role === 'admin' && currentRole === 'CLIENT_USER' && !isImpersonating) {
         alert('Access Denied: Users cannot access the admin panel.');
         return;
@@ -1744,7 +1743,6 @@
           }
         }
 
-        // Automatic 1-Day Prior Alert Popup
         if (daysLeft === 1) {
           setTimeout(() => {
             alert('⚠️ Notice: Your Be Bill Subscription expires tomorrow! Please choose your renewal plan to continue using invoice services.');
@@ -1808,7 +1806,6 @@
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
-        // Desktop Table Row
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition';
         tr.innerHTML = `
@@ -1840,7 +1837,6 @@
         `;
         tbody.appendChild(tr);
 
-        // Mobile Card View
         const card = document.createElement('div');
         card.className = 'bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3';
         card.innerHTML = `
