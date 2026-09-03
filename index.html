@@ -687,7 +687,7 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH AUTOMATIC FORMATTED NAMING ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH UNIQUE 3-LETTER PREFIX ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-6 pb-32">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -722,7 +722,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <label class="font-bold text-slate-600 block mb-1">Invoice Number (Auto-Formatted)</label>
+                    <label class="font-bold text-slate-600 block mb-1">Invoice Code (Unique)</label>
                     <input type="text" id="invEditNumber" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-800" />
                   </div>
                   <div>
@@ -758,7 +758,7 @@
                 <div class="space-y-2.5 text-xs">
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Customer / Client Name *</label>
-                    <input type="text" id="invCustName" placeholder="e.g. John Doe" oninput="handleCustomerNameChangeForNaming()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
+                    <input type="text" id="invCustName" placeholder="e.g. John Doe" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -821,7 +821,7 @@
 
                   <div class="text-left sm:text-right space-y-1 w-full sm:w-auto">
                     <h1 class="text-2xl font-black uppercase tracking-tight text-slate-900">Tax Invoice</h1>
-                    <p class="text-xs font-bold text-slate-700">Inv Name: <span id="invRenderNumber" class="font-mono text-indigo-700 font-bold">--</span></p>
+                    <p class="text-xs font-bold text-slate-700">Inv Code: <span id="invRenderNumber" class="font-mono text-indigo-700 font-bold">--</span></p>
                     <p class="text-xs text-slate-500">Date: <span id="invRenderDate">--</span></p>
                     <p class="text-xs text-slate-500">Due Date: <span id="invRenderDueDate">--</span></p>
                     <div class="pt-1">
@@ -1042,7 +1042,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccServiceName" placeholder="e.g. Yes Genesis" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
@@ -1051,7 +1051,7 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Username</label>
           <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <input type="text" id="newAccUsername" placeholder="yesgenesis" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
             <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
           </div>
         </div>
@@ -1996,39 +1996,12 @@
       }
     }
 
-    // Invoice Builder Engine with Automatic Formatted Naming Format: ClientName-ServiceName-MonthDate
-    function generateFormattedInvoiceNumber(clientName, serviceName, dateStr) {
-      const cleanClient = (clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '');
-      const cleanService = (serviceName || 'Service').trim().replace(/[^a-zA-Z0-9]/g, '');
-      
-      const d = dateStr ? new Date(dateStr) : new Date();
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const monthStr = months[d.getMonth()];
-      const dayStr = String(d.getDate()).padStart(2, '0');
-      
-      return `${cleanClient}-${cleanService}-${monthStr}${dayStr}`;
-    }
-
-    function handleCustomerNameChangeForNaming() {
-      updateLiveInvoicePreview();
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const clientName = document.getElementById('invCustName').value;
-      const dateVal = document.getElementById('invEditDate').value;
-      if (clientName) {
-        document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber(clientName, user.serviceName, dateVal);
-        document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value;
-      }
-    }
-
-    function handleDateChangeForNaming() {
-      updateLiveInvoicePreview();
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || tenantUsers[0];
-      const clientName = document.getElementById('invCustName').value;
-      const dateVal = document.getElementById('invEditDate').value;
-      if (clientName && dateVal) {
-        document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber(clientName, user.serviceName, dateVal);
-        document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value;
-      }
+    // UNIQUE INVOICE NUMBER GENERATOR (First 3 letters of Service Name + BN + Sequential Number)
+    function generateUniqueServiceInvoiceCode(serviceName, existingInvoicesCount) {
+      const cleanName = (serviceName || 'BIL').trim().replace(/[^a-zA-Z]/g, '');
+      const prefix = (cleanName.length >= 3 ? cleanName.slice(0, 3) : cleanName.padEnd(3, 'X')).toUpperCase();
+      const seqNum = String((existingInvoicesCount || 0) + 1).padStart(3, '0');
+      return `${prefix}BN${seqNum}`;
     }
 
     function openInvoiceEditor() {
@@ -2063,7 +2036,9 @@
       nextDue.setDate(nextDue.getDate() + 14);
       document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
       
-      document.getElementById('invEditNumber').value = generateFormattedInvoiceNumber('Client', user.serviceName, todayStr);
+      // Auto-generate unique code using Service Name prefix + BN
+      const invCount = (user.invoices || []).length;
+      document.getElementById('invEditNumber').value = generateUniqueServiceInvoiceCode(user.serviceName, invCount);
       document.getElementById('invEditStatus').value = 'PENDING';
 
       document.getElementById('invCustName').value = '';
@@ -2173,12 +2148,12 @@
         document.getElementById('invCustEmail').value = cust.email || '';
         document.getElementById('invCustGstin').value = cust.gstin || '';
         document.getElementById('invCustBillingAddress').value = cust.address || '';
-        handleCustomerNameChangeForNaming();
+        updateLiveInvoicePreview();
       }
     }
 
     function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'INV-001';
+      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YGBN001';
       document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
       document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
 
@@ -2350,7 +2325,7 @@
 
       const invoiceRecord = {
         id: 'inv_' + Date.now(),
-        number: document.getElementById('invEditNumber').value.trim() || generateFormattedInvoiceNumber(document.getElementById('invCustName').value, user.serviceName, document.getElementById('invEditDate').value),
+        number: document.getElementById('invEditNumber').value.trim() || generateUniqueServiceInvoiceCode(user.serviceName, (user.invoices || []).length),
         date: document.getElementById('invEditDate').value,
         dueDate: document.getElementById('invEditDueDate').value,
         status: document.getElementById('invEditStatus').value,
