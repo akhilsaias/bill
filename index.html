@@ -687,7 +687,7 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH UNIQUE 3-LETTER PREFIX ==================== -->
+        <!-- ==================== VIEW 3: INVOICE GENERATOR WITH MANDATORY VALIDATION ==================== -->
         <section id="invoiceEditorView" class="hidden max-w-7xl mx-auto space-y-6 pb-32">
           <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
@@ -735,7 +735,7 @@
                   </div>
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Invoice Date</label>
-                    <input type="date" id="invEditDate" oninput="handleDateChangeForNaming()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-medium" />
+                    <input type="date" id="invEditDate" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-medium" />
                   </div>
                   <div>
                     <label class="font-bold text-slate-600 block mb-1">Due Date</label>
@@ -744,11 +744,11 @@
                 </div>
               </div>
 
-              <!-- Customer Details -->
+              <!-- Customer Details (Mandatory) -->
               <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
-                    <i class="ph ph-user text-base"></i> Step 2: Customer Details
+                    <i class="ph ph-user text-base"></i> Step 2: Customer Details <span class="text-red-500">*Mandatory</span>
                   </div>
                   <select id="invCustomerSelectPicker" onchange="pickSavedCustomer(this.value)" class="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg p-1 font-bold">
                     <option value="">+ Load Saved Customer</option>
@@ -757,13 +757,13 @@
 
                 <div class="space-y-2.5 text-xs">
                   <div>
-                    <label class="font-bold text-slate-600 block mb-1">Customer / Client Name *</label>
-                    <input type="text" id="invCustName" placeholder="e.g. John Doe" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" />
+                    <label class="font-bold text-slate-600 block mb-1">Customer / Client Name * (Required)</label>
+                    <input type="text" id="invCustName" placeholder="e.g. John Doe" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 font-bold" required />
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     <div>
-                      <label class="font-bold text-slate-600 block mb-1">Phone Number</label>
-                      <input type="text" id="invCustPhone" placeholder="+91..." oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2" />
+                      <label class="font-bold text-slate-600 block mb-1">Mobile Number * (10 Digits)</label>
+                      <input type="text" id="invCustPhone" placeholder="9876543210" maxlength="10" oninput="updateLiveInvoicePreview()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold" required />
                     </div>
                     <div>
                       <label class="font-bold text-slate-600 block mb-1">GSTIN (Optional)</label>
@@ -1042,7 +1042,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Yes Genesis" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
@@ -1051,7 +1051,7 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Username</label>
           <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="yesgenesis" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
             <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
           </div>
         </div>
@@ -1343,10 +1343,10 @@
     let tenantUsers = [
       {
         id: 'usr_1',
-        username: 'skyline',
-        email: 'skyline@bebill.in',
+        username: 'yesgenesis',
+        email: 'yesgenesis@bebill.in',
         password: 'user123',
-        serviceName: 'Skyline Fiber & Networks',
+        serviceName: 'Yes Genesis',
         category: 'ISP & Broadband Services',
         logoUrl: '',
         gstNumber: '36AABCS1429B1ZX',
@@ -1355,20 +1355,20 @@
         address: 'Plot 42, Hitech City Main Rd, Madhapur, Hyderabad, Telangana 500081',
         currency: '₹',
         paymentMethod: 'Bank Wire / UPI',
-        upiId: 'skyline@ybl',
+        upiId: 'yesgenesis@ybl',
         bankName: 'HDFC Bank Ltd',
         accountNumber: '50200012345678',
         ifsc: 'HDFC0001234',
-        invoicePrefix: 'SKY',
+        invoicePrefix: 'YES',
         terms: '1. Payment due within 14 days.\n2. Late payments incur a 1.5% monthly fee.',
-        notes: 'Thank you for choosing Skyline Fiber Networks on Be Bill.',
+        notes: 'Thank you for choosing Yes Genesis on Be Bill.',
         socialMedia: {
           whatsapp: '919848022338',
-          instagram: 'https://instagram.com/skylinefiber',
-          facebook: 'https://facebook.com/skylinefiber',
-          youtube: 'https://youtube.com/@skylinebroadband',
+          instagram: 'https://instagram.com/yesgenesis',
+          facebook: 'https://facebook.com/yesgenesis',
+          youtube: 'https://youtube.com/@yesgenesis',
           twitter: '',
-          linkedin: 'https://linkedin.com/company/skylinefiber'
+          linkedin: 'https://linkedin.com/company/yesgenesis'
         },
         planPreset: '365',
         status: 'ACTIVE',
@@ -1391,7 +1391,7 @@
       document.getElementById('loginPassword').value = '1604130028As..@@';
     }
     function fillDemoUserCredentials() {
-      document.getElementById('loginUsername').value = 'skyline';
+      document.getElementById('loginUsername').value = 'yesgenesis';
       document.getElementById('loginPassword').value = 'user123';
     }
 
@@ -1642,7 +1642,7 @@
 
       invSec.classList.add('hidden');
 
-      // STRICT SECURITY: Prevent standard users from accessing admin view unless impersonating
+      // STRICT SECURITY: Users cannot access admin panel unless impersonating
       if (role === 'admin' && currentRole === 'CLIENT_USER' && !isImpersonating) {
         alert('Access Denied: Users cannot access the admin panel.');
         return;
@@ -2036,7 +2036,7 @@
       nextDue.setDate(nextDue.getDate() + 14);
       document.getElementById('invEditDueDate').value = nextDue.toISOString().split('T')[0];
       
-      // Auto-generate unique code using Service Name prefix + BN
+      // Auto-generate unique code using first 3 letters of Service Name + BN + seq
       const invCount = (user.invoices || []).length;
       document.getElementById('invEditNumber').value = generateUniqueServiceInvoiceCode(user.serviceName, invCount);
       document.getElementById('invEditStatus').value = 'PENDING';
@@ -2153,7 +2153,7 @@
     }
 
     function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YGBN001';
+      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YESBN001';
       document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
       document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
 
@@ -2293,10 +2293,25 @@
       renderInvoiceRows();
     }
 
-    // INTERNAL HELPER TO COMPILE & STORE INVOICE AUTOMATICALLY
+    // MANDATORY VALIDATION: CHECK CUSTOMER NAME & 10-DIGIT MOBILE NUMBER
     function compileAndSaveCurrentInvoiceRecord() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return null;
+
+      const custName = document.getElementById('invCustName').value.trim();
+      const custPhone = document.getElementById('invCustPhone').value.trim().replace(/[^0-9]/g, '');
+
+      if (!custName) {
+        alert('❌ Customer Name is mandatory to generate an invoice!');
+        document.getElementById('invCustName').focus();
+        return null;
+      }
+
+      if (!custPhone || custPhone.length !== 10) {
+        alert('❌ Mandatory Validation Failed: Please enter a valid 10-digit mobile number for the customer!');
+        document.getElementById('invCustPhone').focus();
+        return null;
+      }
 
       let subtotal = 0, discount = 0, taxable = 0, totalTax = 0;
       const processedLines = activeInvoiceLines.map(l => {
@@ -2329,9 +2344,9 @@
         date: document.getElementById('invEditDate').value,
         dueDate: document.getElementById('invEditDueDate').value,
         status: document.getElementById('invEditStatus').value,
-        customerName: document.getElementById('invCustName').value.trim() || 'Client',
+        customerName: custName,
         customerEmail: document.getElementById('invCustEmail').value.trim(),
-        customerPhone: document.getElementById('invCustPhone').value.trim(),
+        customerPhone: custPhone,
         customerGstin: document.getElementById('invCustGstin').value.trim(),
         billingAddress: document.getElementById('invCustBillingAddress').value.trim(),
         lines: processedLines,
@@ -2366,9 +2381,9 @@
       }
 
       const savedInv = compileAndSaveCurrentInvoiceRecord();
-      if (!savedInv) return;
+      if (!savedInv) return; // Stops if mandatory fields are missing
 
-      const custPhone = (savedInv.customerPhone || '').replace(/[^0-9]/g, '');
+      const custPhone = savedInv.customerPhone;
       const totalAmount = `${user.currency || '₹'}${savedInv.grandTotal.toFixed(2)}`;
 
       const shareText = `*Tax Invoice: ${savedInv.number}*\n🏢 *Issued By:* ${user.serviceName} (bebill.in)\n👤 *Billed To:* ${savedInv.customerName}\n💰 *Amount:* ${totalAmount}\n📅 *Due Date:* ${savedInv.dueDate || 'Receipt'}\n\nThank you for your business!`;
@@ -2380,7 +2395,7 @@
         }).catch(() => {});
       } else {
         const whatsappMsg = encodeURIComponent(shareText);
-        const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
+        const url = `https://api.whatsapp.com/send?phone=91${custPhone}&text=${whatsappMsg}`;
         window.open(url, '_blank');
       }
 
@@ -2401,7 +2416,7 @@
       }
 
       const savedInv = compileAndSaveCurrentInvoiceRecord();
-      if (!savedInv) return;
+      if (!savedInv) return; // Stops if mandatory fields are missing
 
       alert(`Invoice ${savedInv.number} successfully saved!`);
       closeInvoiceEditor();
@@ -2558,7 +2573,7 @@
       const shareText = `*Tax Invoice: ${inv.number}*\n🏢 *Issued By:* ${user.serviceName} (bebill.in)\n👤 *Billed To:* ${inv.customerName}\n💰 *Amount:* ${totalAmount}\n📅 *Due Date:* ${inv.dueDate || 'Receipt'}\n\nThank you for your business!`;
 
       const whatsappMsg = encodeURIComponent(shareText);
-      const url = custPhone ? `https://api.whatsapp.com/send?phone=${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
+      const url = custPhone ? `https://api.whatsapp.com/send?phone=91${custPhone}&text=${whatsappMsg}` : `https://api.whatsapp.com/send?text=${whatsappMsg}`;
       window.open(url, '_blank');
     }
 
