@@ -114,7 +114,7 @@
           <div class="flex gap-2">
             <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Admin</button>
             <span class="text-slate-300">•</span>
-            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Yes Genesis)</button>
+            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Skyline)</button>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@
           <input 
             type="text" 
             id="signupServiceName" 
-            placeholder="e.g. Yes Genesis" 
+            placeholder="e.g. Skyline Fiber" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupCategory')"
           />
@@ -139,8 +139,8 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
           <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-            <option value="OTT & Digital Streaming" selected>OTT & Digital Streaming</option>
-            <option value="ISP & Broadband Services">ISP & Broadband Services</option>
+            <option value="OTT & Digital Streaming">OTT & Digital Streaming</option>
+            <option value="ISP & Broadband Services" selected>ISP & Broadband Services</option>
             <option value="IT Services & Web Dev">IT Services & Web Dev</option>
             <option value="Retail & Store Billing">Retail & Store Billing</option>
             <option value="Consulting & Agency">Consulting & Agency</option>
@@ -154,7 +154,7 @@
             <input 
               type="text" 
               id="signupUsername" 
-              placeholder="yesgenesis" 
+              placeholder="skyline" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
               onkeydown="handleEnterNavigation(event, 'signupPhone')"
             />
@@ -1042,7 +1042,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Yes Genesis" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
@@ -1051,7 +1051,7 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Username</label>
           <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="yesgenesis" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
             <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
           </div>
         </div>
@@ -1343,10 +1343,10 @@
     let tenantUsers = [
       {
         id: 'usr_1',
-        username: 'yesgenesis',
-        email: 'yesgenesis@bebill.in',
+        username: 'skyline',
+        email: 'skyline@bebill.in',
         password: 'user123',
-        serviceName: 'Yes Genesis',
+        serviceName: 'Skyline Fiber & Networks',
         category: 'ISP & Broadband Services',
         logoUrl: '',
         gstNumber: '36AABCS1429B1ZX',
@@ -1355,20 +1355,20 @@
         address: 'Plot 42, Hitech City Main Rd, Madhapur, Hyderabad, Telangana 500081',
         currency: '₹',
         paymentMethod: 'Bank Wire / UPI',
-        upiId: 'yesgenesis@ybl',
+        upiId: 'skyline@ybl',
         bankName: 'HDFC Bank Ltd',
         accountNumber: '50200012345678',
         ifsc: 'HDFC0001234',
-        invoicePrefix: 'YES',
+        invoicePrefix: 'SKY',
         terms: '1. Payment due within 14 days.\n2. Late payments incur a 1.5% monthly fee.',
-        notes: 'Thank you for choosing Yes Genesis on Be Bill.',
+        notes: 'Thank you for choosing Skyline Fiber Networks on Be Bill.',
         socialMedia: {
           whatsapp: '919848022338',
-          instagram: 'https://instagram.com/yesgenesis',
-          facebook: 'https://facebook.com/yesgenesis',
-          youtube: 'https://youtube.com/@yesgenesis',
+          instagram: 'https://instagram.com/skylinefiber',
+          facebook: 'https://facebook.com/skylinefiber',
+          youtube: 'https://youtube.com/@skylinebroadband',
           twitter: '',
-          linkedin: 'https://linkedin.com/company/yesgenesis'
+          linkedin: 'https://linkedin.com/company/skylinefiber'
         },
         planPreset: '365',
         status: 'ACTIVE',
@@ -1392,7 +1392,7 @@
     }
     
     function fillDemoUserCredentials() {
-      document.getElementById('loginUsername').value = 'yesgenesis';
+      document.getElementById('loginUsername').value = 'skyline';
       document.getElementById('loginPassword').value = 'user123';
     }
 
@@ -2149,7 +2149,7 @@
     }
 
     function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YESBN001';
+      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'SKYBN001';
       document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
       document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
 
