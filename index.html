@@ -130,7 +130,7 @@
           <input 
             type="text" 
             id="signupServiceName" 
-            placeholder="e.g. Apex Digital Networks" 
+            placeholder="e.g. Yes Genesis" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupCategory')"
           />
@@ -154,7 +154,7 @@
             <input 
               type="text" 
               id="signupUsername" 
-              placeholder="apexmedia" 
+              placeholder="yesgenesis" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
               onkeydown="handleEnterNavigation(event, 'signupPhone')"
             />
@@ -1642,7 +1642,7 @@
 
       invSec.classList.add('hidden');
 
-      // STRICT SECURITY: Prevent standard users from accessing admin view
+      // STRICT SECURITY: Prevent standard users from accessing admin view unless impersonating
       if (role === 'admin' && currentRole === 'CLIENT_USER' && !isImpersonating) {
         alert('Access Denied: Users cannot access the admin panel.');
         return;
