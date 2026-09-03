@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Be Bill - Enterprise Invoicing App</title>
+  <title>Be Bill - Enterprise Invoicing PWA</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- PWA Web App Manifest for Desktop & Mobile Installation -->
-  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Be%20Bill%20Invoicing%20App%22%2C%22short_name%22%3A%22BeBill%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%5D%7D">
+  <!-- PWA Web App Manifest Link -->
+  <link rel="manifest" href="./manifest.json">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -60,7 +60,7 @@
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill Installable App</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill PWA App</h2>
         <p class="text-xs text-slate-500 mt-0.5">Enterprise Invoicing Suite (bebill.in)</p>
       </div>
 
@@ -223,7 +223,7 @@
       </div>
       
       <div class="flex items-center gap-2">
-        <!-- Install App Button (Visible near Bookmark/Address bar area & mobile) -->
+        <!-- Install App Button (Visible near bookmark/address bar area & mobile) -->
         <button type="button" id="installAppBtn" onclick="triggerAppInstall()" class="hidden no-print bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold text-xs transition items-center gap-1.5 shadow-sm touch-target">
           <i class="ph ph-desktop-tower text-sm"></i> Install App
         </button>
@@ -1365,7 +1365,7 @@
     let isImpersonating = false;
     let deferredPrompt = null;
 
-    // PWA Install Prompt Listener for Phone and PC
+    // PWA Install Prompt Listener
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -1786,7 +1786,7 @@
             btnDashCreateInv.innerHTML = `<i class="ph ph-plus-bold"></i> Create Invoice`;
           }
           if (btnInvoicesCreateInv) {
-            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
+            btnInvoicesCreateInv.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md shadow-indigo-100 touch-target';
             btnInvoicesCreateInv.innerHTML = `+ New Invoice`;
           }
         }
@@ -2011,17 +2011,9 @@
         category: cat || 'OTT & Broadband Services',
         phone: phone || '+91 9800000000',
         gstNumber: gst || 'UNREGISTERED',
-        socialMedia: {
-          whatsapp: phone.replace(/[^0-9]/g, ''),
-          instagram: '',
-          facebook: '',
-          youtube: '',
-          twitter: '',
-          linkedin: ''
-        },
+        status: 'PENDING',
         planPreset: planPreset,
-        status: 'ACTIVE',
-        validUntil: expDate.toISOString().split('T')[0],
+        validUntil: '',
         customers: [],
         products: [],
         invoices: []
@@ -2896,7 +2888,7 @@
       widget.classList.toggle('hidden');
     }
     function handleChatbotEnter(event) {
-      if (key === 'Enter') handleChatbotSend();
+      if (event.key === 'Enter') handleChatbotSend();
     }
     function sendQuickPrompt(promptText) {
       document.getElementById('chatbotInput').value = promptText;
