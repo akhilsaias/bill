@@ -114,7 +114,7 @@
           <div class="flex gap-2">
             <button type="button" onclick="fillAdminCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Admin</button>
             <span class="text-slate-300">•</span>
-            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Skyline)</button>
+            <button type="button" onclick="fillDemoUserCredentials()" class="text-indigo-600 hover:underline font-bold touch-target">Fill Demo User (Yes Genesis)</button>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@
           <input 
             type="text" 
             id="signupServiceName" 
-            placeholder="e.g. Skyline Fiber" 
+            placeholder="e.g. Yes Genesis" 
             class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
             onkeydown="handleEnterNavigation(event, 'signupCategory')"
           />
@@ -139,8 +139,8 @@
         <div>
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
           <select id="signupCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-            <option value="OTT & Digital Streaming">OTT & Digital Streaming</option>
-            <option value="ISP & Broadband Services" selected>ISP & Broadband Services</option>
+            <option value="OTT & Digital Streaming" selected>OTT & Digital Streaming</option>
+            <option value="ISP & Broadband Services">ISP & Broadband Services</option>
             <option value="IT Services & Web Dev">IT Services & Web Dev</option>
             <option value="Retail & Store Billing">Retail & Store Billing</option>
             <option value="Consulting & Agency">Consulting & Agency</option>
@@ -154,7 +154,7 @@
             <input 
               type="text" 
               id="signupUsername" 
-              placeholder="skyline" 
+              placeholder="yesgenesis" 
               class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
               onkeydown="handleEnterNavigation(event, 'signupPhone')"
             />
@@ -566,7 +566,7 @@
             </div>
           </div>
 
-          <!-- SETTINGS TAB (WITH SOCIAL MEDIA HANDLES) -->
+          <!-- SETTINGS TAB (WITH YES/NO WEBSITE TOGGLE & WHATSAPP UPGRADE BUTTON) -->
           <div id="userSectionSettings" class="hidden space-y-5 sm:space-y-6">
             <div class="flex items-center gap-3">
               <button type="button" onclick="switchUserSection('dashboard')" class="text-slate-500 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
@@ -600,10 +600,27 @@
                     <label class="font-bold text-slate-700 block mb-1">Phone Number</label>
                     <input type="text" id="setPhone" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" />
                   </div>
-                  <div>
-                    <label class="font-bold text-slate-700 block mb-1">Website URL (Optional)</label>
-                    <input type="text" id="setWebsite" placeholder="https://bebill.in" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" />
+                  
+                  <!-- Dynamic Website Option (Yes/No Toggle) -->
+                  <div class="sm:col-span-2 bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100 space-y-3">
+                    <label class="font-bold text-slate-800 block">Do you have a website?</label>
+                    <select id="hasWebsiteToggle" onchange="toggleWebsiteSettingView()" class="w-full sm:w-1/2 bg-white border border-indigo-200 rounded-xl p-2 text-slate-800 font-bold focus:outline-none">
+                      <option value="yes" selected>Yes, I have a website</option>
+                      <option value="no">No, I need a website</option>
+                    </select>
+
+                    <div id="websiteInputContainer">
+                      <label class="font-bold text-slate-700 block mb-1 mt-2">Website URL</label>
+                      <input type="text" id="setWebsite" placeholder="https://yourwebsite.com" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" />
+                    </div>
+
+                    <div id="websitePromoContainer" class="hidden pt-2">
+                      <button type="button" onclick="openAffordableWebsiteWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2 touch-target">
+                        <i class="ph ph-whatsapp-logo text-lg font-bold"></i> Get website at affordable prices
+                      </button>
+                    </div>
                   </div>
+
                   <div class="sm:col-span-2">
                     <label class="font-bold text-slate-700 block mb-1">Registered Business Address</label>
                     <textarea id="setAddress" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 resize-none h-16 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"></textarea>
@@ -1042,11 +1059,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Broadband" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Fiber" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="ISP & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div>
           <label class="font-bold text-slate-700 block mb-1">Username</label>
@@ -1340,6 +1357,7 @@
     let currentReviewUserId = null;
     let isImpersonating = false;
 
+    // Seed Data with Demo User 'skyline'
     let tenantUsers = [
       {
         id: 'usr_1',
@@ -1352,6 +1370,7 @@
         gstNumber: '36AABCS1429B1ZX',
         phone: '+91 9848022338',
         website: 'https://bebill.in',
+        hasWebsite: 'yes',
         address: 'Plot 42, Hitech City Main Rd, Madhapur, Hyderabad, Telangana 500081',
         currency: '₹',
         paymentMethod: 'Bank Wire / UPI',
@@ -2149,7 +2168,7 @@
     }
 
     function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'SKYBN001';
+      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YESBN001';
       document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
       document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
 
@@ -2287,6 +2306,27 @@
     function updateLine(idx, field, val) {
       activeInvoiceLines[idx][field] = field === 'description' ? val : (parseFloat(val) || 0);
       renderInvoiceRows();
+    }
+
+    // TOGGLE WEBSITE SETTINGS VIEW (YES / NO)
+    function toggleWebsiteSettingView() {
+      const choice = document.getElementById('hasWebsiteToggle').value;
+      const inputContainer = document.getElementById('websiteInputContainer');
+      const promoContainer = document.getElementById('websitePromoContainer');
+
+      if (choice === 'yes') {
+        inputContainer.classList.remove('hidden');
+        promoContainer.classList.add('hidden');
+      } else {
+        inputContainer.classList.add('hidden');
+        promoContainer.classList.remove('hidden');
+      }
+    }
+
+    function openAffordableWebsiteWhatsApp() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || { serviceName: 'Merchant' };
+      const msg = encodeURIComponent(`${user.serviceName} - I need a website what's the plans.`);
+      window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${msg}`, '_blank');
     }
 
     // INTERNAL HELPER TO COMPILE & STORE INVOICE AUTOMATICALLY WITH MANDATORY VALIDATION
@@ -2593,12 +2633,17 @@
         document.getElementById('setGstin').value = user.gstNumber || '';
         document.getElementById('setEmail').value = user.email || '';
         document.getElementById('setPhone').value = user.phone || '';
-        document.getElementById('setWebsite').value = user.website || '';
         document.getElementById('setAddress').value = user.address || '';
         document.getElementById('setUpiId').value = user.upiId || '';
         document.getElementById('setBankName').value = user.bankName || '';
         document.getElementById('setBankAccount').value = user.accountNumber || '';
         document.getElementById('setBankIfsc').value = user.ifsc || '';
+
+        // Handle Website Toggle State
+        const hasWeb = user.hasWebsite || 'yes';
+        document.getElementById('hasWebsiteToggle').value = hasWeb;
+        document.getElementById('setWebsite').value = user.website || '';
+        toggleWebsiteSettingView();
 
         const sm = user.socialMedia || {};
         document.getElementById('setSocialWhatsapp').value = sm.whatsapp || '';
@@ -2651,7 +2696,8 @@
       user.gstNumber = document.getElementById('setGstin').value.trim();
       user.email = document.getElementById('setEmail').value.trim();
       user.phone = document.getElementById('setPhone').value.trim();
-      user.website = document.getElementById('setWebsite').value.trim();
+      user.hasWebsite = document.getElementById('hasWebsiteToggle').value;
+      user.website = user.hasWebsite === 'yes' ? document.getElementById('setWebsite').value.trim() : '';
       user.address = document.getElementById('setAddress').value.trim();
       user.upiId = document.getElementById('setUpiId').value.trim();
       user.bankName = document.getElementById('setBankName').value.trim();
@@ -2668,7 +2714,7 @@
       };
 
       saveDB();
-      alert('Business Settings & Social Media Handles Saved Successfully!');
+      alert('Business Settings Saved Successfully!');
     }
 
     // Admin Review Modal
