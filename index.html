@@ -566,7 +566,7 @@
             </div>
           </div>
 
-          <!-- SETTINGS TAB (WITH YES/NO WEBSITE TOGGLE & WHATSAPP UPGRADE BUTTON) -->
+          <!-- SETTINGS TAB (WITH SOCIAL MEDIA HANDLES) -->
           <div id="userSectionSettings" class="hidden space-y-5 sm:space-y-6">
             <div class="flex items-center gap-3">
               <button type="button" onclick="switchUserSection('dashboard')" class="text-slate-500 hover:text-slate-800 font-bold flex items-center gap-1 text-xs">
@@ -1821,7 +1821,7 @@
           daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-red-100 text-red-700 border border-red-300">0 Days (Expired)</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">EXPIRED</span>`;
         } else {
-          daysLeftBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
+          daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
@@ -2308,27 +2308,6 @@
       renderInvoiceRows();
     }
 
-    // TOGGLE WEBSITE SETTINGS VIEW (YES / NO)
-    function toggleWebsiteSettingView() {
-      const choice = document.getElementById('hasWebsiteToggle').value;
-      const inputContainer = document.getElementById('websiteInputContainer');
-      const promoContainer = document.getElementById('websitePromoContainer');
-
-      if (choice === 'yes') {
-        inputContainer.classList.remove('hidden');
-        promoContainer.classList.add('hidden');
-      } else {
-        inputContainer.classList.add('hidden');
-        promoContainer.classList.remove('hidden');
-      }
-    }
-
-    function openAffordableWebsiteWhatsApp() {
-      const user = tenantUsers.find(u => u.id === loggedInUserId) || { serviceName: 'Merchant' };
-      const msg = encodeURIComponent(`${user.serviceName} - I need a website what's the plans.`);
-      window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${msg}`, '_blank');
-    }
-
     // INTERNAL HELPER TO COMPILE & STORE INVOICE AUTOMATICALLY WITH MANDATORY VALIDATION
     function compileAndSaveCurrentInvoiceRecord() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
@@ -2660,14 +2639,30 @@
       const invs = user.invoices || [];
       document.getElementById('dashTotalInvoices').innerText = invs.length;
       let paid = 0, pending = 0, overdue = 0;
+      let paidCount = 0, pendingCount = 0, overdueCount = 0;
+
       invs.forEach(i => {
-        if (i.status === 'PAID') paid += i.grandTotal;
-        else if (i.status === 'OVERDUE') overdue += i.grandTotal;
-        else pending += i.grandTotal;
+        if (i.status === 'PAID') {
+          paid += i.grandTotal;
+          paidCount++;
+        } else if (i.status === 'OVERDUE') {
+          overdue += i.grandTotal;
+          overdueCount++;
+        } else {
+          pending += i.grandTotal;
+          pendingCount++;
+        }
       });
+
+      document.getElementById('dashPaidInvoices').innerText = paidCount;
       document.getElementById('dashPaidAmount').innerText = `₹${paid.toFixed(2)}`;
+
+      document.getElementById('dashPendingInvoices').innerText = pendingCount;
       document.getElementById('dashPendingAmount').innerText = `₹${pending.toFixed(2)}`;
+
+      document.getElementById('dashOverdueInvoices').innerText = overdueCount;
       document.getElementById('dashOverdueAmount').innerText = `₹${overdue.toFixed(2)}`;
+
       document.getElementById('dashTotalRevenue').innerText = `₹${(paid + pending + overdue).toFixed(2)}`;
     }
 
