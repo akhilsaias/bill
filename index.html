@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Be Bill - Enterprise Invoicing Suite</title>
+  <title>Be Bill - Enterprise Invoicing Web App</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Web App Manifest for PWA -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Be%20Bill%20Invoicing%22%2C%22short_name%22%3A%22BeBill%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%7D">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -58,8 +60,8 @@
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-md shadow-indigo-100">
           B
         </div>
-        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill Portal</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Access bebill.in Invoicing Suite</p>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-3 tracking-tight">Be Bill Web App</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Enterprise Invoicing Suite (bebill.in)</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
@@ -216,7 +218,7 @@
         </button>
 
         <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="font-bold text-slate-700 hidden sm:inline">Be Bill:</span>
+        <span class="font-bold text-slate-700 hidden sm:inline">Be Bill Web App:</span>
         <span id="currentRoleDisplay" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-semibold truncate max-w-[120px] sm:max-w-none">SUPER_ADMIN</span>
       </div>
       
@@ -1059,16 +1061,16 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Company / Service Name</label>
-          <input type="text" id="newAccServiceName" placeholder="e.g. Skyline Fiber" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccServiceName" placeholder="e.g. Yes Genesis" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div class="sm:col-span-2">
           <label class="font-bold text-slate-700 block mb-1">Business Category</label>
-          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="ISP & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          <input type="text" id="newAccCategory" placeholder="e.g. Broadband, OTT, Retail" value="OTT & Broadband Services" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
         </div>
         <div>
           <label class="font-bold text-slate-700 block mb-1">Username</label>
           <div class="flex items-center">
-            <input type="text" id="newAccUsername" placeholder="skyline" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <input type="text" id="newAccUsername" placeholder="yesgenesis" class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-l-xl p-2.5 text-slate-800 font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
             <span class="bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-2.5 rounded-r-xl font-mono text-[11px] font-bold border border-l-0 border-slate-300 whitespace-nowrap">@bebill.in</span>
           </div>
         </div>
@@ -1821,7 +1823,7 @@
           daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-red-100 text-red-700 border border-red-300">0 Days (Expired)</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">EXPIRED</span>`;
         } else {
-          daysLeftBadge = `<span class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
+          daysLeftBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">🟢 ${daysLeft} Days Left</span>`;
           badgeHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVE</span>`;
         }
 
@@ -2168,7 +2170,7 @@
     }
 
     function updateLiveInvoicePreview() {
-      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'YESBN001';
+      document.getElementById('invRenderNumber').innerText = document.getElementById('invEditNumber').value || 'SKYBN001';
       document.getElementById('invRenderDate').innerText = document.getElementById('invEditDate').value || '--';
       document.getElementById('invRenderDueDate').innerText = document.getElementById('invEditDueDate').value || '--';
 
@@ -2618,7 +2620,6 @@
         document.getElementById('setBankAccount').value = user.accountNumber || '';
         document.getElementById('setBankIfsc').value = user.ifsc || '';
 
-        // Handle Website Toggle State
         const hasWeb = user.hasWebsite || 'yes';
         document.getElementById('hasWebsiteToggle').value = hasWeb;
         document.getElementById('setWebsite').value = user.website || '';
@@ -2710,6 +2711,27 @@
 
       saveDB();
       alert('Business Settings Saved Successfully!');
+    }
+
+    // Toggle Website Section View
+    function toggleWebsiteSettingView() {
+      const choice = document.getElementById('hasWebsiteToggle').value;
+      const inputContainer = document.getElementById('websiteInputContainer');
+      const promoContainer = document.getElementById('websitePromoContainer');
+
+      if (choice === 'yes') {
+        inputContainer.classList.remove('hidden');
+        promoContainer.classList.add('hidden');
+      } else {
+        inputContainer.classList.add('hidden');
+        promoContainer.classList.remove('hidden');
+      }
+    }
+
+    function openAffordableWebsiteWhatsApp() {
+      const user = tenantUsers.find(u => u.id === loggedInUserId) || { serviceName: 'Merchant' };
+      const msg = encodeURIComponent(`${user.serviceName} - I need a website what's the plans.`);
+      window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${msg}`, '_blank');
     }
 
     // Admin Review Modal
