@@ -1355,6 +1355,15 @@
 
   <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
+    // PWA Service Worker Registration for Auto Install Prompts
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('Service Worker registered!', reg))
+          .catch((err) => console.log('Service Worker registration failed', err));
+      });
+    }
+
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
     const WHATSAPP_HELPLINE = '917382680200';
@@ -2033,7 +2042,6 @@
       }
     }
 
-    // UNIQUE INVOICE NUMBER GENERATOR (First 3 letters of Service Name + BN + Sequential Number)
     function generateUniqueServiceInvoiceCode(serviceName, existingInvoicesCount) {
       const cleanName = (serviceName || 'BIL').trim().replace(/[^a-zA-Z]/g, '');
       const prefix = (cleanName.length >= 3 ? cleanName.slice(0, 3) : cleanName.padEnd(3, 'X')).toUpperCase();
@@ -2329,7 +2337,6 @@
       renderInvoiceRows();
     }
 
-    // INTERNAL HELPER TO COMPILE & STORE INVOICE AUTOMATICALLY WITH MANDATORY VALIDATION
     function compileAndSaveCurrentInvoiceRecord() {
       const user = tenantUsers.find(u => u.id === loggedInUserId);
       if (!user) return null;
@@ -2459,7 +2466,6 @@
       switchUserSection('invoices');
     }
 
-    // Customer Actions
     function openAddCustomerModal() {
       document.getElementById('addCustomerModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('custNewName').focus(), 100);
@@ -2500,7 +2506,6 @@
       }
     }
 
-    // Product Actions
     function openAddProductModal() {
       document.getElementById('addProductModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('prodNewName').focus(), 100);
@@ -2732,7 +2737,6 @@
       alert('Business Settings Saved Successfully!');
     }
 
-    // Toggle Website Section View
     function toggleWebsiteSettingView() {
       const choice = document.getElementById('hasWebsiteToggle').value;
       const inputContainer = document.getElementById('websiteInputContainer');
@@ -2753,7 +2757,6 @@
       window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_HELPLINE}&text=${msg}`, '_blank');
     }
 
-    // Admin Review Modal
     function openUserReviewModal(userId) {
       currentReviewUserId = userId;
       const user = tenantUsers.find(u => u.id === userId);
@@ -2867,7 +2870,6 @@
       });
     }
 
-    // Renewal Modal
     function openRenewalModal() {
       document.getElementById('renewalPlanModal').classList.remove('hidden');
     }
@@ -2882,7 +2884,6 @@
       closeRenewalModal();
     }
 
-    // Chatbot
     function toggleChatbot() {
       const widget = document.getElementById('aiChatbotWidget');
       widget.classList.toggle('hidden');
