@@ -1,21 +1,9 @@
 {
-  "name": "Be Bill Invoicing Suite",
+  "name": "Be Bill Invoicing App",
   "short_name": "BeBill",
-  "description": "Enterprise Invoicing & Billing Web App",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#4f46e5",
-  "icons": [
-    {
-      "src": "https://cdn.jsdelivr.net/npm/@phosphor-icons/core@2.1.1/assets/bold/receipt-bold.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://cdn.jsdelivr.net/npm/@phosphor-icons/core@2.1.1/assets/bold/receipt-bold.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "icons": []
 }
