@@ -8,8 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- PWA Web App Manifest (Linked to separate manifest.json file) -->
-  <link rel="manifest" href="./manifest.json">
+  <!-- PWA Web App Manifest (Data URI for GitHub Pages) -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Be%20Bill%20Invoicing%20App%22%2C%22short_name%22%3A%22BeBill%22%2C%22start_url%22%3A%22.%2F%22%2C%22scope%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%5D%7D">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -1355,15 +1355,6 @@
 
   <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
-    // PWA Service Worker Registration for Auto Install Prompts
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('Service Worker registered!', reg))
-          .catch((err) => console.log('Service Worker registration failed', err));
-      });
-    }
-
     const SUPER_ADMIN_USER = 'billottloopstore';
     const SUPER_ADMIN_PASS = '1604130028As..@@';
     const WHATSAPP_HELPLINE = '917382680200';
